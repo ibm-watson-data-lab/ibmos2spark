@@ -17,5 +17,5 @@ Helper to connect to Softlayer and Bluemix ObjectStore from IBM Spark Service
 """
 __version__ = '0.0.1a1'
 
-from osconfig import softlayer, bluemix
+from osconfig import softlayer, bluemix, softlayer2d, bluemix2d
 
