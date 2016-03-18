@@ -21,13 +21,14 @@ Helper tool to configure access to Bluemix and Softlayer Object Store from Bluem
 
 from setuptools import setup, find_packages
 
+from ibmos2spark.__info__ import __version__
 
 setup_args = {
     'description': 'Helper tool to access Softlayer Object Store',
     'include_package_data': True,
     'install_requires': [],
     'name': 'ibmos2spark',
-    'version': '0.0.1b0',
+    'version': __version__,
     'author': 'gadamc',
     'author_email': 'adamcox@us.ibm.com',
     'url': 'https://github.com/gadamc/ibmos2spark',

@@ -87,12 +87,13 @@ class bluemix(object):
     sparkcontext is a SparkContext object.
 
     credentials is a dictionary with the following required keys:
-      name
+      
       auth_url
       project_id
       user_id
       password
       region
+      name #can be any string you choose
 
     When using this from a IBM Spark service instance that
     is configured to connect to particular Bluemix object store
@@ -104,8 +105,9 @@ class bluemix(object):
 
     prefix = "fs.swift.service." + credentials['name'] 
     hconf = sparkcontext._jsc.hadoopConfiguration()
-    hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v2.0/tokens')
+    hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v3/auth/tokens')
     hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
+    hconf.set(prefix + ".auth.method","keystoneV3 ")
     hconf.set(prefix + ".tenant", credentials['project_id'])
     hconf.set(prefix + ".username", credentials['user_id'])
     hconf.set(prefix + ".password", credentials['password'])
@@ -123,12 +125,13 @@ class bluemix2d(object):
     sparkcontext is a SparkContext object.
 
     credentials is a dictionary with the following required keys:
-      name
+      
       auth_url
       project_id
       user_id
       password
       region
+      name #can be any string you choose
 
     When using this from a IBM Spark service instance that
     is configured to connect to particular Bluemix object store

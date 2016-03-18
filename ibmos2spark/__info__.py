@@ -12,9 +12,5 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Helper to connect to Softlayer and Bluemix ObjectStore from IBM Spark Service
-"""
-from .__info__ import __version__
-from osconfig import softlayer, bluemix, softlayer2d, bluemix2d
 
+__version__ = '0.0.1b0'
