@@ -14,11 +14,11 @@ import ibmos2spark as oss
 
 credentials = {
   'auth_url': 'https://identity.open.softlayer.com',  #your URL might be different
-  'project_id': 'sssssssss',
+  'project_id': '',
   'region': 'dallas',
-  'user_id': 'uuuuuuuuuuu',
-  'username': 'uuuuuuuuuuu',
-  'password': 'ppppppppppp',
+  'user_id': '',
+  'username': '',
+  'password': '',
 }
 
 credentials['name'] = 'my_bluemix_os'  #you can give any name you like
@@ -38,11 +38,11 @@ import ibmos2spark as oss
 
 credentials = {
   'auth_url': 'https://identity.open.softlayer.com',  #your URL might be different
-  'project_id': 'sssssssss',
+  'project_id': '',
   'region': 'dallas',
-  'user_id': 'uuuuuuuuuuu',
-  'username': 'uuuuuuuuuuu',
-  'password': 'ppppppppppp',
+  'user_id': '',
+  'username': '',
+  'password': '',
 }
 
 credentials['name'] = 'my_bluemix_os'  #you can give any name you like
