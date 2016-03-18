@@ -27,7 +27,7 @@ setup_args = {
     'include_package_data': True,
     'install_requires': [],
     'name': 'ibmos2spark',
-    'version': '0.0.1a1',
+    'version': '0.0.1b0',
     'author': 'gadamc',
     'author_email': 'adamcox@us.ibm.com',
     'url': 'https://github.com/gadamc/ibmos2spark',
