@@ -53,7 +53,8 @@ class softlayer(object):
 
 class softlayer2d(object):
 
-  def __init__(self, sparkcontext, name, auth_url, tenant, username, password):
+  def __init__(self, sparkcontext, name, auth_url, tenant, username, password, 
+    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
     '''
     sparkcontext is a SparkContext object.
     name is a string that can be anything other than an empty string.
@@ -65,6 +66,7 @@ class softlayer2d(object):
 
     prefix = "fs.swift2d.service." + name 
     hconf = sparkcontext._jsc.hadoopConfiguration()
+    hconf.set("fs.swift2d.impl", swift2d_driver)
     hconf.set(prefix + ".auth.url", auth_url)
     hconf.set(prefix + ".username", username)
     hconf.set(prefix + ".tenant", tenant)
@@ -120,7 +122,8 @@ class bluemix(object):
 
 class bluemix2d(object):
 
-  def __init__(self, sparkcontext, credentials):
+  def __init__(self, sparkcontext, credentials,
+    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
     '''
     sparkcontext is a SparkContext object.
 
@@ -144,6 +147,7 @@ class bluemix2d(object):
 
     prefix = "fs.swift2d.service." + credentials['name'] 
     hconf = sparkcontext._jsc.hadoopConfiguration()
+    hconf.set("fs.swift2d.impl", swift2d_driver)
     hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v3/auth/tokens')
     hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
     hconf.set(prefix + ".auth.method","keystoneV3 ")
