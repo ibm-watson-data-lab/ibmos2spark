@@ -1,3 +1,9 @@
+0.0.1 (2016-05-17)
+====================
+
+- [NEW] Adds automatic setting of swift2d driver (configurable).
+
+
 0.0.1b0 (2016-03-17)
 ====================
 
