@@ -1,3 +1,8 @@
+0.0.2 (2016-07-18)
+====================
+
+- [NEW] Adds option to set 'public' configuration during instantiation. 
+
 0.0.1 (2016-05-17)
 ====================
 

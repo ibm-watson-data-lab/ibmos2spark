@@ -25,7 +25,8 @@ def swifturl2d(name, container_name, object_name):
 
 class softlayer(object):
 
-  def __init__(self, sparkcontext, name, auth_url, username, password):
+  def __init__(self, sparkcontext, name, auth_url, username, password, 
+                public=False):
     '''
     sparkcontext is a SparkContext object.
     name is a string that can be anything other than an empty string.
@@ -43,7 +44,7 @@ class softlayer(object):
     hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
     hconf.setInt(prefix + ".http.port", 8080)
     hconf.set(prefix + ".apikey", password)
-    hconf.setBoolean(prefix + ".public", True) 
+    hconf.setBoolean(prefix + ".public", public) 
     hconf.set(prefix + ".use.get.auth", "true")
     hconf.setBoolean(prefix + ".location-aware", False)
     hconf.set(prefix + ".password", password)
@@ -54,7 +55,7 @@ class softlayer(object):
 class softlayer2d(object):
 
   def __init__(self, sparkcontext, name, auth_url, tenant, username, password, 
-    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
+    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', public=False):
     '''
     sparkcontext is a SparkContext object.
     name is a string that can be anything other than an empty string.
@@ -74,7 +75,7 @@ class softlayer2d(object):
     hconf.set(prefix + ".auth.method", "swiftauth")
     hconf.setInt(prefix + ".http.port", 8080)
     hconf.set(prefix + ".apikey", password)
-    hconf.setBoolean(prefix + ".public", True) 
+    hconf.setBoolean(prefix + ".public", public) 
     hconf.set(prefix + ".use.get.auth", "true")
     hconf.setBoolean(prefix + ".location-aware", False)
     hconf.set(prefix + ".password", password)
@@ -84,7 +85,7 @@ class softlayer2d(object):
 
 class bluemix(object):
 
-  def __init__(self, sparkcontext, credentials):
+  def __init__(self, sparkcontext, credentials, public=False):
     '''
     sparkcontext is a SparkContext object.
 
@@ -115,7 +116,7 @@ class bluemix(object):
     hconf.set(prefix + ".password", credentials['password'])
     hconf.setInt(prefix + ".http.port", 8080)
     hconf.set(prefix + ".region", credentials['region'])
-    hconf.setBoolean(prefix + ".public", True)
+    hconf.setBoolean(prefix + ".public", False)
 
   def url(self, container_name, object_name):
     return swifturl(self.name, container_name, object_name)
@@ -123,7 +124,8 @@ class bluemix(object):
 class bluemix2d(object):
 
   def __init__(self, sparkcontext, credentials,
-    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
+    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', 
+    public=False):
     '''
     sparkcontext is a SparkContext object.
 
@@ -156,7 +158,7 @@ class bluemix2d(object):
     hconf.set(prefix + ".password", credentials['password'])
     hconf.setInt(prefix + ".http.port", 8080)
     hconf.set(prefix + ".region", credentials['region'])
-    hconf.setBoolean(prefix + ".public", True)
+    hconf.setBoolean(prefix + ".public", public)
 
   def url(self, container_name, object_name):
     return swifturl2d(self.name, container_name, object_name)
