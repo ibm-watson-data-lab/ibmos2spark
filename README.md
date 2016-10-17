@@ -21,14 +21,17 @@ credentials = {
   'password': '',
 }
 
-credentials['name'] = 'my_bluemix_os'  #you can give any name you like
+configuration_name = 'my_bluemix_os'  #you can give any name you like
 
-bmos = oss.bluemix(sc, credentials)  #sc is the SparkContext instance
+bmos = oss.bluemix(sc, credentials, configuration_name)  #sc is the SparkContext instance
 
 data = sc.textFile(bmos.url(container_name, file_name))
 ```
 
 #### Using Stocator (Swift2d) Driver
+
+The use case is exactly the same as above except that you use a different object.  
+In this case `bluemix2d`.
 
 ```python
 import ibmos2spark as oss
@@ -45,7 +48,7 @@ credentials = {
   'password': '',
 }
 
-credentials['name'] = 'my_bluemix_os'  #you can give any name you like
+configuration_name = 'my_bluemix_os'  #you can give any name you like
 
 bmos = oss.bluemix2d(sc, credentials)  #sc is the SparkContext instance
 
@@ -71,6 +74,9 @@ data = sc.textFile(slos.url(container_name, file_name))
 ```
 
 #### Using Stocator (Swift2d) Driver
+
+The use case is exactly the same as above except that you use a different object.  
+In this case `softlayer2d`.
 
 ```python
 import ibmos2spark as oss

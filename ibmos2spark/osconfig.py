@@ -17,6 +17,8 @@ and generate the swifturl.
 
 """
   
+import warnings
+
 def swifturl(name, container_name, object_name):
   return 'swift://{}.{}/{}'.format(container_name, name, object_name)
 
@@ -29,10 +31,13 @@ class softlayer(object):
                 public=False):
     '''
     sparkcontext is a SparkContext object.
-    name is a string that can be anything other than an empty string.
-    auth_url, username and password are string credentials for your
-    Softlayer Objectstore
 
+    name is a string that identifies this configuration. You can
+        use any string you like. This allows you to create
+        multiple configurations to different Object Storage accounts.
+
+    auth_url, username and password are string credentials for your
+    Softlayer Object Store
     '''
     self.name = name
 
@@ -58,10 +63,13 @@ class softlayer2d(object):
     swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', public=False):
     '''
     sparkcontext is a SparkContext object.
-    name is a string that can be anything other than an empty string.
-    auth_url, username and password are string credentials for your
-    Softlayer Objectstore
 
+    name is a string that identifies this configuration. You can
+        use any string you like. This allows you to create
+        multiple configurations to different Object Storage accounts.
+
+    auth_url, username and password are string credentials for your
+    Softlayer Object Store
     '''
     self.name = name
 
@@ -85,28 +93,39 @@ class softlayer2d(object):
 
 class bluemix(object):
 
-  def __init__(self, sparkcontext, credentials, public=False):
+  def __init__(self, sparkcontext, credentials, name=None, public=False):
     '''
-    sparkcontext is a SparkContext object.
+    sparkcontext:  a SparkContext object.
 
-    credentials is a dictionary with the following required keys:
+    credentials:  a dictionary with the following required keys:
       
       auth_url
       project_id (or projectId)
       user_id (or userId)
       password
       region
-      name #can be any string you choose
+
+    and optional key:
+      name  #[to be deprecated] The name of the configuration.
+
+    name:  string that identifies this configuration. You can
+        use any string you like. This allows you to create
+        multiple configurations to different Object Storage accounts.
+        This is not required at the moment, since credentials['name']
+        is still supported.
 
     When using this from a IBM Spark service instance that
     is configured to connect to particular Bluemix object store
-    instances, the values for these credentials can be obtained 
+    instances, the values for these credentials can be obtained
     by clicking on the 'insert to code' link just below a data
-    source. 
+    source.
     '''
-    self.name = credentials['name']
 
-
+    if name:
+        self.name = name
+    else:
+        self.name = credentials['name']
+        warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', DeprecationWarning)
 
     try:
         user_id = credentials['user_id']
@@ -118,7 +137,7 @@ class bluemix(object):
     except KeyError as e:
         tenant = credentials['projectId'] 
 
-    prefix = "fs.swift.service." + credentials['name'] 
+    prefix = "fs.swift.service." + self.name
     hconf = sparkcontext._jsc.hadoopConfiguration()
     hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v3/auth/tokens')
     hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
@@ -135,28 +154,42 @@ class bluemix(object):
 
 class bluemix2d(object):
 
-  def __init__(self, sparkcontext, credentials,
+  def __init__(self, sparkcontext, credentials, name=None,
     swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', 
     public=False):
     '''
-    sparkcontext is a SparkContext object.
+    sparkcontext:  a SparkContext object.
 
-    credentials is a dictionary with the following required keys:
+    credentials:  a dictionary with the following required keys:
       
       auth_url
       project_id (or projectId)
       user_id (or userId)
       password
       region
-      name #can be any string you choose
+
+    and optional key:
+      name  #[to be deprecated] The name of the configuration.
+
+    name:  string that identifies this configuration. You can
+        use any string you like. This allows you to create
+        multiple configurations to different Object Storage accounts.
+        This is not required at the moment, since credentials['name']
+        is still supported.
 
     When using this from a IBM Spark service instance that
     is configured to connect to particular Bluemix object store
-    instances, the values for these credentials can be obtained 
+    instances, the values for these credentials can be obtained
     by clicking on the 'insert to code' link just below a data
-    source. 
+    source.
+
     '''
-    self.name = credentials['name']
+
+    if name:
+        self.name = name
+    else:
+        self.name = credentials['name']
+        warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', DeprecationWarning)
 
 
     try:
@@ -169,7 +202,7 @@ class bluemix2d(object):
     except KeyError as e:
         tenant = credentials['projectId'] 
 
-    prefix = "fs.swift2d.service." + credentials['name'] 
+    prefix = "fs.swift2d.service." + self.name
     hconf = sparkcontext._jsc.hadoopConfiguration()
     hconf.set("fs.swift2d.impl", swift2d_driver)
     hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v3/auth/tokens')

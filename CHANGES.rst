@@ -1,6 +1,8 @@
 0.0.4 (2016-07-18)
 ====================
 
+- [NEW] Separates the configuration name from the credentials
+- [WARNING] The credentials['name'] key will be deprecated in the future.
 - [NEW] Handles camelCase in credentials dictionary.
 
 0.0.3 (2016-07-18)
