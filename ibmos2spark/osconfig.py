@@ -92,8 +92,8 @@ class bluemix(object):
     credentials is a dictionary with the following required keys:
       
       auth_url
-      project_id
-      user_id
+      project_id (or projectId)
+      user_id (or userId)
       password
       region
       name #can be any string you choose
@@ -106,13 +106,25 @@ class bluemix(object):
     '''
     self.name = credentials['name']
 
+
+
+    try:
+        user_id = credentials['user_id']
+    except KeyError as e:
+        user_id = credentials['userId'] 
+
+    try:
+        tenant = credentials['project_id']
+    except KeyError as e:
+        tenant = credentials['projectId'] 
+
     prefix = "fs.swift.service." + credentials['name'] 
     hconf = sparkcontext._jsc.hadoopConfiguration()
     hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v3/auth/tokens')
     hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
     hconf.set(prefix + ".auth.method","keystoneV3 ")
-    hconf.set(prefix + ".tenant", credentials['project_id'])
-    hconf.set(prefix + ".username", credentials['user_id'])
+    hconf.set(prefix + ".tenant", tenant)
+    hconf.set(prefix + ".username", user_id)
     hconf.set(prefix + ".password", credentials['password'])
     hconf.setInt(prefix + ".http.port", 8080)
     hconf.set(prefix + ".region", credentials['region'])
@@ -132,8 +144,8 @@ class bluemix2d(object):
     credentials is a dictionary with the following required keys:
       
       auth_url
-      project_id
-      user_id
+      project_id (or projectId)
+      user_id (or userId)
       password
       region
       name #can be any string you choose
@@ -147,14 +159,24 @@ class bluemix2d(object):
     self.name = credentials['name']
 
 
+    try:
+        user_id = credentials['user_id']
+    except KeyError as e:
+        user_id = credentials['userId'] 
+
+    try:
+        tenant = credentials['project_id']
+    except KeyError as e:
+        tenant = credentials['projectId'] 
+
     prefix = "fs.swift2d.service." + credentials['name'] 
     hconf = sparkcontext._jsc.hadoopConfiguration()
     hconf.set("fs.swift2d.impl", swift2d_driver)
     hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v3/auth/tokens')
     hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
     hconf.set(prefix + ".auth.method","keystoneV3 ")
-    hconf.set(prefix + ".tenant", credentials['project_id'])
-    hconf.set(prefix + ".username", credentials['user_id'])
+    hconf.set(prefix + ".tenant", tenant)
+    hconf.set(prefix + ".username", user_id)
     hconf.set(prefix + ".password", credentials['password'])
     hconf.setInt(prefix + ".http.port", 8080)
     hconf.set(prefix + ".region", credentials['region'])

@@ -1,3 +1,8 @@
+0.0.4 (2016-07-18)
+====================
+
+- [NEW] Handles camelCase in credentials dictionary.
+
 0.0.3 (2016-07-18)
 ====================
 
