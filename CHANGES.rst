@@ -1,4 +1,5 @@
 0.0.5 (2016-10-18)
+====================
 
 - [NEW] Raises exception when swift (version 1) URL contains an underscore. 
 
