@@ -1,9 +1,9 @@
 # ibmos2spark
 
-Use this when trying to access data on either a Softlayer or IBM Bluemix ObjectStore 
-with a 'swift' URL from Spark. 
+The package configures Spark Hadoop configurations for connecting to 
+Softlayer and IBM Bluemix Object Stores with the 'swift' or 'swift2d' protocol. 
 
-It is recommended to use the new Swift2d driver instead of the previous version. 
+It is recommended to use 'swift2d' instead of the previous version. 
 The new version allows for more flexible names (underscores) and is faster.
 
 ### Bluemix
