@@ -1,11 +1,14 @@
 # ibmos2spark
 
-Use this when trying to access data on either a Softlayer or Bluemix ObjectStore.
+Use this when trying to access data on either a Softlayer or IBM Bluemix ObjectStore 
+with a 'swift' URL from Spark. 
 
+It is recommended to use the new Swift2d driver instead of the previous version. 
+The new version allows for more flexible names (underscores) and is faster.
 
 ### Bluemix
 
-#### Using Swift Driver
+#### Using Swift (version 1) Driver
 ```python
 import ibmos2spark as oss
 
@@ -15,22 +18,25 @@ import ibmos2spark as oss
 credentials = {
   'auth_url': 'https://identity.open.softlayer.com',  #your URL might be different
   'project_id': '',
-  'region': 'dallas',
+  'region': '',
   'user_id': '',
   'username': '',
   'password': '',
 }
 
-configuration_name = 'my_bluemix_os'  #you can give any name you like
+#you can give any name as long as it does NOT contain an underscore
+configuration_name = 'myBluemixOs'  
 
 bmos = oss.bluemix(sc, credentials, configuration_name)  #sc is the SparkContext instance
 
-data = sc.textFile(bmos.url(container_name, file_name))
+#note, the container name also cannot contain an underscore. If your container name
+#includes an underscore, use the swift2d driver instead. 
+data = sc.textFile(bmos.url(container_name, object_name))
 ```
 
-#### Using Stocator (Swift2d) Driver
+#### Using Swift2d Driver
 
-The use case is exactly the same as above except that you use a different object.  
+The useage is exactly the same as above except that you use a different object.  
 In this case `bluemix2d`.
 
 ```python
@@ -42,7 +48,7 @@ import ibmos2spark as oss
 credentials = {
   'auth_url': 'https://identity.open.softlayer.com',  #your URL might be different
   'project_id': '',
-  'region': 'dallas',
+  'region': '',
   'user_id': '',
   'username': '',
   'password': '',
@@ -50,9 +56,9 @@ credentials = {
 
 configuration_name = 'my_bluemix_os'  #you can give any name you like
 
-bmos = oss.bluemix2d(sc, credentials)  #sc is the SparkContext instance
+bmos = oss.bluemix2d(sc, credentials, configuration_name)  #sc is the SparkContext instance
 
-data = sc.textFile(bmos.url(container_name, file_name))
+data = sc.textFile(bmos.url(container_name, object_name))
 ```
 
 
@@ -64,31 +70,42 @@ data = sc.textFile(bmos.url(container_name, file_name))
 import ibmos2spark as oss
 
 #you need to know the credentials to your Softlayer ObjectStore.
+auth_url = ''
+username = ''
+password = ''
+
+#you can give any name as long as it does NOT contain an underscore
+configuration_name = "mySoftlayerOs"
 
 #sc is the SparkContext instance
-#you can give any name you like
+slos = oss.softlayer(sc, configuration_name, auth_url, username, password)
 
-slos = oss.softlayer(sc, "my_softlayer_os", auth_url, username, password)
-
-data = sc.textFile(slos.url(container_name, file_name))
+#note, the container name also cannot contain an underscore. If your container name
+#includes an underscore, use the swift2d driver instead. 
+data = sc.textFile(slos.url(container_name, object_name))
 ```
 
-#### Using Stocator (Swift2d) Driver
+#### Using Swift2d Driver
 
-The use case is exactly the same as above except that you use a different object.  
+The useage is exactly the same as above except that you use a different object.  
 In this case `softlayer2d`.
 
 ```python
 import ibmos2spark as oss
 
 #you need to know the credentials to your Softlayer ObjectStore.
+auth_url = ''
+tenant = ''
+username = ''
+password = ''
+
+#you can give any name you like
+configuration_name = "my_softlayer_os"
 
 #sc is the SparkContext instance
-#you can give any name you like
+slos = oss.softlayer2d(sc, configuration_name, auth_url, tenant, username, password)
 
-slos = oss.softlayer2d(sc, "my_softlayer_os", auth_url, tenant, username, password)
-
-data = sc.textFile(slos.url(container_name, file_name))
+data = sc.textFile(slos.url(container_name, object_name))
 ```
 
 

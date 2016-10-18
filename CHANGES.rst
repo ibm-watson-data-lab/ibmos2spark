@@ -1,4 +1,8 @@
-0.0.4 (2016-07-18)
+0.0.5 (2016-10-18)
+
+- [NEW] Raises exception when swift (version 1) URL contains an underscore. 
+
+0.0.4 (2016-10-11)
 ====================
 
 - [NEW] Separates the configuration name from the credentials
