@@ -20,6 +20,10 @@ and generate the swifturl.
 import warnings
 
 def swifturl(name, container_name, object_name):
+  if '_' in name:
+    raise ValueError('The swift protocol does not support underscores (_) in "name" ({}).'.format(name))
+  if '_' in container_name:
+    raise ValueError('The swift protocol does not support underscores (_) in "container" ({}). Instead use swift2d via softlayer2d or bluemix2d objects.'.format(container_name))
   return 'swift://{}.{}/{}'.format(container_name, name, object_name)
 
 def swifturl2d(name, container_name, object_name):
@@ -40,6 +44,9 @@ class softlayer(object):
     Softlayer Object Store
     '''
     self.name = name
+
+    if '_' in self.name:
+        raise ValueError('The swift protocol does not support underscores (_) in "name" ({}).'.format(self.name))
 
     prefix = "fs.swift.service." + name 
     hconf = sparkcontext._jsc.hadoopConfiguration()
@@ -93,7 +100,7 @@ class softlayer2d(object):
 
 class bluemix(object):
 
-  def __init__(self, sparkcontext, credentials, name=None, public=False):
+  def __init__(self, sparkcontext, credentials, name=None, public=True):
     '''
     sparkcontext:  a SparkContext object.
 
@@ -127,6 +134,9 @@ class bluemix(object):
         self.name = credentials['name']
         warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', DeprecationWarning)
 
+    if '_' in self.name:
+        raise ValueError('The swift protocol does not support underscores (_) in "name" ({}).'.format(self.name))
+
     try:
         user_id = credentials['user_id']
     except KeyError as e:
@@ -139,15 +149,14 @@ class bluemix(object):
 
     prefix = "fs.swift.service." + self.name
     hconf = sparkcontext._jsc.hadoopConfiguration()
-    hconf.set(prefix + ".auth.url", credentials['auth_url']+'/v3/auth/tokens')
-    hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
-    hconf.set(prefix + ".auth.method","keystoneV3 ")
-    hconf.set(prefix + ".tenant", tenant)
-    hconf.set(prefix + ".username", user_id)
-    hconf.set(prefix + ".password", credentials['password'])
-    hconf.setInt(prefix + ".http.port", 8080)
-    hconf.set(prefix + ".region", credentials['region'])
-    hconf.setBoolean(prefix + ".public", False)
+    hconf.set(prefix + '.auth.url', credentials['auth_url']+'/v3/auth/tokens')
+    hconf.set(prefix + '.auth.endpoint.prefix', 'endpoints')
+    hconf.set(prefix + '.tenant', tenant)
+    hconf.set(prefix + '.username', user_id)
+    hconf.set(prefix + '.password', credentials['password'])
+    hconf.setInt(prefix + '.http.port', 8080)
+    hconf.set(prefix + '.region', credentials['region'])
+    hconf.setBoolean(prefix + '.public', public)
 
   def url(self, container_name, object_name):
     return swifturl(self.name, container_name, object_name)
