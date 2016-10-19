@@ -1,3 +1,8 @@
+0.0.6 (2016-10-19)
+====================
+
+- [FIXED] By default, the ".public" Hadoop Configuration property is set to False. 
+
 0.0.5 (2016-10-18)
 ====================
 

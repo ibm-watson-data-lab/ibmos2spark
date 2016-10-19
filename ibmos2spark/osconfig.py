@@ -100,7 +100,7 @@ class softlayer2d(object):
 
 class bluemix(object):
 
-  def __init__(self, sparkcontext, credentials, name=None, public=True):
+  def __init__(self, sparkcontext, credentials, name=None, public=False):
     '''
     sparkcontext:  a SparkContext object.
 
