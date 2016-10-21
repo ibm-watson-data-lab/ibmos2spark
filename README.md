@@ -10,7 +10,7 @@ The new version allows for more flexible names (underscores) and is faster.
 
 #### Using Swift (version 1) Driver
 ```python
-import ibmos2spark as oss
+import ibmos2spark
 
 #To obtain these credentials in IBM Spark, click the "insert to code" 
 #button below your data source found on the panel to the right of your notebook.
@@ -27,7 +27,7 @@ credentials = {
 #you can give any name as long as it does NOT contain an underscore
 configuration_name = 'myBluemixOs'  
 
-bmos = oss.bluemix(sc, credentials, configuration_name)  #sc is the SparkContext instance
+bmos = ibmos2spark.bluemix(sc, credentials, configuration_name)  #sc is the SparkContext instance
 
 #note, the container name also cannot contain an underscore. If your container name
 #includes an underscore, use the swift2d driver instead. 
@@ -40,7 +40,7 @@ The useage is exactly the same as above except that you use a different object.
 In this case `bluemix2d`.
 
 ```python
-import ibmos2spark as oss
+import ibmos2spark
 
 #To obtain these credentials in IBM Spark, click the "insert to code" 
 #button below your data source found on the panel to the right of your notebook.
@@ -56,7 +56,7 @@ credentials = {
 
 configuration_name = 'my_bluemix_os'  #you can give any name you like
 
-bmos = oss.bluemix2d(sc, credentials, configuration_name)  #sc is the SparkContext instance
+bmos = ibmos2spark.bluemix2d(sc, credentials, configuration_name)  #sc is the SparkContext instance
 
 data = sc.textFile(bmos.url(container_name, object_name))
 ```
@@ -67,7 +67,7 @@ data = sc.textFile(bmos.url(container_name, object_name))
 #### Using Swift Driver
 
 ```python
-import ibmos2spark as oss
+import ibmos2spark
 
 #you need to know the credentials to your Softlayer ObjectStore.
 auth_url = ''
@@ -78,7 +78,7 @@ password = ''
 configuration_name = "mySoftlayerOs"
 
 #sc is the SparkContext instance
-slos = oss.softlayer(sc, configuration_name, auth_url, username, password)
+slos = ibmos2spark.softlayer(sc, configuration_name, auth_url, username, password)
 
 #note, the container name also cannot contain an underscore. If your container name
 #includes an underscore, use the swift2d driver instead. 
@@ -91,7 +91,7 @@ The useage is exactly the same as above except that you use a different object.
 In this case `softlayer2d`.
 
 ```python
-import ibmos2spark as oss
+import ibmos2spark
 
 #you need to know the credentials to your Softlayer ObjectStore.
 auth_url = ''
@@ -103,7 +103,7 @@ password = ''
 configuration_name = "my_softlayer_os"
 
 #sc is the SparkContext instance
-slos = oss.softlayer2d(sc, configuration_name, auth_url, tenant, username, password)
+slos = ibmos2spark.softlayer2d(sc, configuration_name, auth_url, tenant, username, password)
 
 data = sc.textFile(slos.url(container_name, object_name))
 ```
