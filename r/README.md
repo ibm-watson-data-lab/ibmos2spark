@@ -8,6 +8,7 @@ The new version allows for more flexible names (underscores) and is faster.
 
 ### Installation 
 library(devtools)
+
 devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r")
 ### Softlayer
 
