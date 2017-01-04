@@ -40,6 +40,5 @@ bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
 
 data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
 head(data)
-
 }
 

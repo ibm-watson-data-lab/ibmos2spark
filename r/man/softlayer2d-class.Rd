@@ -25,6 +25,5 @@ slsc = softlayer2d(sparkcontext=sc,
            
 data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
 head(data)
-
 }
 
