@@ -15,35 +15,38 @@ swifturl2d = function(name, container_name, object_name){
   return(paste0('swift2d://',container_name,'.',name,'/',object_name))
 }
 
+
+#'    sparkcontext is a SparkContext object.
+#' 
+#'    name is a string that identifies this configuration. You can
+#'        use any string you like. This allows you to create
+#'        multiple configurations to different Object Storage accounts.
+#'
+#'    auth_url, username and password are string credentials for your
+#'    Softlayer Object Store
+#' @export softlayer      
+#' @exportClass softlayer
+#' @examples
+#' library(ibmos2spark)
+#' slsc = softlayer2d(sparkcontext=sc, 
+#'                  name="XXXXX", 
+#'                  auth_url="https://identity.open.softlayer.com",
+#'                  region="XXXXX", 
+#'                  tenant = "XXXXX", 
+#'                  username="XXXXX", 
+#'                  password="XXXXX"
+#'            )
+#'            
+#' data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
+#' head(data)
+
+    
 softlayer <- setRefClass("softlayer",
   fields=list(name="character", container_name="character", object_name="character",
              sparkcontext='jobj', auth_url="character", region="character", 
               tenant = "character", username="character", password="character"),
   methods=list(initialize = 
     function( sparkcontext, name, auth_url, region, tenant, username, password,public=FALSE){     
-    #'    sparkcontext is a SparkContext object.
-    #' 
-    #'    name is a string that identifies this configuration. You can
-    #'        use any string you like. This allows you to create
-    #'        multiple configurations to different Object Storage accounts.
-    #'
-    #'    auth_url, username and password are string credentials for your
-    #'    Softlayer Object Store
-    #'    
-    #' @examples
-    #' library(ibmos2spark)
-    #' slsc = softlayer2d(sparkcontext=sc, 
-    #'                  name="XXXXX", 
-    #'                  auth_url="https://identity.open.softlayer.com",
-    #'                  region="XXXXX", 
-    #'                  tenant = "XXXXX", 
-    #'                  username="XXXXX", 
-    #'                  password="XXXXX"
-    #'            )
-    #'            
-    #' data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-    #' head(data)
-    #' @export
 
       if ( grepl('_',name)){
         stop(paste0('The swift protocol does not support underscores (_) in "name" ', paste0(name)))
@@ -65,35 +68,36 @@ softlayer <- setRefClass("softlayer",
 )
 
 
+#' sparkcontext is a SparkContext object.
+#' 
+#' name is a string that identifies this configuration. You can
+#'     use any string you like. This allows you to create
+#'     multiple configurations to different Object Storage accounts.
+#' auth_url, username and password are string credentials for your
+#' Softlayer Object Store
+#' @export softlayer2d        
+#' @exportClass softlayer2d
+#' @examples 
+#' library(ibmos2spark)
+#' slsc = softlayer2d(sparkcontext=sc, 
+#'                  name="XXXXX", 
+#'                  auth_url="https://identity.open.softlayer.com",
+#'                  region="XXXXX", 
+#'                  tenant = "XXXXX", 
+#'                  username="XXXXX", 
+#'                  password="XXXXX"
+#'            )
+#'            
+#' data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
+#' head(data)
+
 softlayer2d <- setRefClass("softlayer2d",
   fields=list(name="character", container_name="character", object_name="character",
              sparkcontext='jobj', auth_url="character", region="character", 
               tenant = "character", username="character", password="character"),
   methods=list(initialize = 
     function( sparkcontext, name, auth_url, region, tenant, username, password,public=FALSE){     
-    #' sparkcontext is a SparkContext object.
-    #' 
-    #' name is a string that identifies this configuration. You can
-    #'     use any string you like. This allows you to create
-    #'     multiple configurations to different Object Storage accounts.
-    #' auth_url, username and password are string credentials for your
-    #' Softlayer Object Store
-    #' 
-    #' @examples 
-    #' library(ibmos2spark)
-    #' slsc = softlayer2d(sparkcontext=sc, 
-    #'                  name="XXXXX", 
-    #'                  auth_url="https://identity.open.softlayer.com",
-    #'                  region="XXXXX", 
-    #'                  tenant = "XXXXX", 
-    #'                  username="XXXXX", 
-    #'                  password="XXXXX"
-    #'            )
-    #'            
-    #' data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-    #' head(data)
-    #' 
-    #' @export
+
 
         prefix = paste("fs.swift.service" , name, sep =".")
         hConf = SparkR:::callJMethod(sparkcontext, "hadoopConfiguration")
@@ -115,45 +119,45 @@ softlayer2d <- setRefClass("softlayer2d",
     )
 )
 
+#' sparkcontext:  a SparkContext object.
+#' 
+#' credentials:  a dictionary with the following required keys:
+#'   
+#'   auth_url
+#'   project_id (or projectId)
+#'   user_id (or userId)
+#'   password
+#'   region
+#' and optional key:
+#'   name  #[to be deprecated] The name of the configuration.
+#' name:  string that identifies this configuration. You can
+#'     use any string you like. This allows you to create
+#'     multiple configurations to different Object Storage accounts.
+#'     This is not required at the moment, since credentials['name']
+#'     is still supported.
+#' When using this from a IBM Spark service instance that
+#' is configured to connect to particular Bluemix object store
+#' instances, the values for these credentials can be obtained
+#' by clicking on the 'insert to code' link just below a data
+#' source.
+#' @export bluemix      
+#' @exportClass bluemix
+#' 
+#' @examples 
+#' library(ibmos2spark)
+#' creds = list(name="XXXXX", 
+#'              auth_url="https://identity.open.softlayer.com",
+#'             region="dallas", 
+#'             project_id = "XXXXX", 
+#'             user_id="XXXXX", 
+#'             password="XXXXX",
+#'             public = FALSE)
+#'             
+#' bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
+#' 
+#' data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
+#' head(data)
 
-    #' sparkcontext:  a SparkContext object.
-    #' 
-    #' credentials:  a dictionary with the following required keys:
-    #'   
-    #'   auth_url
-    #'   project_id (or projectId)
-    #'   user_id (or userId)
-    #'   password
-    #'   region
-    #' and optional key:
-    #'   name  #[to be deprecated] The name of the configuration.
-    #' name:  string that identifies this configuration. You can
-    #'     use any string you like. This allows you to create
-    #'     multiple configurations to different Object Storage accounts.
-    #'     This is not required at the moment, since credentials['name']
-    #'     is still supported.
-    #' When using this from a IBM Spark service instance that
-    #' is configured to connect to particular Bluemix object store
-    #' instances, the values for these credentials can be obtained
-    #' by clicking on the 'insert to code' link just below a data
-    #' source.
-    #' 
-    #' @examples 
-    #' library(ibmos2spark)
-    #' creds = list(name="XXXXX", 
-    #'              auth_url="https://identity.open.softlayer.com",
-    #'             region="dallas", 
-    #'             project_id = "XXXXX", 
-    #'             user_id="XXXXX", 
-    #'             password="XXXXX",
-    #'             public = FALSE)
-    #'             
-    #' bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
-    #' 
-    #' data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-    #' head(data)
-    #' 
-    #' @export
 
 bluemix <- setRefClass("bluemix",
   fields=list(name="character", credentials = "list", 
@@ -213,7 +217,6 @@ bluemix <- setRefClass("bluemix",
 #' instances, the values for these credentials can be obtained
 #' by clicking on the 'insert to code' link just below a data
 #' source.
-
 #' @export bluemix2d        
 #' @exportClass bluemix2d
 #' @examples 
