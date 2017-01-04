@@ -7,9 +7,8 @@ It is recommended to use 'swift2d' instead of the previous version.
 The new version allows for more flexible names (underscores) and is faster.
 
 ### Installation 
-library(devtools)
-
-devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r")
+    library(devtools)
+    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r")
 ### Softlayer
 
 #### Using Swift (version 1) Driver
