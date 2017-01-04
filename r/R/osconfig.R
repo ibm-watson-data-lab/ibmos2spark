@@ -114,7 +114,7 @@ softlayer2d <- setRefClass("softlayer2d",
         SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.method", sep='.'), "swiftauth")
         SparkR:::callJMethod(hConf, "set", paste(prefix, "use.get.auth", sep='.'), "true")
         invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), public))
-        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "use.get.auth", sep='.'), FALSE))
+        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "location-aware", sep='.'), FALSE))
         #invisible(SparkR:::callJMethod(hConf, "setInt", paste(prefix, "http.port", sep='.'), 8080))
     },
 
