@@ -13,8 +13,8 @@ devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/addin
 ### Softlayer
 
 #### Using Swift (version 1) Driver
-library(ibmos2spark)
-slsc = softlayer(sparkcontext=sc, 
+    library(ibmos2spark)
+    slsc = softlayer(sparkcontext=sc, 
                  name="XXXXX", 
                  auth_url="https://identity.open.softlayer.com",
                  region="XXXXX", 
@@ -23,14 +23,14 @@ slsc = softlayer(sparkcontext=sc,
                  password="XXXXX"
            )
            
-data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-head(data)
+    data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
+    head(data)
 
 
 #### Using Swift2d Driver
 
-library(ibmos2spark)
-slsc = softlayer2d(sparkcontext=sc, 
+    library(ibmos2spark)
+    slsc = softlayer2d(sparkcontext=sc, 
                  name="XXXXX", 
                  auth_url="https://identity.open.softlayer.com",
                  region="XXXXX", 
@@ -39,15 +39,16 @@ slsc = softlayer2d(sparkcontext=sc,
                  password="XXXXX"
            )
            
-data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-head(data)
+    data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
+    head(data)
 
 ### Bluemix
 
 #### Using Swift Driver
 
-library(ibmos2spark)
-creds = list(name="XXXXX", 
+    library(ibmos2spark)
+
+    creds = list(name="XXXXX", 
              auth_url="https://identity.open.softlayer.com",
             region="dallas", 
             project_id = "XXXXX", 
@@ -55,16 +56,17 @@ creds = list(name="XXXXX",
             password="XXXXX",
             public = FALSE)
             
-bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
+    bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
 
-data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-head(data)
+    data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
+
+    head(data)
 
 
 #### Using Swift2d Driver
 
-library(ibmos2spark)
-creds = list(name="XXXXX", 
+    library(ibmos2spark)
+    creds = list(name="XXXXX", 
              auth_url="https://identity.open.softlayer.com",
             region="dallas", 
             project_id = "XXXXX", 
@@ -72,9 +74,9 @@ creds = list(name="XXXXX",
             password="XXXXX",
             public = FALSE)
             
-bmsc = bluemix2d(sparkcontext=sc, name=name, credentials = creds)
+    bmsc = bluemix2d(sparkcontext=sc, name=name, credentials = creds)
 
-data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
+    data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
 head(data)
 
 
