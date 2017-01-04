@@ -105,16 +105,15 @@ softlayer2d <- setRefClass("softlayer2d",
         prefix = paste("fs.swift2d.service" , name, sep =".")
         hConf = SparkR:::callJMethod(sparkcontext, "hadoopConfiguration")
         SparkR:::callJMethod(hConf, "set", "fs.swift2d.impl", swift2d_driver)
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'), auth_url)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'), paste(auth_url,"/v3/auth/tokens",sep=""))
         SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.endpoint.prefix", sep='.'), "endpoints")
         SparkR:::callJMethod(hConf, "set", paste(prefix, "tenant", sep='.'), tenant)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "username", sep='.'), username)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "password", sep='.'), password)
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "apikey", sep='.'), password)
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.method", sep='.'), "swiftauth")
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "use.get.auth", sep='.'), "true")
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.method", sep='.'), "keystoneV3")
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "region", sep='.'), region)
         invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), public))
-        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "location-aware", sep='.'), FALSE))
+
         #invisible(SparkR:::callJMethod(hConf, "setInt", paste(prefix, "http.port", sep='.'), 8080))
     },
 
