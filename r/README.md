@@ -13,7 +13,8 @@ The new version allows for more flexible names (underscores) and is faster.
 
 #### Using Swift (version 1) Driver
     library(ibmos2spark)
-    slsc = softlayer(sparkcontext=sc, 
+    getDataFn = getRefClass("softlayer")
+    slsc = getDataFn(sparkcontext=sc, 
                  name="XXXXX", 
                  auth_url="https://identity.open.softlayer.com",
                  region="XXXXX", 
@@ -29,7 +30,8 @@ The new version allows for more flexible names (underscores) and is faster.
 #### Using Swift2d Driver
 
     library(ibmos2spark)
-    slsc = softlayer2d(sparkcontext=sc, 
+    getDataFn = getRefClass("softlayer2d")
+    slsc = getDataFn(sparkcontext=sc, 
                  name="XXXXX", 
                  auth_url="https://identity.open.softlayer.com",
                  region="XXXXX", 
@@ -55,7 +57,8 @@ The new version allows for more flexible names (underscores) and is faster.
             password="XXXXX",
             public = FALSE)
             
-    bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
+    getDataFn = getRefClass("bluemix")        
+    bmsc = getDataFn(sparkcontext=sc, name=name, credentials = creds)
 
     data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
 
@@ -73,7 +76,8 @@ The new version allows for more flexible names (underscores) and is faster.
             password="XXXXX",
             public = FALSE)
             
-    bmsc = bluemix2d(sparkcontext=sc, name=name, credentials = creds)
+    getDataFn = getRefClass("bluemix2d")       
+    bmsc = getDataFn(sparkcontext=sc, name=name, credentials = creds)
 
     data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
 head(data)
