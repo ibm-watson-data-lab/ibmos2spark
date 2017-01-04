@@ -1,7 +1,7 @@
 
 setOldClass("jobj")
 
-#' @export swifturl
+
 swifturl = function(name, container_name, object_name){
   if ( grepl('_',name)){
     stop(paste0('The swift protocol does not support underscores (_) in "name" ', paste0(name)))
@@ -12,7 +12,7 @@ swifturl = function(name, container_name, object_name){
   return(paste0('swift://',container_name,'.',name,'/',object_name))
 }
 
-#' @export swifturl2d
+
 swifturl2d = function(name, container_name, object_name){
   return(paste0('swift2d://',container_name,'.',name,'/',object_name))
 }
@@ -98,11 +98,13 @@ softlayer2d <- setRefClass("softlayer2d",
              sparkcontext='jobj', auth_url="character", region="character", 
               tenant = "character", username="character", password="character"),
   methods=list(initialize = 
-    function( sparkcontext, name, auth_url, region, tenant, username, password,public=FALSE){     
+    function( sparkcontext, name, auth_url, region, tenant, username, password,public=FALSE,
+              swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'){     
 
 
-        prefix = paste("fs.swift.service" , name, sep =".")
+        prefix = paste("fs.swift2d.service" , name, sep =".")
         hConf = SparkR:::callJMethod(sparkcontext, "hadoopConfiguration")
+        SparkR:::callJMethod(hConf, "set", "fs.swift2d.impl", swift2d_driver)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'), auth_url)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.endpoint.prefix", sep='.'), "endpoints")
         SparkR:::callJMethod(hConf, "set", paste(prefix, "tenant", sep='.'), tenant)
