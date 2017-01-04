@@ -1,6 +1,7 @@
 
 setOldClass("jobj")
 
+#' @export swifturl
 swifturl = function(name, container_name, object_name){
   if ( grepl('_',name)){
     stop(paste0('The swift protocol does not support underscores (_) in "name" ', paste0(name)))
@@ -11,6 +12,7 @@ swifturl = function(name, container_name, object_name){
   return(paste0('swift://',container_name,'.',name,'/',object_name))
 }
 
+#' @export swifturl2d
 swifturl2d = function(name, container_name, object_name){
   return(paste0('swift2d://',container_name,'.',name,'/',object_name))
 }
