@@ -46,25 +46,30 @@ swifturl2d = function(name, container_name, object_name){
 softlayer <- setRefClass("softlayer",
   fields=list(name="character", container_name="character", object_name="character",
              sparkcontext='jobj', auth_url="character", region="character", 
-              tenant = "character", username="character", password="character"),
+               username="character", password="character"),
   methods=list(initialize = 
-    function( sparkcontext, name, auth_url, region, tenant, username, password,public=FALSE){     
+    function( sparkcontext, name, auth_url, region, username, password,public=FALSE){     
 
       if ( grepl('_',name)){
         stop(paste0('The swift protocol does not support underscores (_) in "name" ', paste0(name)))
       }
-
+        .self$name = name 
         prefix = paste("fs.swift.service" , name, sep =".")
         hConf = SparkR:::callJMethod(sparkcontext, "hadoopConfiguration")
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'), paste(auth_url,"/v3/auth/tokens",sep=""))
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'),auth_url)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.endpoint.prefix", sep='.'), "endpoints")
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "tenant", sep='.'), tenant)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "tenant", sep='.'), username)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "username", sep='.'), username)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "password", sep='.'), password)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "apikey", sep='.'), password)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "use.get.auth", sep='.'), "true")
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "apikey", sep='.'), password)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "http.port", sep='.'), "8080")
         SparkR:::callJMethod(hConf, "set", paste(prefix, "region", sep='.'), region)
-        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), TRUE))},
-
-        url = function(name, container_name, object_name){
+        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), public))
+        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "location-aware", sep='.'), FALSE))},
+               
+        url = function( container_name, object_name){
         return(swifturl(name, container_name, object_name))}
     )
 )
@@ -95,29 +100,32 @@ softlayer <- setRefClass("softlayer",
 
 softlayer2d <- setRefClass("softlayer2d",
   fields=list(name="character", container_name="character", object_name="character",
-             sparkcontext='jobj', auth_url="character", region="character", 
+             sparkcontext='jobj', auth_url="character", 
               tenant = "character", username="character", password="character"),
   methods=list(initialize = 
-    function( sparkcontext, name, auth_url, region, tenant, username, password,public=FALSE,
+    function( sparkcontext, name, auth_url, tenant, username, password,public=FALSE,
               swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'){     
 
-
+        .self$name = name 
         prefix = paste("fs.swift2d.service" , name, sep =".")
         hConf = SparkR:::callJMethod(sparkcontext, "hadoopConfiguration")
         SparkR:::callJMethod(hConf, "set", "fs.swift2d.impl", swift2d_driver)
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'), paste(auth_url,"/v3/auth/tokens",sep=""))
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.endpoint.prefix", sep='.'), "endpoints")
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "tenant", sep='.'), tenant)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'), auth_url)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "username", sep='.'), username)
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "password", sep='.'), password)
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.method", sep='.'), "keystoneV3")
-        SparkR:::callJMethod(hConf, "set", paste(prefix, "region", sep='.'), region)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "tenant", sep='.'), tenant)
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.endpoint.prefix", sep='.'), "endpoints")
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.method", sep='.'), "swiftauth")
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "http.port", sep='.'), "8080")
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "apikey", sep='.'), password)
         invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), public))
-
-        #invisible(SparkR:::callJMethod(hConf, "setInt", paste(prefix, "http.port", sep='.'), 8080))
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "use.get.auth", sep='.'), "true")
+        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "location-aware", sep='.'), FALSE))
+        SparkR:::callJMethod(hConf, "set", paste(prefix, "password", sep='.'), password)
+        
+        
     },
-
-        url = function(name, container_name, object_name){
+               
+        url = function(container_name, object_name){
         return(swifturl2d(name, container_name, object_name))}
     )
 )
@@ -182,7 +190,7 @@ bluemix <- setRefClass("bluemix",
       tenant = try( credentials['project_id'][[1]])
       if(class(tenant)=="try-error")  tenant = credentials['projectId'][[1]]
 
-
+        .self$name = name 
         prefix = paste("fs.swift.service" , name, sep =".")
         hConf = SparkR:::callJMethod(sparkcontext, "hadoopConfiguration")
         SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.url", sep='.'), paste(credentials['auth_url'][[1]],"/v3/auth/tokens",sep=""))
@@ -193,7 +201,7 @@ bluemix <- setRefClass("bluemix",
         SparkR:::callJMethod(hConf, "set", paste(prefix, "region", sep='.'), credentials['region'][[1]])
         invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), credentials['public'][[1]]))},
 
-        url = function(name, container_name, object_name){
+        url = function( container_name, object_name){
         return(swifturl(name, container_name, object_name))}
     )
 )
@@ -254,7 +262,8 @@ bluemix2d <- setRefClass("bluemix2d",
           
       tenant = try( credentials['project_id'][[1]])
       if(class(tenant)=="try-error")  tenant = credentials['projectId'][[1]]
-          
+        
+        .self$name = name  
         prefix = paste("fs.swift2d.service" , name, sep =".")
         hConf = SparkR:::callJMethod(sparkcontext, "hadoopConfiguration")
         SparkR:::callJMethod(hConf, "set", "fs.swift2d.impl", swift2d_driver)
@@ -269,7 +278,7 @@ bluemix2d <- setRefClass("bluemix2d",
         #invisible(SparkR:::callJMethod(hConf, "setInt", paste(prefix, "http.port", sep='.'), 8080))
           },
           
-        url = function(name, container_name, object_name){
+        url = function( container_name, object_name){
         return(swifturl2d(name, container_name, object_name))}
     )
 )
