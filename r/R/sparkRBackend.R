@@ -63,9 +63,9 @@ isRemoveMethod <- function(isStatic, objId, methodName) {
 #         for static methods
 # methodName - name of method to be invoked
 invokeJava <- function(isStatic, objId, methodName, ...) {
-  if (!exists(".sparkRCon", .sparkREnv)) {
-    stop("No connection to backend found. Please re-run sparkR.init")
-  }
+  #if (!exists(".sparkRCon", .sparkREnv)) {
+  #  stop("No connection to backend found. Please re-run sparkR.init")
+  #}
 
   # If this isn't a removeJObject call
   if (!isRemoveMethod(isStatic, objId, methodName)) {
