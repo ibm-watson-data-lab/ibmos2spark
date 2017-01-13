@@ -1,6 +1,6 @@
 
 setOldClass("jobj")
-
+.sparkREnv <- new.env()
 
 swifturl = function(name, container_name, object_name){
   if ( grepl('_',name)){
