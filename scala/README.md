@@ -6,6 +6,13 @@ Softlayer and IBM Bluemix Object Stores with the 'swift' or 'swift2d' protocol.
 It is recommended to use 'swift2d' instead of the previous version. 
 The new version allows for more flexible names (underscores) and is faster.
 
+## Build
+
+```
+sbt assembly
+```
+
+
 ### Bluemix
 
 #### Using Swift (version 1) Driver
