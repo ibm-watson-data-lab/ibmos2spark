@@ -21,7 +21,7 @@ object urlbuilder{
 }
 
 class softlayer(sc: SparkContext, name: String, auth_url: String, 
-               username: String, password: String, public: Boolean=false){
+               username: String, password: String, region: String, public: Boolean=false){
     
     /**  sparkcontext is a SparkContext object.
       *  name is a string that identifies this configuration. You can
@@ -35,17 +35,20 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
       }
     
     val hadoopConf = sc.hadoopConfiguration;
-    hadoopConf.set("fs.swift.service." + name + ".auth.url",auth_url)
-    hadoopConf.set("fs.swift.service." + name + ".tenant",username)
-    hadoopConf.set("fs.swift.service." + name + ".username",username)
-    hadoopConf.set("fs.swift.service." + name + ".auth.endpoint.prefix","endpoints")
-    hadoopConf.set("fs.swift.service." + name + ".password",password)
-    hadoopConf.set("fs.swift.service." + name + ".use.get.auth","true")
-    hadoopConf.setBoolean("fs.swift.service." + name + ".location-aware",false)
-    hadoopConf.setInt("fs.swift.service." + name + ".http.port",8080)
-    hadoopConf.set("fs.swift.service." + name + ".apikey",password)
-    hadoopConf.setBoolean("fs.swift.service." + name + ".public",public)
-    
+    val prefix = "fs.swift.service." + name 
+
+    hadoopConf.set(prefix + ".auth.url",auth_url)
+    hadoopConf.set(prefix + ".tenant",username)
+    hadoopConf.set(prefix + ".username",username)
+    hadoopConf.set(prefix + ".auth.endpoint.prefix","endpoints")
+    hadoopConf.set(prefix + ".password",password)
+    hadoopConf.set(prefix + ".use.get.auth","true")
+    hadoopConf.setBoolean(prefix + ".location-aware",false)
+    hadoopConf.setInt(prefix + ".http.port",8080)
+    hadoopConf.set(prefix + ".apikey",password)
+    hadoopConf.setBoolean(prefix + ".public",public)
+    hadoopConf.set(prefix + ".region", region)
+
     
     def url(container_name: String, object_name:String) : String= {
         return(urlbuilder.swifturl(name= name, container_name,object_name))
@@ -54,8 +57,7 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
 
 
 class softlayer2d(sc: SparkContext, name: String, auth_url: String, 
-               username: String, password: String, 
-                  region: String, 
+                  tenant: String, username: String, password: String, 
                   swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem",
                   public: Boolean=false){
     
@@ -63,24 +65,26 @@ class softlayer2d(sc: SparkContext, name: String, auth_url: String,
       * name is a string that identifies this configuration. You can
       *    use any string you like. This allows you to create
       *    multiple configurations to different Object Storage accounts.
-      * auth_url, username and password are string credentials for your
+      * auth_url, tenant, username and password are string credentials for your
       * Softlayer Object Store
       */
     
     val hadoopConf = sc.hadoopConfiguration;
+    val prefix = "fs.swift2d.service." + name 
+
     hadoopConf.set("fs.swift2d.impl",swift2d_driver)
-    hadoopConf.set("fs.swift2d.service." + name + ".auth.url",auth_url)
-    hadoopConf.set("fs.swift2d.service." + name + ".region",region)
-    hadoopConf.set("fs.swift2d.service." + name + ".auth.endpoint.prefix","endpoints")
-    hadoopConf.set("fs.swift2d.service." + name + ".auth.method","swiftauth")
-    hadoopConf.setInt("fs.swift2d.service." + name + ".http.port",8080)
-    hadoopConf.set("fs.swift2d.service." + name + ".apikey",password)
-    hadoopConf.setBoolean("fs.swift2d.service." + name + ".public",public)
-    hadoopConf.set("fs.swift2d.service." + name + ".apikey",password)
-    hadoopConf.set("fs.swift2d.service." + name + ".use.get.auth","true")
-    hadoopConf.setBoolean("fs.swift2d.service." + name + ".location-awar",false)
-    hadoopConf.set("fs.swift2d.service." + name + ".password",password)
-    
+    hadoopConf.set(prefix + ".auth.url",auth_url)
+    hadoopConf.set(prefix + ".username", username)
+    hadoopConf.set(prefix + ".tenant", tenant)
+    hadoopConf.set(prefix + ".auth.endpoint.prefix","endpoints")
+    hadoopConf.set(prefix + ".auth.method","swiftauth")
+    hadoopConf.setInt(prefix + ".http.port",8080)
+    hadoopConf.set(prefix + ".apikey",password)
+    hadoopConf.setBoolean(prefix + ".public",public)
+    hadoopConf.set(prefix + ".use.get.auth","true")
+    hadoopConf.setBoolean(prefix + ".location-aware",false)
+    hadoopConf.set(prefix + ".password",password)
+
     
     def url(container_name: String, object_name:String) : String= {
         return(urlbuilder.swifturl2d(name= name, container_name,object_name))
@@ -129,12 +133,14 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String]){
     val tenant = ifexist(creds, "project_id","projectId")
     
     val hadoopConf = sc.hadoopConfiguration;
-    hadoopConf.set("fs.swift.service." + name + ".auth.url",creds("auth_url") + "/v3/auth/tokens")
-    hadoopConf.set("fs.swift.service." + name + ".tenant",tenant)
-    hadoopConf.set("fs.swift.service." + name + ".username",username)
-    hadoopConf.set("fs.swift.service." + name + ".password",creds("password"))
-    hadoopConf.set("fs.swift.service." + name + ".region",creds("region"))
-    hadoopConf.setInt("fs.swift.service." + name + ".http.port",8080)
+    val prefix = "fs.swift.service." + name;
+
+    hadoopConf.set(prefix + ".auth.url",creds("auth_url") + "/v3/auth/tokens")
+    hadoopConf.set(prefix + ".tenant",tenant)
+    hadoopConf.set(prefix + ".username",username)
+    hadoopConf.set(prefix + ".password",creds("password"))
+    hadoopConf.set(prefix + ".region",creds("region"))
+    hadoopConf.setInt(prefix + ".http.port",8080)
     
     
     def url(container_name: String, object_name:String) : String= {
@@ -182,16 +188,19 @@ class bluemix2d(sc: SparkContext, name: String, creds: HashMap[String, String],
 
     
     val hadoopConf = sc.hadoopConfiguration;
+    val prefix = "fs.swift2d.service." + name;
+
     hadoopConf.set("fs.swift2d.impl",swift2d_driver)
-    hadoopConf.set("fs.swift2d.service." + name + ".auth.url",creds("auth_url") + "/v3/auth/tokens")
-    hadoopConf.set("fs.swift2d.service." + name + ".auth.endpoint.prefix","endpoints")
-    hadoopConf.set("fs.swift2d.service." + name + ".auth.method","keystoneV3")
-    hadoopConf.set("fs.swift2d.service." + name + ".tenant",tenant)
-    hadoopConf.set("fs.swift2d.service." + name + ".username",username)
-    hadoopConf.set("fs.swift2d.service." + name + ".password",creds("password"))
-    hadoopConf.setBoolean("fs.swift2d.service." + name + ".public",public)
-    hadoopConf.set("fs.swift2d.service." + name + ".region",creds("region"))
-    hadoopConf.setInt("fs.swift2d.service." + name + ".http.port",8080)
+
+    hadoopConf.set(prefix + ".auth.url",creds("auth_url") + "/v3/auth/tokens")
+    hadoopConf.set(prefix + ".auth.endpoint.prefix","endpoints")
+    hadoopConf.set(prefix + ".auth.method","keystoneV3")
+    hadoopConf.set(prefix + ".tenant",tenant)
+    hadoopConf.set(prefix + ".username",username)
+    hadoopConf.set(prefix + ".password",creds("password"))
+    hadoopConf.setBoolean(prefix + ".public",public)
+    hadoopConf.set(prefix + ".region",creds("region"))
+    hadoopConf.setInt(prefix + ".http.port",8080)
     
     def url(container_name: String, object_name:String) : String= {
         return(urlbuilder.swifturl2d(name= name, container_name,object_name))
