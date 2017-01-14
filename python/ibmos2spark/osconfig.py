@@ -31,7 +31,7 @@ def swifturl2d(name, container_name, object_name):
 
 class softlayer(object):
 
-  def __init__(self, sparkcontext, name, auth_url, username, password, 
+  def __init__(self, sparkcontext, name, auth_url, username, password, region
                 public=False):
     '''
     sparkcontext is a SparkContext object.
@@ -40,7 +40,7 @@ class softlayer(object):
         use any string you like. This allows you to create
         multiple configurations to different Object Storage accounts.
 
-    auth_url, username and password are string credentials for your
+    auth_url, username, password and region are string credentials for your
     Softlayer Object Store
     '''
     self.name = name
@@ -60,6 +60,7 @@ class softlayer(object):
     hconf.set(prefix + ".use.get.auth", "true")
     hconf.setBoolean(prefix + ".location-aware", False)
     hconf.set(prefix + ".password", password)
+    hconf.set(prefix + ".region", region)
 
   def url(self, container_name, object_name):
     return swifturl(self.name, container_name, object_name)
