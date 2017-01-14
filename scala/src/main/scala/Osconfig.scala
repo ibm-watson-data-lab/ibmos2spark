@@ -1,3 +1,4 @@
+package com.ibm.ibmos2spark
 
 import scala.collection.mutable.HashMap
 import org.apache.spark.SparkContext
