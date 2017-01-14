@@ -8,8 +8,10 @@ The new version allows for more flexible names (underscores) and is faster.
 
 ## Build
 
+This builds jar files for both Spark 1.6.0 (Scala 2.10.4) and Spark 2.0.2 (Scala 2.11.8)
+
 ```
-sbt assembly
+sbt +assembly
 ```
 
 
