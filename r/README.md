@@ -52,8 +52,7 @@ The new version allows for more flexible names (underscores) and is faster.
             region="dallas", 
             project_id = "XXXXX", 
             user_id="XXXXX", 
-            password="XXXXX",
-            public = FALSE)
+            password="XXXXX")
             
 
     bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
@@ -71,8 +70,7 @@ The new version allows for more flexible names (underscores) and is faster.
             region="dallas", 
             project_id = "XXXXX", 
             user_id="XXXXX", 
-            password="XXXXX",
-            public = FALSE)
+            password="XXXXX")
             
     bmsc = bluemix2d(sparkcontext=sc, name=name, credentials = creds)
 

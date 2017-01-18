@@ -157,7 +157,7 @@ bluemix <- setRefClass("bluemix",
         SparkR:::callJMethod(hConf, "set", paste(prefix, "username", sep='.'), user_id)
         SparkR:::callJMethod(hConf, "set", paste(prefix, "password", sep='.'), credentials['password'][[1]])
         SparkR:::callJMethod(hConf, "set", paste(prefix, "region", sep='.'), credentials['region'][[1]])
-        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), credentials['public'][[1]]))},
+        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), public))},
 
         url = function( container_name, object_name){
         return(swifturl(name, container_name, object_name))}
@@ -218,7 +218,7 @@ bluemix2d <- setRefClass("bluemix2d",
         SparkR:::callJMethod(hConf, "set", paste(prefix, "password", sep='.'), credentials['password'][[1]])
         SparkR:::callJMethod(hConf, "set", paste(prefix, "auth.method", sep='.'), "keystoneV3")
         SparkR:::callJMethod(hConf, "set", paste(prefix, "region", sep='.'), credentials['region'][[1]])
-        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), credentials['public'][[1]]))
+        invisible(SparkR:::callJMethod(hConf, "setBoolean", paste(prefix, "public", sep='.'), public))
         #invisible(SparkR:::callJMethod(hConf, "setInt", paste(prefix, "http.port", sep='.'), 8080))
           },
           
