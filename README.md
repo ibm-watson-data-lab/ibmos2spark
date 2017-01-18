@@ -1,11 +1,9 @@
 # ibmos2spark
 
-The package configures Spark Hadoop configurations for connecting to 
-Softlayer and IBM Bluemix Object Stores with the 'swift' or 'swift2d' protocol. 
+The package sets Spark Hadoop configurations for connecting to 
+IBM Bluemix Object Storage and Softlayer Account Object Storage instances
+with the swift protocol. The packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
+on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
-It is recommended to use 'swift2d' instead of the previous version. 
-The new version allows for more flexible names (underscores) and is faster.
-
-This repository contains separate packages for `python`, `R` and `scala` Spark kernels. 
-You will find their documentation within the sub-folders and they should all be installed
-separately. 
+This repository contains separate packages for `python`, `R` and `scala`. 
+You will find their documentation within the sub-folders.
