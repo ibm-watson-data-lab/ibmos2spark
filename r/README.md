@@ -30,7 +30,10 @@ on the latest IBM Spark Service instances (and through IBM Data Science Experien
     object = "my_data.csv"
 
     data <- read.df(sqlContext, bmconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
-    head(data)
+
+    # OR, for Spark >= 2.0.0
+
+    data = read.df(bmconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
 
 
 ### Softlayer
@@ -50,8 +53,11 @@ on the latest IBM Spark Service instances (and through IBM Data Science Experien
     object = "my_data.csv"
 
     data <- read.df(sqlContext, slconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
-    head(data)
+    
+    # OR, for Spark >= 2.0.0
 
+    data = read.df(slconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
+    
 ## License 
 
 Copyright 2016 IBM Cloud Data Services
