@@ -1,10 +1,10 @@
 # ibmos2spark
 
-The package configures Spark Hadoop configurations for connecting to 
-Softlayer and IBM Bluemix Object Stores with the 'swift' or 'swift2d' protocol. 
+The package sets Spark Hadoop configurations for connecting to 
+IBM Bluemix Object Storage and Softlayer Account Object Storage instances
+with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
+on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
-It is recommended to use 'swift2d' instead of the previous version. 
-The new version allows for more flexible names (underscores) and is faster.
 
 ## Build
 
@@ -22,14 +22,14 @@ a Scala notebook will install the package.
 ### Spark 1.6.0
 
 ```scala
-%AddJar <url to jar>/ibmos2spark_2.10-0.1.jar -f
+%AddJar https://github.com/gadamc/jartest/raw/master/scala/jars/scala-2.10/ibmos2spark-assembly-0.0.7dev.jar -f 
 ```
 
 
 ### Spark 2.0.2
 
 ```scala
-%AddJar <url to jar>/ibmos2spark_2.11-0.1.jar -f
+%AddJar https://github.com/gadamc/jartest/raw/master/scala/jars/scala-2.11/ibmos2spark-assembly-0.0.7dev.jar -f
 ```
 
 
@@ -38,87 +38,36 @@ a Scala notebook will install the package.
 ### Bluemix
 
 
-#### Using Swift (version 1) Driver
-
 ```scala
 import com.ibm.ibmos2spark.bluemix
 
-var credentials = scala.collection.mutable.HashMap[String, String](
-  "auth_url"->"https://identity.open.softlayer.com",
-  "project"->"xx",
-  "project_id"->"xx",
-  "region"->"xx",
-  "user_id"->"xx",
-  "domain_id"->"xx",
-  "domain_name"->"xx",
-  "username"->"xx",
-  "password"->"xx",
-  "tenantId"->"xx"
-)
-
-var container = "mycontainer"
-var objectname = "mydata"
-var configurationname = "bluemixOSconnection"
-
-var bmos = new bluemix(sc, configurationname, credentials)
-var rdd = sc.textFile(bmos.url( container , objectname))
-
-```
-
-
-#### Using Swift2d Driver
-
-```scala
-import com.ibm.ibmos2spark.bluemix2d
+// The credentials HashMap may be created for you with the 
+// "insert to code" link in your DSX notebook. 
 
 var credentials = scala.collection.mutable.HashMap[String, String](
   "auth_url"->"https://identity.open.softlayer.com",
-  "project"->"xx",
   "project_id"->"xx",
   "region"->"xx",
   "user_id"->"xx",
-  "domain_id"->"xx",
-  "domain_name"->"xx",
-  "username"->"xx",
   "password"->"xx",
-  "tenantId"->"xx"
 )
 
 var container = "mycontainer"
 var objectname = "mydata"
 var configurationname = "bluemix_object_storage_connection"
 
-var bmos = new bluemix2d(sc, configurationname, credentials)
-var rdd = sc.textFile(bmos.url( container , objectname))
+var bmos = new bluemix(sc, configurationname, credentials)
+var rdd = sc.textFile(bmos.url(container , objectname))
 
 ```
 
 
 ### Softlayer
 
-#### Using Swift Driver
+
 
 ```scala
 import com.ibm.ibmos2spark.softlayer
-
-var authurl = "xx"
-var user = "xx"
-var password = "xx"
-var region = "xx" 
-
-var container = "mycontainer"
-var objectname = "mydata"
-var configurationname = "softlayerOSconnection"
-
-var bmos = new softlayer(sc, configurationname, authurl, user, password, region)
-var rdd = sc.textFile(bmos.url( container , objectname))
-
-```
-
-#### Using Swift2d Driver
-
-```scala
-import com.ibm.ibmos2spark.softlayer2d
 
 var authurl = "xx"
 var tenant = "xx"
@@ -129,8 +78,8 @@ var container = "mycontainer"
 var objectname = "mydata"
 var configurationname = "softlayerOSconnection"
 
-var bmos = new softlayer2d(sc, configurationname, authurl, tenant, user, password)
-var rdd = sc.textFile(bmos.url( container , objectname))
+var slos = new softlayer(sc, configurationname, authurl, tenant, user, password)
+var rdd = sc.textFile(slos.url(container , objectname))
 
 ```
 
