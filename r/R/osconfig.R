@@ -15,8 +15,8 @@ swifturl = function(name, container_name, object_name){
 #'     multiple configurations to different Object Storage accounts.
 #' auth_url, username and password are string credentials for your
 #' Softlayer Object Store
-#' @export softlayer2d        
-#' @exportClass softlayer2d
+#' @export softlayer     
+#' @exportClass softlayer
 
 softlayer <- setRefClass("softlayer",
   fields=list(name="character", container_name="character", object_name="character",
@@ -73,8 +73,8 @@ softlayer <- setRefClass("softlayer",
 #' instances, the values for these credentials can be obtained
 #' by clicking on the 'insert to code' link just below a data
 #' source.
-#' @export bluemix2d        
-#' @exportClass bluemix2d
+#' @export bluemix     
+#' @exportClass bluemix
 
           
 bluemix <- setRefClass("bluemix",
