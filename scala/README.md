@@ -1,8 +1,9 @@
 # ibmos2spark
 
 The package sets Spark Hadoop configurations for connecting to 
-Softlayer and IBM Bluemix Object Stores with the swift protocol. This packages
-uses the new 'swift2d' protocol. 
+IBM Bluemix Object Storage and Softlayer Account Object Storage instances
+with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
+on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
 
 ## Build
@@ -56,7 +57,7 @@ var objectname = "mydata"
 var configurationname = "bluemix_object_storage_connection"
 
 var bmos = new bluemix(sc, configurationname, credentials)
-var rdd = sc.textFile(bmos.url( container , objectname))
+var rdd = sc.textFile(bmos.url(container , objectname))
 
 ```
 
@@ -78,7 +79,7 @@ var objectname = "mydata"
 var configurationname = "softlayerOSconnection"
 
 var slos = new softlayer(sc, configurationname, authurl, tenant, user, password)
-var rdd = sc.textFile(slos.url( container , objectname))
+var rdd = sc.textFile(slos.url(container , objectname))
 
 ```
 
