@@ -74,17 +74,18 @@ class softlayer(object):
 
     '''
     if password is None:
-      msg = '''password was set to None! 
+      msg = '''
+               password was set to None! 
                Attempting to interpret tentant = tenant:username and username=password.
                This is an attempt to support older code that may have missed the transition or
                errors using the old swift protocol connection to Softlayer Object Storage accounts.
                If you are seeing this warning, you should separate your tenant and username values,
                as this support will be deprecated in the near future. 
             '''
-      warnings.warn(msg, DeprecationWarning)
+      warnings.warn(msg, UserWarning)
       password = username
       tenant, username  = tenant.split(':')
-      warnings.warn('Trying tenant {}, username {} and password {}'.format(tenant, username, password), DeprecationWarning)
+      warnings.warn('Trying tenant {}, username {} and password {}'.format(tenant, username, password), UserWarning)
       
 
     self.name = name
@@ -125,7 +126,7 @@ class softlayer2d(softlayer):
     '''
 
     super(softlayer2d, self).__init__(sparkcontext, name, auth_url, tenant, username, password, public, swift2d_driver)
-    warnings.warn('This class will be deprecated by spring 2017. Use the \'softlayer\' class directly.', DeprecationWarning)
+    warnings.warn('This class will be deprecated by spring 2017. Use the \'softlayer\' class directly.', UserWarning)
 
 
 class bluemix(object):
@@ -161,7 +162,7 @@ class bluemix(object):
         self.name = name
     else:
         self.name = credentials['name']
-        warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', DeprecationWarning)
+        warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', UserWarning)
 
 
     try:
@@ -224,5 +225,5 @@ class bluemix2d(bluemix):
     source.
     '''
     super(bluemix2d, self).__init__(sparkcontext, credentials, name, public, swift2d_driver)
-    warnings.warn('This class will be deprecated by spring 2017. Use the \'bluemix\' class directly.', DeprecationWarning)
+    warnings.warn('This class will be deprecated by spring 2017. Use the \'bluemix\' class directly.', UserWarning)
     
