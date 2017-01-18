@@ -46,7 +46,7 @@ softlayer <- setRefClass("softlayer",
     },
                
         url = function(container_name, object_name){
-        return(swifturl2d(name, container_name, object_name))}
+        return(swifturl(name, container_name, object_name))}
     )
 )
 
@@ -110,6 +110,6 @@ bluemix <- setRefClass("bluemix",
           },
           
         url = function( container_name, object_name){
-        return(swifturl2d(name, container_name, object_name))}
+        return(swifturl(name, container_name, object_name))}
     )
 )
