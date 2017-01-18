@@ -6,6 +6,14 @@ Softlayer and IBM Bluemix Object Stores with the 'swift' or 'swift2d' protocol.
 It is recommended to use 'swift2d' instead of the previous version. 
 The new version allows for more flexible names (underscores) and is faster.
 
+## Installation
+
+```
+pip install --user --upgrade ibmos2spark
+```
+
+## Usage
+
 ### Bluemix
 
 #### Using Swift (version 1) Driver
@@ -109,7 +117,7 @@ data = sc.textFile(slos.url(container_name, object_name))
 ```
 
 
-### License 
+## License 
 
 Copyright 2016 IBM Cloud Data Services
 

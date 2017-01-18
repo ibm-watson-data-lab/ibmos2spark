@@ -14,28 +14,128 @@ This builds jar files for both Spark 1.6.0 (Scala 2.10.4) and Spark 2.0.2 (Scala
 sbt +assembly
 ```
 
+## Installation
+
+We are in the process of publishing these `jar` files to a Maven repo. For now, the `%AddJar` magic funtion within 
+a Scala notebook will install the package.
+
+### Spark 1.6.0
+
+```scala
+%AddJar <url to jar>/ibmos2spark_2.10-0.1.jar -f
+```
+
+
+### Spark 2.0.2
+
+```scala
+%AddJar <url to jar>/ibmos2spark_2.11-0.1.jar -f
+```
+
+
+## Usage
 
 ### Bluemix
 
+
 #### Using Swift (version 1) Driver
 
+```scala
+import com.ibm.ibmos2spark.bluemix
+
+var credentials = scala.collection.mutable.HashMap[String, String](
+  "auth_url"->"https://identity.open.softlayer.com",
+  "project"->"xx",
+  "project_id"->"xx",
+  "region"->"xx",
+  "user_id"->"xx",
+  "domain_id"->"xx",
+  "domain_name"->"xx",
+  "username"->"xx",
+  "password"->"xx",
+  "tenantId"->"xx"
+)
+
+var container = "mycontainer"
+var objectname = "mydata"
+var configurationname = "bluemixOSconnection"
+
+var bmos = new bluemix(sc, configurationname, credentials)
+var rdd = sc.textFile(bmos.url( container , objectname))
+
+```
 
 
 #### Using Swift2d Driver
 
+```scala
+import com.ibm.ibmos2spark.bluemix2d
+
+var credentials = scala.collection.mutable.HashMap[String, String](
+  "auth_url"->"https://identity.open.softlayer.com",
+  "project"->"xx",
+  "project_id"->"xx",
+  "region"->"xx",
+  "user_id"->"xx",
+  "domain_id"->"xx",
+  "domain_name"->"xx",
+  "username"->"xx",
+  "password"->"xx",
+  "tenantId"->"xx"
+)
+
+var container = "mycontainer"
+var objectname = "mydata"
+var configurationname = "bluemix_object_storage_connection"
+
+var bmos = new bluemix2d(sc, configurationname, credentials)
+var rdd = sc.textFile(bmos.url( container , objectname))
+
+```
 
 
 ### Softlayer
 
 #### Using Swift Driver
 
+```scala
+import com.ibm.ibmos2spark.softlayer
 
+var authurl = "xx"
+var user = "xx"
+var password = "xx"
+var region = "xx" 
+
+var container = "mycontainer"
+var objectname = "mydata"
+var configurationname = "softlayerOSconnection"
+
+var bmos = new softlayer(sc, configurationname, authurl, user, password, region)
+var rdd = sc.textFile(bmos.url( container , objectname))
+
+```
 
 #### Using Swift2d Driver
 
+```scala
+import com.ibm.ibmos2spark.softlayer2d
+
+var authurl = "xx"
+var tenant = "xx"
+var user = "xx"
+var password = "xx"
+
+var container = "mycontainer"
+var objectname = "mydata"
+var configurationname = "softlayerOSconnection"
+
+var bmos = new softlayer2d(sc, configurationname, authurl, tenant, user, password)
+var rdd = sc.textFile(bmos.url( container , objectname))
+
+```
 
 
-### License 
+## License 
 
 Copyright 2016 IBM Cloud Data Services
 
