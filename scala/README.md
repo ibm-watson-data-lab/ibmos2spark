@@ -19,17 +19,17 @@ sbt +assembly
 We are in the process of publishing these `jar` files to a Maven repo. For now, the `%AddJar` magic funtion within 
 a Scala notebook will install the package.
 
-### Spark 1.6.0
+### Spark 1.6.0 (Scala 2.10)
 
 ```scala
-%AddJar https://github.com/gadamc/jartest/raw/master/scala/jars/scala-2.10/ibmos2spark-assembly-0.0.7dev.jar -f 
+%AddJar https://github.com/ibm-cds-labs/ibmos2spark/raw/master/scala/jars/scala-2.10/ibmos2spark-assembly-0.0.7dev.jar -f 
 ```
 
 
-### Spark 2.0.2
+### Spark 2.0.2 (Scala 2.11)
 
 ```scala
-%AddJar https://github.com/gadamc/jartest/raw/master/scala/jars/scala-2.11/ibmos2spark-assembly-0.0.7dev.jar -f
+%AddJar https://github.com/ibm-cds-labs/ibmos2spark/raw/master/scala/jars/scala-2.11/ibmos2spark-assembly-0.0.7dev.jar -f
 ```
 
 
