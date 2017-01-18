@@ -1,33 +1,15 @@
 # ibmos2spark
 
 The package sets Spark Hadoop configurations for connecting to 
-Softlayer and IBM Bluemix Object Stores with the swift protocol. This packages
-uses the new 'swift2d' protocol. 
+IBM Bluemix Object Storage and Softlayer Account Object Storage instances
+with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
+on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
 ## Installation 
     library(devtools)
     devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/master.zip", subdir= "r")
 
 ## Usage
-
-### Softlayer
-
-    library(ibmos2spark)
-    configurationname = "softlayerOScon" #can be any any name you like (allows for multiple configurations)
-
-    slconfig = softlayer(sparkcontext=sc, 
-                 name=configurationname, 
-                 auth_url="https://identity.open.softlayer.com",
-                 tenant = "XXXXX", 
-                 username="XXXXX", 
-                 password="XXXXX"
-           )
-           
-    container = "my_container"
-    object = "my_data.csv"
-
-    data <- read.df(sqlContext, slconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
-    head(data)
 
 ### Bluemix
 
@@ -50,6 +32,25 @@ uses the new 'swift2d' protocol.
     data <- read.df(sqlContext, bmconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
     head(data)
 
+
+### Softlayer
+
+    library(ibmos2spark)
+    configurationname = "softlayerOScon" #can be any any name you like (allows for multiple configurations)
+
+    slconfig = softlayer(sparkcontext=sc, 
+                 name=configurationname, 
+                 auth_url="https://identity.open.softlayer.com",
+                 tenant = "XXXXX", 
+                 username="XXXXX", 
+                 password="XXXXX"
+           )
+           
+    container = "my_container"
+    object = "my_data.csv"
+
+    data <- read.df(sqlContext, slconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
+    head(data)
 
 ## License 
 
