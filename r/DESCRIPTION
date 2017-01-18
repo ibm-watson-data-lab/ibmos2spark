@@ -1,6 +1,6 @@
 Package: ibmos2spark
 Title: Loads Object Store data into Softlayer and Bluemix
-Version: 0.1
+Version: 0.0.7
 Authors@R: person("Jim", "Crozier", email = "jim.crozier@ibm.com",
                   role = c("aut", "cre"))
 Description: Loads data from Object Store in Softlayer and Bluemix
