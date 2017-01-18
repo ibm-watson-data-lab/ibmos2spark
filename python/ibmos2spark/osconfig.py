@@ -19,20 +19,13 @@ and generate the swifturl.
   
 import warnings
 
-def swifturl(name, container_name, object_name):
-  if '_' in name:
-    raise ValueError('The swift protocol does not support underscores (_) in "name" ({}).'.format(name))
-  if '_' in container_name:
-    raise ValueError('The swift protocol does not support underscores (_) in "container" ({}). Instead use swift2d via softlayer2d or bluemix2d objects.'.format(container_name))
-  return 'swift://{}.{}/{}'.format(container_name, name, object_name)
-
 def swifturl2d(name, container_name, object_name):
   return 'swift2d://{}.{}/{}'.format(container_name, name, object_name)
 
 class softlayer(object):
 
-  def __init__(self, sparkcontext, name, auth_url, username, password, region
-                public=False):
+  def __init__(self, sparkcontext, name, auth_url, tenant, username, password=None, public=False,
+    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
     '''
     sparkcontext is a SparkContext object.
 
@@ -40,45 +33,61 @@ class softlayer(object):
         use any string you like. This allows you to create
         multiple configurations to different Object Storage accounts.
 
-    auth_url, username, password and region are string credentials for your
+    auth_url, tenant, username and password are string credentials for your
     Softlayer Object Store
+
+    Example: 
+
+      slos = softlayer(sc, 'mySLOS', 'https://dal05.objectstorage.softlayer.net/auth/v1.0',
+                       'IBMOS278685-10','username@somewhere.com', 'password_234234ada')
+
+
+    CLASS UPDATE INFOMATION:
+
+    The older 'swift' protocol for Softlayer Object Storage accounts no
+    longer properly works in IBM Spark service instances. Code that used
+    this class should have failed when attempted to access data with swift.
+
+    As of the version 0.0.7 update, support for the old protocol has been removed in
+    favor of the new swift2d/stocator protocol. 
+
+    Subsequently, the __init__ for this class has been changed!  
+
+    However, to support older code that may have been unused since this transition, 
+    this __init__ function will check the arguments and attempt to determine
+    the proper credentials. Specifically, if the <password> is None, then
+    the <tenant> argument will be interpreted as <tenant>:<username> and the 
+    <username> argument will be interpreted as the <password> value. This is because
+    the <username> for Softlayer keystone 1 authentication is equivalent to <tenant>:<username>. 
+    For example, typcial usernames look like 'IBMOS278685-10:<email>', as shown here
+    http://knowledgelayer.softlayer.com/procedure/how-do-i-access-object-storage-command-line. 
+ 
+
+    Therefore, this class will attempt to extract tenant, username and password from
+    uses such as
+
+      slos = softlayer(sc, 'mySLOS', 'https://dal05.objectstorage.softlayer.net/auth/v1.0',
+                       'IBMOS278685-10:username@somewhere.com', 'password_234234ada')
+
+    by splitting 'IBMOS278685-10:username@somewhere.com'. In this example call, password=None
+    because only 5 arguments were passed in.
+
     '''
-    self.name = name
+    if password is None:
+      msg = '''
+               password was set to None! 
+               Attempting to interpret tentant = tenant:username and username=password.
+               This is an attempt to support older code that may have missed the transition or
+               errors using the old swift protocol connection to Softlayer Object Storage accounts.
+               If you are seeing this warning, you should separate your tenant and username values,
+               as this support will be deprecated in the near future. 
+            '''
+      warnings.warn(msg, UserWarning)
+      password = username
+      tenant, username  = tenant.split(':')
+      warnings.warn('Trying tenant {}, username {} and password {}'.format(tenant, username, password), UserWarning)
+      
 
-    if '_' in self.name:
-        raise ValueError('The swift protocol does not support underscores (_) in "name" ({}).'.format(self.name))
-
-    prefix = "fs.swift.service." + name 
-    hconf = sparkcontext._jsc.hadoopConfiguration()
-    hconf.set(prefix + ".auth.url", auth_url)
-    hconf.set(prefix + ".username", username)
-    hconf.set(prefix + ".tenant", username)
-    hconf.set(prefix + ".auth.endpoint.prefix", "endpoints")
-    hconf.setInt(prefix + ".http.port", 8080)
-    hconf.set(prefix + ".apikey", password)
-    hconf.setBoolean(prefix + ".public", public) 
-    hconf.set(prefix + ".use.get.auth", "true")
-    hconf.setBoolean(prefix + ".location-aware", False)
-    hconf.set(prefix + ".password", password)
-    hconf.set(prefix + ".region", region)
-
-  def url(self, container_name, object_name):
-    return swifturl(self.name, container_name, object_name)
-
-class softlayer2d(object):
-
-  def __init__(self, sparkcontext, name, auth_url, tenant, username, password, 
-    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', public=False):
-    '''
-    sparkcontext is a SparkContext object.
-
-    name is a string that identifies this configuration. You can
-        use any string you like. This allows you to create
-        multiple configurations to different Object Storage accounts.
-
-    auth_url, username and password are string credentials for your
-    Softlayer Object Store
-    '''
     self.name = name
 
     prefix = "fs.swift2d.service." + name 
@@ -99,9 +108,30 @@ class softlayer2d(object):
   def url(self, container_name, object_name):
     return swifturl2d(self.name, container_name, object_name)
 
+class softlayer2d(softlayer):
+
+  def __init__(self, sparkcontext, name, auth_url, tenant, username, password, 
+    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', public=False):
+    '''
+    WARNING: This class will be deprecated by spring 2017. Use the 'softlayer' class directly.
+
+    sparkcontext is a SparkContext object.
+
+    name is a string that identifies this configuration. You can
+        use any string you like. This allows you to create
+        multiple configurations to different Object Storage accounts.
+
+    auth_url, tenant username and password are string credentials for your
+    Softlayer Object Store
+    '''
+
+    super(softlayer2d, self).__init__(sparkcontext, name, auth_url, tenant, username, password, public, swift2d_driver)
+    warnings.warn('This class will be deprecated by spring 2017. Use the \'softlayer\' class directly.', UserWarning)
+
+
 class bluemix(object):
 
-  def __init__(self, sparkcontext, credentials, name=None, public=False):
+  def __init__(self, sparkcontext, credentials, name=None, public=False, swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
     '''
     sparkcontext:  a SparkContext object.
 
@@ -112,74 +142,7 @@ class bluemix(object):
       user_id (or userId)
       password
       region
-
-    and optional key:
-      name  #[to be deprecated] The name of the configuration.
-
-    name:  string that identifies this configuration. You can
-        use any string you like. This allows you to create
-        multiple configurations to different Object Storage accounts.
-        This is not required at the moment, since credentials['name']
-        is still supported.
-
-    When using this from a IBM Spark service instance that
-    is configured to connect to particular Bluemix object store
-    instances, the values for these credentials can be obtained
-    by clicking on the 'insert to code' link just below a data
-    source.
-    '''
-
-    if name:
-        self.name = name
-    else:
-        self.name = credentials['name']
-        warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', DeprecationWarning)
-
-    if '_' in self.name:
-        raise ValueError('The swift protocol does not support underscores (_) in "name" ({}).'.format(self.name))
-
-    try:
-        user_id = credentials['user_id']
-    except KeyError as e:
-        user_id = credentials['userId'] 
-
-    try:
-        tenant = credentials['project_id']
-    except KeyError as e:
-        tenant = credentials['projectId'] 
-
-    prefix = "fs.swift.service." + self.name
-    hconf = sparkcontext._jsc.hadoopConfiguration()
-    hconf.set(prefix + '.auth.url', credentials['auth_url']+'/v3/auth/tokens')
-    hconf.set(prefix + '.auth.endpoint.prefix', 'endpoints')
-    hconf.set(prefix + '.tenant', tenant)
-    hconf.set(prefix + '.username', user_id)
-    hconf.set(prefix + '.password', credentials['password'])
-    hconf.setInt(prefix + '.http.port', 8080)
-    hconf.set(prefix + '.region', credentials['region'])
-    hconf.setBoolean(prefix + '.public', public)
-
-  def url(self, container_name, object_name):
-    return swifturl(self.name, container_name, object_name)
-
-class bluemix2d(object):
-
-  def __init__(self, sparkcontext, credentials, name=None,
-    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', 
-    public=False):
-    '''
-    sparkcontext:  a SparkContext object.
-
-    credentials:  a dictionary with the following required keys:
-      
-      auth_url
-      project_id (or projectId)
-      user_id (or userId)
-      password
-      region
-
-    and optional key:
-      name  #[to be deprecated] The name of the configuration.
+      name  #[optional, to be deprecated] The name of the configuration.
 
     name:  string that identifies this configuration. You can
         use any string you like. This allows you to create
@@ -199,7 +162,7 @@ class bluemix2d(object):
         self.name = name
     else:
         self.name = credentials['name']
-        warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', DeprecationWarning)
+        warnings.warn('credentials["name"] key will be deprecated. Use the "name" argument in object contructor', UserWarning)
 
 
     try:
@@ -227,3 +190,40 @@ class bluemix2d(object):
 
   def url(self, container_name, object_name):
     return swifturl2d(self.name, container_name, object_name)
+
+class bluemix2d(bluemix):
+
+  def __init__(self, sparkcontext, credentials, name=None,
+    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', 
+    public=False):
+    '''
+    WARNING: This class will be deprecated by spring 2017. Use the 'bluemix' class directly.
+
+    sparkcontext:  a SparkContext object.
+
+    credentials:  a dictionary with the following required keys:
+      
+      auth_url
+      project_id (or projectId)
+      user_id (or userId)
+      password
+      region
+
+    and optional key:
+      name  #[to be deprecated] The name of the configuration.
+
+    name:  string that identifies this configuration. You can
+        use any string you like. This allows you to create
+        multiple configurations to different Object Storage accounts.
+        This is not required at the moment, since credentials['name']
+        is still supported.
+
+    When using this from a IBM Spark service instance that
+    is configured to connect to particular Bluemix object store
+    instances, the values for these credentials can be obtained
+    by clicking on the 'insert to code' link just below a data
+    source.
+    '''
+    super(bluemix2d, self).__init__(sparkcontext, credentials, name, public, swift2d_driver)
+    warnings.warn('This class will be deprecated by spring 2017. Use the \'bluemix\' class directly.', UserWarning)
+    
