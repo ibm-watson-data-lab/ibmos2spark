@@ -1,10 +1,9 @@
 # ibmos2spark
 
-The package configures Spark Hadoop configurations for connecting to 
-Softlayer and IBM Bluemix Object Stores with the 'swift' or 'swift2d' protocol. 
-
-It is recommended to use 'swift2d' instead of the previous version. 
-The new version allows for more flexible names (underscores) and is faster.
+The package sets Spark Hadoop configurations for connecting to 
+IBM Bluemix Object Storage and Softlayer Account Object Storage instances
+with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
+on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
 ## Installation
 
@@ -33,7 +32,7 @@ credentials = {
 
 configuration_name = 'my_bluemix_os'  #you can give any name you like
 
-bmos = ibmos2spark.bluemix2d(sc, credentials, configuration_name)  #sc is the SparkContext instance
+bmos = ibmos2spark.bluemix(sc, credentials, configuration_name)  #sc is the SparkContext instance
 
 data = sc.textFile(bmos.url(container_name, object_name))
 ```
@@ -55,7 +54,7 @@ password = ''
 configuration_name = "my_softlayer_os"
 
 #sc is the SparkContext instance
-slos = ibmos2spark.softlayer2d(sc, configuration_name, auth_url, tenant, username, password)
+slos = ibmos2spark.softlayer(sc, configuration_name, auth_url, tenant, username, password)
 
 data = sc.textFile(slos.url(container_name, object_name))
 ```
