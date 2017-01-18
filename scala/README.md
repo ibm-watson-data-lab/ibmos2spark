@@ -21,14 +21,14 @@ a Scala notebook will install the package.
 ### Spark 1.6.0
 
 ```scala
-%AddJar <url to jar>/ibmos2spark_2.10-0.1.jar -f
+%AddJar https://github.com/gadamc/jartest/raw/master/scala/jars/scala-2.10/ibmos2spark-assembly-0.0.7dev.jar -f 
 ```
 
 
 ### Spark 2.0.2
 
 ```scala
-%AddJar <url to jar>/ibmos2spark_2.11-0.1.jar -f
+%AddJar https://github.com/gadamc/jartest/raw/master/scala/jars/scala-2.11/ibmos2spark-assembly-0.0.7dev.jar -f
 ```
 
 
