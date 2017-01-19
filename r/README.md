@@ -5,6 +5,11 @@ IBM Bluemix Object Storage and Softlayer Account Object Storage instances
 with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
 on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
+Note, this package configures a SparkContext instantiated by SparkR and is appropriate for use
+with IBM R Notebooks only. It does not support SparkContexts returned from sparklyr::spark_connect, and
+can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will come in the near future. 
+
+
 ## Installation 
     library(devtools)
     devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/master.zip", subdir= "r")
