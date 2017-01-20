@@ -1,6 +1,6 @@
 name := "ibmos2spark"
 
-organization := "com.ibm"
+organization := "com.ibm.ibmos2spark"
 
 version := "0.0.7-SNAPSHOT"
 
