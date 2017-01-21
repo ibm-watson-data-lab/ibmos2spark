@@ -42,3 +42,13 @@ pomExtra in Global := {
     </developer>
   </developers>
 }
+
+
+lazy val root = (project in file(".")).
+  enablePlugins(BuildInfoPlugin).
+  settings(
+    buildInfoKeys := Seq[BuildInfoKey](name, version, scalaVersion, sbtVersion),
+    buildInfoPackage := organization.value,
+    buildInfoOptions += BuildInfoOption.ToMap,
+    buildInfoOptions += BuildInfoOption.ToJson
+  )
