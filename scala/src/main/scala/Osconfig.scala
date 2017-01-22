@@ -10,18 +10,27 @@ object urlbuilder{
   }
 }
 
+/** 
+* softlayer class sets up a swift connection between an IBM Spark service
+* instance and Softlayer Object Storgae instance. 
+*  
+* Constructor arguments
+
+*    sparkcontext: a SparkContext object.
+* 
+*    name: string that identifies this configuration. You can
+*      use any string you like. This allows you to create
+*      multiple configurations to different Object Storage accounts.
+*
+*    auth_url, tenant, username and password:  string credentials for your
+*      Softlayer Object Store
+*/
+
 class softlayer(sc: SparkContext, name: String, auth_url: String, 
                   tenant: String, username: String, password: String, 
                   swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem",
                   public: Boolean=false){
     
-    /** sparkcontext is a SparkContext object.
-      * name is a string that identifies this configuration. You can
-      *    use any string you like. This allows you to create
-      *    multiple configurations to different Object Storage accounts.
-      * auth_url, tenant, username and password are string credentials for your
-      * Softlayer Object Store
-      */
     
     val hadoopConf = sc.hadoopConfiguration;
     val prefix = "fs.swift2d.service." + name 
@@ -45,32 +54,44 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
     }
 }
 
+/** 
+* bluemix class sets up a swift connection between an IBM Spark service
+* instance and an Object Storage instance provisioned through IBM Bluemix.
+
+* Constructor arguments:
+
+*   sparkcontext:  a SparkContext object.
+
+*   credentials:  a dictionary with the following required keys:
+*   
+*     auth_url
+
+*     project_id (or projectId)
+
+*     user_id (or userId)
+
+*     password
+
+*     region
+* 
+*   name:  string that identifies this configuration. You can
+*     use any string you like. This allows you to create
+*     multiple configurations to different Object Storage accounts.
+*     This is not required at the moment, since credentials['name']
+*     is still supported.
+* 
+* When using this from a IBM Spark service instance that
+* is configured to connect to particular Bluemix object store
+* instances, the values for these credentials can be obtained
+* by clicking on the 'insert to code' link just below a data
+* source.
+*/
 
 class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
                 swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem", 
                 public: Boolean =false){
     
-  /** sparkcontext:  a SparkContext object.
-    * credentials:  a dictionary with the following required keys:
-    *   
-    *   auth_url
-    *   project_id (or projectId)
-    *   user_id (or userId)
-    *   password
-    *   region
-    * and optional key:
-    *   name  #[to be deprecated] The name of the configuration.
-    * name:  string that identifies this configuration. You can
-    *     use any string you like. This allows you to create
-    *     multiple configurations to different Object Storage accounts.
-    *     This is not required at the moment, since credentials['name']
-    *     is still supported.
-    * When using this from a IBM Spark service instance that
-    * is configured to connect to particular Bluemix object store
-    * instances, the values for these credentials can be obtained
-    * by clicking on the 'insert to code' link just below a data
-    * source.
-   */
+
     def ifexist(credsin: HashMap[String, String], var1: String, var2: String): String = {
         if (credsin.keySet.exists(_ == var1)){
             return(credsin(var1))
@@ -102,7 +123,5 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
         return(urlbuilder.swifturl2d(name= name, container_name,object_name))
     }
 }
-
-
 
 
