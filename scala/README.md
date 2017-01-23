@@ -16,20 +16,22 @@ sbt +assembly
 
 ## Installation
 
-We are in the process of publishing these `jar` files to a Maven repo. For now, the `%AddJar` magic funtion within 
-a Scala notebook will install the package.
+We are in the process of publishing a release to Maven Central. For now, a snapshot version is available. 
+
+The `%AddJar` and `%AddDeps` magic funtion within a Scala notebook, available on IBM Spark Service in Bluemix or
+Data Science Experience, will install the package.
 
 ### Spark 1.6.0 (Scala 2.10)
 
 ```scala
-%AddJar https://github.com/ibm-cds-labs/ibmos2spark/raw/master/scala/jars/scala-2.10/ibmos2spark-assembly-0.0.7dev.jar -f 
+%AddJar https://oss.sonatype.org/content/repositories/snapshots/com/ibm/ibmos2spark/ibmos2spark_2.10/0.0.7-SNAPSHOT/ibmos2spark_2.10-0.0.7-SNAPSHOT.jar -f
 ```
 
 
 ### Spark 2.0.2 (Scala 2.11)
 
 ```scala
-%AddJar https://github.com/ibm-cds-labs/ibmos2spark/raw/master/scala/jars/scala-2.11/ibmos2spark-assembly-0.0.7dev.jar -f
+%AddDeps com.ibm.ibmos2spark ibmos2spark_2.11 0.0.7-SNAPSHOT --repository https://oss.sonatype.org/content/repositories/snapshots/
 ```
 
 
@@ -95,7 +97,7 @@ import com.ibm.ibmos2spark.BuildInfo
 var buildstring = BuildInfo.toString
 var buildbmap = BuildInfo.toMap
 var buildjson = BuildInfo.toJson
-``
+``` 
 
 ## License 
 
