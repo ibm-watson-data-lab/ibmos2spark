@@ -12,7 +12,7 @@ can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will 
 
 ## Installation 
     library(devtools)
-    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/master.zip", subdir= "r")
+    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r/sparkr/")
 
 ## Usage
 
