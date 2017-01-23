@@ -5,15 +5,6 @@ IBM Bluemix Object Storage and Softlayer Account Object Storage instances
 with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
 on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
-
-## Build
-
-This builds jar files for both Spark 1.6.0 (Scala 2.10.4) and Spark 2.0.2 (Scala 2.11.8)
-
-```
-sbt +assembly
-```
-
 ## Installation
 
 We are in the process of publishing a release to Maven Central. For now, a snapshot version is available. 
