@@ -1,0 +1,13 @@
+Package: ibmos2sparklyr
+Title: Loads Object Store data into Softlayer and Bluemix
+Version: 0.0.7
+Authors@R: person("Jim", "Crozier", email = "jim.crozier@ibm.com",
+                  role = c("aut", "cre"))
+Description: Loads data from Object Store in Softlayer and Bluemix with spark context built on sparklyr. 
+Depends:
+    R (>= 3.1.0)
+License: Apache
+LazyData: true
+RoxygenNote: 5.0.1
+Imports: 
+  sparklyr

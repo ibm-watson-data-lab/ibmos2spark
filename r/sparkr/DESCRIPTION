@@ -1,4 +1,4 @@
-Package: ibmos2spark
+Package: ibmos2sparkR
 Title: Loads Object Store data into Softlayer and Bluemix
 Version: 0.0.7
 Authors@R: person("Jim", "Crozier", email = "jim.crozier@ibm.com",

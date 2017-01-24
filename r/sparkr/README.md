@@ -1,4 +1,4 @@
-# ibmos2spark
+# ibmos2sparkR
 
 The package sets Spark Hadoop configurations for connecting to 
 IBM Bluemix Object Storage and Softlayer Account Object Storage instances
@@ -12,13 +12,13 @@ can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will 
 
 ## Installation 
     library(devtools)
-    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/master.zip", subdir= "r")
+    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r/sparkr/")
 
 ## Usage
 
 ### Bluemix
 
-    library(ibmos2spark)
+    library(ibmos2sparkR)
     configurationname = "bluemixOScon" #can be any any name you like (allows for multiple configurations)
 
     # In DSX notebooks, the "insert to code" will insert this credentials list for you
@@ -43,7 +43,7 @@ can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will 
 
 ### Softlayer
 
-    library(ibmos2spark)
+    library(ibmos2sparkR)
     configurationname = "softlayerOScon" #can be any any name you like (allows for multiple configurations)
 
     slconfig = softlayer(sparkcontext=sc, 
