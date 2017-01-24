@@ -3,16 +3,19 @@
 The package sets Spark Hadoop configurations for connecting to 
 IBM Bluemix Object Storage and Softlayer Account Object Storage instances
 with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
-on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
+on the latest IBM Spark Service instances, and through IBM Data Science Experience. 
 
-Note, this package configures a SparkContext instantiated by SparkR and is appropriate for use
-with IBM R Notebooks only. It does not support SparkContexts returned from sparklyr::spark_connect, and
-can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will come in the near future. 
+This package expects a SparkContext instantiated by SparkR. It has been tested to work with
+IBM Spark service in R notebooks on IBM DSX, though it should work with other Spark installations
+that utilize the [swift2d/stocator](https://github.com/SparkTC/stocator) protocol.
 
 
 ## Installation 
+
     library(devtools)
-    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r/sparkr/")
+    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/<version).zip", subdir= "r/sparkr/")
+
+where `version` should be a tagged release, such as `0.0.7`. (If you're daring, you can use `master`.)
 
 ## Usage
 

@@ -2,19 +2,30 @@
 
 The package sets Spark Hadoop configurations for connecting to 
 IBM Bluemix Object Storage and Softlayer Account Object Storage instances
-with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
-on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
+with the swift protocol. This packages uses the new 
+[swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
+on the latest IBM Spark Service instances and through IBM Data Science Experience (DSX). 
 
-Note, this package configures a SparkContext instantiated by SparkR and is appropriate for use
-with IBM R Notebooks only. It does not support SparkContexts returned from sparklyr::spark_connect, and
-can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will come in the near future. 
-
+This package expects a SparkContext instantiated by sparklyr. It has been tested
+to work with IBM RStudio from DSX, though it should work with other Spark
+installations that utilize the [swift2d/stocator](https://github.com/SparkTC/stocator).
 
 ## Installation 
+
     library(devtools)
-    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r/sparklyr/",dependencies = FALSE)
-    
-In Data Science Experience please be sure to include the "dependencies = FALSE" flag in your installation. If you forget to do this and DSX's special flavor of sparklyr gets overwritten, just go into your local R repo store ("/home/rstudio/R/x86_64-redhat-linux-gnu-library/RVERSION/") where RVERSION is the newest install of R (currently 3.3) and delete the sparklyr folder. After deleting choose File->Quit Session to refresh your R kernel. These steps will refresh your sparklyr package to the special Data Science Experience version. 
+    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/<version>.zip", subdir= "r/sparklyr/",dependencies = FALSE)
+
+where `version` should be a tagged release, such as `0.0.7`. (If you're daring, you can use `master`.)
+
+###### WARNING
+
+In IBM Data Science Experience, please be sure to include the `dependencies = FALSE` flag when 
+calling `devtools::install_url`. If you forget to do this, you will most likely overwrite DSX's 
+special flavor of sparklyr, which will break your connection to IBM Spark Services. To repair this,
+go into your local R repo store ("/home/rstudio/R/x86_64-redhat-linux-gnu-library/RVERSION/") 
+where RVERSION is the newest install of R (currently 3.3) and delete the `sparklyr` folder. 
+After deleting, choose File->Quit Session to refresh your R kernel. These steps will refresh your 
+sparklyr package to the special DSX version. 
 
 ## Usage
 
