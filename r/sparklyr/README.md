@@ -13,6 +13,8 @@ can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will 
 ## Installation 
     library(devtools)
     devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/adding_r_scala_platform.zip", subdir= "r/sparklyr/",dependencies = FALSE)
+    
+In Data Science Experience please be sure to include the "dependencies = FALSE" flag in your installation. If you forget to do this and DSX's special flavor of sparklyr gets overwritten, just go into your local R repo store ("/home/rstudio/R/x86_64-redhat-linux-gnu-library/RVERSION/") where RVERSION is the newest install of R (currently 3.3) and delete the sparklyr folder. After deleting choose File->Quit Session to refresh your R kernel. These steps will refresh your sparklyr package to the special Data Science Experience version. 
 
 ## Usage
 
@@ -54,6 +56,7 @@ can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will 
     object = "my_data.csv"
 
     data = sparklyr::spark_read_csv(sc, spark_object_name,slconfig$url(container,object))
+
 
 
 ## License 
