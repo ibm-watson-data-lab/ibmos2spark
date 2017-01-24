@@ -34,11 +34,7 @@ can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will 
     container = "my_container"
     object = "my_data.csv"
 
-    data <- read.df(sqlContext, bmconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
-
-    # OR, for Spark >= 2.0.0
-
-    data = read.df(bmconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
+    data = sparklyr::spark_read_csv(sc, spark_object_name,bmconfig$url(container,object))
 
 
 ### Softlayer
@@ -57,12 +53,9 @@ can therefore not be used in IBM DSX RStudio sessions. Support for RStudio will 
     container = "my_container"
     object = "my_data.csv"
 
-    data <- read.df(sqlContext, slconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
-    
-    # OR, for Spark >= 2.0.0
+    data = sparklyr::spark_read_csv(sc, spark_object_name,slconfig$url(container,object))
 
-    data = read.df(slconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
-    
+
 ## License 
 
 Copyright 2016 IBM Cloud Data Services
