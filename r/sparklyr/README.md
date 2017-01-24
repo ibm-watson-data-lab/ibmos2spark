@@ -1,4 +1,4 @@
-# ibmos2spark
+# ibmos2sparklyr
 
 The package sets Spark Hadoop configurations for connecting to 
 IBM Bluemix Object Storage and Softlayer Account Object Storage instances
@@ -20,7 +20,7 @@ In Data Science Experience please be sure to include the "dependencies = FALSE" 
 
 ### Bluemix
 
-    library(ibmos2spark)
+    library(ibmos2sparklyr)
     configurationname = "bluemixOScon" #can be any any name you like (allows for multiple configurations)
 
     # In DSX notebooks, the "insert to code" will insert this credentials list for you
@@ -32,16 +32,17 @@ In Data Science Experience please be sure to include the "dependencies = FALSE" 
             password="XXXXX")
             
     bmconfig = bluemix(sparkcontext=sc, name=configurationname, credentials = creds)
-
-    container = "my_container"
-    object = "my_data.csv"
-
+           
+    container = "my_container" # name of your object store container
+    object = "my_data.csv" # name of object that you want to retrieve in the container
+    spark_object_name = "dataFromSwift" # name to assign to the new spark object
+    
     data = sparklyr::spark_read_csv(sc, spark_object_name,bmconfig$url(container,object))
 
 
 ### Softlayer
 
-    library(ibmos2spark)
+    library(ibmos2sparklyr)
     configurationname = "softlayerOScon" #can be any any name you like (allows for multiple configurations)
 
     slconfig = softlayer(sparkcontext=sc, 
@@ -52,8 +53,9 @@ In Data Science Experience please be sure to include the "dependencies = FALSE" 
                  password="XXXXX"
            )
            
-    container = "my_container"
-    object = "my_data.csv"
+    container = "my_container" # name of your object store container
+    object = "my_data.csv" # name of object that you want to retrieve in the container
+    spark_object_name = "dataFromSwift" # name to assign to the new spark object
 
     data = sparklyr::spark_read_csv(sc, spark_object_name,slconfig$url(container,object))
 
