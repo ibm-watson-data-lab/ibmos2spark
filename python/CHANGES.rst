@@ -1,3 +1,10 @@
+0.0.6 (2017-01-25)
+====================
+
+ - [FIXED] Connection to Softlayer Object Storage with 'swift' protocol removed in favor of all 'swift2d'
+ - [WARNING] The original 'swift' protocol is no longer used. Attempts have been made not to break any code. 
+
+
 0.0.6 (2016-10-19)
 ====================
 
