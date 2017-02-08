@@ -4,11 +4,6 @@ import scala.collection.mutable.HashMap
 import org.apache.spark.SparkContext
 
 
-object urlbuilder{
-  def swifturl2d(name: String, container_name: String, object_name: String): String = {
-   return "swift2d://" + container_name  + "." + name + "/" + object_name
-  }
-}
 
 /** 
 * softlayer class sets up a swift connection between an IBM Spark service
@@ -26,7 +21,7 @@ object urlbuilder{
 *      Softlayer Object Store
 */
 
-class softlayer(sc: SparkContext, name: String, auth_url: String, 
+class softlayer(sc: SparkContext, val name: String, auth_url: String, 
                   tenant: String, username: String, password: String, 
                   swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem",
                   public: Boolean=false){
@@ -50,7 +45,7 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
 
     
     def url(container_name: String, object_name:String) : String= {
-        return(urlbuilder.swifturl2d(name= name, container_name,object_name))
+        return s"swift2d://$container_name.$name/$object_name"
     }
 }
 
@@ -87,7 +82,7 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
 * source.
 */
 
-class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
+class bluemix(sc: SparkContext, val name: String, creds: HashMap[String, String],
                 swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem", 
                 public: Boolean =false){
     
@@ -120,7 +115,7 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
     hadoopConf.setInt(prefix + ".http.port",8080)
     
     def url(container_name: String, object_name:String) : String= {
-        return(urlbuilder.swifturl2d(name= name, container_name,object_name))
+        return s"swift2d://$container_name.$name/$object_name"
     }
 }
 
