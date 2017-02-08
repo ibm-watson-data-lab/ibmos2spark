@@ -3,7 +3,12 @@ package com.ibm.ibmos2spark
 import scala.collection.mutable.HashMap
 import org.apache.spark.SparkContext
 
+import org.apache.hadoop.fs.FSDataOutputStream
+import org.apache.hadoop.fs.FSDataInputStream
+import org.apache.hadoop.fs.FileSystem
+import org.apache.hadoop.fs.Path
 
+import java.net.URI
 
 /** 
 * softlayer class sets up a swift connection between an IBM Spark service
@@ -44,9 +49,45 @@ class softlayer(sc: SparkContext, val name: String, auth_url: String,
     hadoopConf.set(prefix + ".password",password)
 
     
+     // val ptemplate:String  = s"swift2d://dummycontainer.$name/dummyobjectname";
+    // lazy val fs:FileSystem = FileSystem.get(URI.create(ptemplate), hadoopConf);
+
     def url(container_name: String, object_name:String) : String= {
         return s"swift2d://$container_name.$name/$object_name"
     }
+
+    var currentContainer:String = _
+    var fs:FileSystem = _
+
+    def setup(container: String, objectname: String) {
+        if (container != currentContainer) {
+          currentContainer = container
+          fs = FileSystem.get(URI.create(url(container,objectname)), mConf)
+        } 
+    }
+
+    //lazy val fs:FileSystem = FileSystem.get(URI.create(ptemplate), mConf);
+
+
+    def put(container: String, objectname: String, data: Array[Byte]) = {
+        setup(container,objectname)
+        val out: FSDataOutputStream =  fs.create(new Path(url(container,objectname)));
+        out.write(data);
+        out.close();
+    }
+
+    def delete(container: String, objectname: String ) {
+        setup(container,objectname)
+        fs.delete(new Path(url(container,objectname)), false);
+    } 
+
+    def get(container: String, objectname: String, data: Array[Byte]) = {
+        setup(container,objectname)
+        val in: FSDataInputStream =  fs.open(new Path(url(container, objectname)));
+        ///not sure what to do here... need a fill a byte buffer? Ugg. 
+        //I suppose I could get the file size information first, then create the buffer
+    }
+
 }
 
 /** 
@@ -113,10 +154,46 @@ class bluemix(sc: SparkContext, val name: String, creds: HashMap[String, String]
     hadoopConf.setBoolean(prefix + ".public",public)
     hadoopConf.set(prefix + ".region",creds("region"))
     hadoopConf.setInt(prefix + ".http.port",8080)
-    
+
+    // val ptemplate:String  = s"swift2d://dummycontainer.$name/dummyobjectname";
+    // lazy val fs:FileSystem = FileSystem.get(URI.create(ptemplate), hadoopConf);
+
     def url(container_name: String, object_name:String) : String= {
         return s"swift2d://$container_name.$name/$object_name"
     }
+
+    var currentContainer:String = _
+    var fs:FileSystem = _
+
+    def setup(container: String, objectname: String) {
+        if (container != currentContainer) {
+          currentContainer = container
+          fs = FileSystem.get(URI.create(url(container,objectname)), mConf)
+        } 
+    }
+
+    //lazy val fs:FileSystem = FileSystem.get(URI.create(ptemplate), mConf);
+
+
+    def put(container: String, objectname: String, data: Array[Byte]) = {
+        setup(container,objectname)
+        val out: FSDataOutputStream =  fs.create(new Path(url(container,objectname)));
+        out.write(data);
+        out.close();
+    }
+
+    def delete(container: String, objectname: String ) {
+        setup(container,objectname)
+        fs.delete(new Path(url(container,objectname)), false);
+    } 
+
+    def get(container: String, objectname: String, data: Array[Byte]) = {
+        setup(container,objectname)
+        val in: FSDataInputStream =  fs.open(new Path(url(container, objectname)));
+        ///not sure what to do here... need a fill a byte buffer? Ugg. 
+        //I suppose I could get the file size information first, then create the buffer
+    }
+
 }
 
 

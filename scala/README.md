@@ -5,6 +5,11 @@ IBM Bluemix Object Storage and Softlayer Account Object Storage instances
 with the swift protocol. This packages uses the new [swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
 on the latest IBM Spark Service instances (and through IBM Data Science Experience). 
 
+One can use the swift protocol connection to read and write data that are formatted according to the 
+Hadoop FileSystem format (which creates a distributed set of files in the Object Storage container).
+
+Additionally, on may also get, put and delete individual files not in Hadoop FileSystem format.
+
 ## Installation
 
 We are in the process of publishing a release to Maven Central. For now, a snapshot version is available. 
@@ -31,6 +36,7 @@ Data Science Experience, will install the package.
 ### Bluemix
 
 
+#### Setup
 ```scala
 import com.ibm.ibmos2spark.bluemix
 
@@ -50,14 +56,32 @@ var objectname = "mydata"
 var configurationname = "bluemix_object_storage_connection"
 
 var bmos = new bluemix(sc, configurationname, credentials)
-var rdd = sc.textFile(bmos.url(container , objectname))
+```
 
+#### Data to RDD / Dataframes
+
+```scala
+var rdd = sc.textFile(bmos.url(container , objectname))
+```
+
+#### GET, PUT and DELETE specific files
+
+```scala
+bmos.get(container, objectname)
+
+var data :Array[Byte] = _
+//fill data, then
+
+bmos.put(container, objectname, data)
+
+bmos.delete(container, objectname)
 ```
 
 
 ### Softlayer
 
 
+#### Setup
 
 ```scala
 import com.ibm.ibmos2spark.softlayer
@@ -72,8 +96,25 @@ var objectname = "mydata"
 var configurationname = "softlayerOSconnection"
 
 var slos = new softlayer(sc, configurationname, authurl, tenant, user, password)
-var rdd = sc.textFile(slos.url(container , objectname))
+```
 
+#### Data to RDD / Dataframes
+
+```scala
+var rdd = sc.textFile(slos.url(container , objectname))
+```
+
+#### GET, PUT and DELETE specific files
+
+```scala
+var somedata = slos.get(container, objectname)
+
+var data :Array[Byte] = _
+//fill data, then
+
+slos.put(container, objectname, data)
+
+slos.delete(container, objectname)
 ```
 
 ### Package Info

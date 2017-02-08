@@ -2,7 +2,7 @@ name := "ibmos2spark"
 
 organization := "com.ibm.ibmos2spark"
 
-version := "0.0.7"
+version := "0.0.8"
 
 scalaVersion := "2.11.8"
 
@@ -11,7 +11,8 @@ crossScalaVersions := Seq("2.10.4", "2.11.8")
 libraryDependencies ++= {
   val sparkVersion =  if (scalaVersion.value == "2.11.8") "2.0.2" else "1.6.0"
   Seq(
-    "org.apache.spark" %%  "spark-core"   %  sparkVersion % "provided"
+    "org.apache.spark" %%  "spark-core"   %  sparkVersion % "provided",
+    "org.apache.hadoop" % "hadoop-common" % "2.7.3" % "provided"
   )
 }
 
