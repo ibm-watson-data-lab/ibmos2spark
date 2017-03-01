@@ -7,24 +7,126 @@ on the latest IBM Spark Service instances (and through IBM Data Science Experien
 
 ## Installation
 
-We are in the process of publishing a release to Maven Central. For now, a snapshot version is available. 
+This library is cross-built on both Scala 2.10 (for Spark 1.6.0) and Scala 2.11 (for Spark 2.0.0 and greater)
 
-The `%AddJar` and `%AddDeps` magic funtion within a Scala notebook, available on IBM Spark Service in Bluemix or
-Data Science Experience, will install the package.
+### Releases 
 
-### Spark 1.6.0 (Scala 2.10)
+#### SBT library dependency
+
+```
+"com.ibm.ibmos2spark" %% "ibmos2spark" % "0.0.7"
+```
+
+#### Maven Dependency
+
+##### Spark 1.6.0
+
+```
+<dependency>
+    <groupId>com.ibm.ibmos2spark</groupId>
+    <artifactId>ibmos2spark_2.10</artifactId>
+    <version>0.0.7</version>
+</dependency>
+```
+
+##### Spark 2.0.0 and greater
+
+```
+<dependency>
+    <groupId>com.ibm.ibmos2spark</groupId>
+    <artifactId>ibmos2spark_2.11</artifactId>
+    <version>0.0.7</version>
+</dependency>
+```
+
+
+#### IBM Spark Service  
+
+The `%AddDeps` magic funtion within a Scala notebook, available on IBM Spark Service in the [IBM
+Data Science Experience](http://datascience.ibm.com), will install the package.
+
+
+##### Spark 1.6.0 (Scala 2.10)
+
+```scala
+%AddDeps com.ibm.ibmos2spark ibmos2spark_2.10 0.0.7
+```
+
+##### Spark 2.0.2 (Scala 2.11)
+
+```scala
+%AddDeps com.ibm.ibmos2spark ibmos2spark_2.11 0.0.7
+```
+
+
+
+### Snapshots
+
+From time-to-time, a snapshot version may be released if fixes or new features are added. 
+The following snipets show how to install snapshot releases. 
+Replace the version number (`0.0.7`) in the following examples with the version you desire.
+
+##### SBT library dependency
+
+```
+"com.ibm.ibmos2spark" %% "ibmos2spark" % "0.0.7-SNAPSHOT"
+```
+
+Add SNAPSHOT repository to build.sbt
+
+```
+resolvers +=  "Sonatype OSS Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots"
+```
+
+##### Maven Spark 1.6.0
+
+```
+<dependency>
+  <groupId>com.ibm.ibmos2spark</groupId>
+  <artifactId>ibmos2spark_2.10</artifactId>
+  <version>0.0.7-SNAPSHOT</version>
+</dependency>
+```
+
+##### Maven Spark 2.0.0 and greater
+
+```
+<dependency>
+  <groupId>com.ibm.ibmos2spark</groupId>
+  <artifactId>ibmos2spark_2.11</artifactId>
+  <version>0.0.7-SNAPSHOT</version>
+</dependency>
+```
+
+Add SNAPSHOT repository to pom.xml
+
+```
+<repositories>
+  <repository>
+    <id>snapshots</id>
+    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+    <releases>
+      <enabled>false</enabled>
+    </releases>
+    <snapshots>
+      <enabled>true</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+```
+
+
+##### IBM Data Science Experience Spark 1.6.0 (Scala 2.10)
 
 ```scala
 %AddJar https://oss.sonatype.org/content/repositories/snapshots/com/ibm/ibmos2spark/ibmos2spark_2.10/0.0.7-SNAPSHOT/ibmos2spark_2.10-0.0.7-SNAPSHOT.jar -f
 ```
 
-
-### Spark 2.0.2 (Scala 2.11)
+##### IBM Data Science Experience Spark 2.0.2 (Scala 2.11)
 
 ```scala
 %AddDeps com.ibm.ibmos2spark ibmos2spark_2.11 0.0.7-SNAPSHOT --repository https://oss.sonatype.org/content/repositories/snapshots/
 ```
-
 
 ## Usage
 
