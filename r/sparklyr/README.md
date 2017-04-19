@@ -1,10 +1,16 @@
 # ibmos2sparklyr
 
 The package sets Spark Hadoop configurations for connecting to 
-IBM Bluemix Object Storage and Softlayer Account Object Storage instances
-with the swift protocol. This packages uses the new 
-[swift2d/stocator](https://github.com/SparkTC/stocator) protocol, availble
-on the latest IBM Spark Service instances and through IBM Data Science Experience (DSX). 
+IBM Bluemix Object Storage and Softlayer Account Object Storage instances. This packages uses the new [stocator](https://github.com/SparkTC/stocator) driver, which implements the `swift2d` protocol, and is availble
+on the latest IBM Apache Spark Service instances (and through IBM Data Science Experience). 
+
+Using the `stocator` driver connects your Spark executor nodes directly 
+to your data in object storage.
+This is an optimized, high-performance method to connect Spark to your data. All IBM Apache Spark kernels
+are instantiated with the `stocator` driver in the Spark kernel's classpath. 
+You can also run this locally by installing the [stocator driver](https://github.com/SparkTC/stocator) 
+and adding it to your local Apache Spark kernel's classpath. 
+
 
 This package expects a SparkContext instantiated by sparklyr. It has been tested
 to work with IBM RStudio from DSX, though it should work with other Spark
@@ -29,7 +35,18 @@ sparklyr package to the special DSX version.
 
 ## Usage
 
-### Bluemix
+The usage of this package depends on *from where* your Object Storage instance was created. This package
+is intended to connect to IBM's Object Storage instances obtained from Bluemix or Data Science Experience 
+(DSX) or from a separate account on IBM Softlayer. The instructions below show how to connect to 
+either type of instance. 
+
+The connection setup is essentially the same. But the difference for you is how you deliver the
+credentials. If your Object Storage was created with Bluemix/DSX, with a few clicks on the side-tab
+within a DSX Jupyter notebook, you can obtain your account credentials in the form of a list.
+If your Object Storage was created with a Softlayer account, each part of the credentials will
+be found as text that you can copy and paste into the example code below. 
+
+### Bluemix / Data Science Experience
 
     library(ibmos2sparklyr)
     configurationname = "bluemixOScon" #can be any any name you like (allows for multiple configurations)
