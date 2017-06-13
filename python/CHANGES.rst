@@ -1,3 +1,9 @@
+0.0.8 (2017-06-13)
+====================
+
+ - [NEW] Support for Python 3
+ - [DEPRECATED] The bluemix2 and softlayer2 classes were removed.  
+
 0.0.6 (2017-01-25)
 ====================
 
