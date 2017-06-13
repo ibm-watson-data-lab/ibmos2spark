@@ -108,26 +108,6 @@ class softlayer(object):
   def url(self, container_name, object_name):
     return swifturl2d(self.name, container_name, object_name)
 
-class softlayer2d(softlayer):
-
-  def __init__(self, sparkcontext, name, auth_url, tenant, username, password, 
-    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', public=False):
-    '''
-    WARNING: This class will be deprecated by spring 2017. Use the 'softlayer' class directly.
-
-    sparkcontext is a SparkContext object.
-
-    name is a string that identifies this configuration. You can
-        use any string you like. This allows you to create
-        multiple configurations to different Object Storage accounts.
-
-    auth_url, tenant username and password are string credentials for your
-    Softlayer Object Store
-    '''
-
-    super(softlayer2d, self).__init__(sparkcontext, name, auth_url, tenant, username, password, public, swift2d_driver)
-    warnings.warn('This class will be deprecated by spring 2017. Use the \'softlayer\' class directly.', UserWarning)
-
 
 class bluemix(object):
 
@@ -190,40 +170,3 @@ class bluemix(object):
 
   def url(self, container_name, object_name):
     return swifturl2d(self.name, container_name, object_name)
-
-class bluemix2d(bluemix):
-
-  def __init__(self, sparkcontext, credentials, name=None,
-    swift2d_driver='com.ibm.stocator.fs.ObjectStoreFileSystem', 
-    public=False):
-    '''
-    WARNING: This class will be deprecated by spring 2017. Use the 'bluemix' class directly.
-
-    sparkcontext:  a SparkContext object.
-
-    credentials:  a dictionary with the following required keys:
-      
-      auth_url
-      project_id (or projectId)
-      user_id (or userId)
-      password
-      region
-
-    and optional key:
-      name  #[to be deprecated] The name of the configuration.
-
-    name:  string that identifies this configuration. You can
-        use any string you like. This allows you to create
-        multiple configurations to different Object Storage accounts.
-        This is not required at the moment, since credentials['name']
-        is still supported.
-
-    When using this from a IBM Spark service instance that
-    is configured to connect to particular Bluemix object store
-    instances, the values for these credentials can be obtained
-    by clicking on the 'insert to code' link just below a data
-    source.
-    '''
-    super(bluemix2d, self).__init__(sparkcontext, credentials, name, public, swift2d_driver)
-    warnings.warn('This class will be deprecated by spring 2017. Use the \'bluemix\' class directly.', UserWarning)
-    
