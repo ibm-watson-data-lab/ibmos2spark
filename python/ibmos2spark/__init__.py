@@ -16,4 +16,4 @@
 Helper to connect to Softlayer and Bluemix ObjectStore from IBM Spark Service
 """
 from .__info__ import __version__
-from .osconfig import softlayer, bluemix
+from .osconfig import softlayer, bluemix, CloudObjectStorage
