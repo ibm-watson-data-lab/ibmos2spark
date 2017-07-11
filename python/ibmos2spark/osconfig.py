@@ -195,4 +195,4 @@ class CloudObjectStorage(object):
         hconf.setBoolean(prefix + ".public", public)
 
     def url(self, bucket_name, object_name):
-        return s3dCall(self.name, bucket_name, object_name)
+        return "s3d://{}.{}/{}".format(bucket_name, self.name, object_name)
