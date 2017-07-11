@@ -174,7 +174,7 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, bucket_name, public=False, driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
+    def __init__(self, sparkcontext, bucket_name, credentials, public=False, driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
         self.bucket_name = bucket_name
 
         # check if all required values are availble
