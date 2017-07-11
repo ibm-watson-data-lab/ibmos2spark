@@ -174,8 +174,8 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, name, public=False, driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
-        self.name = name
+    def __init__(self, sparkcontext, credentials, bucket_name, public=False, driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
+        self.bucket_name = bucket_name
 
         # check if all required values are availble
         credential_key_list = ["endpoint", "access_key", "secret_key"]
@@ -186,7 +186,7 @@ class CloudObjectStorage(object):
                 raise ValueError("Invalid input: credentials.{} is required!".format(key))
 
         # setup config
-        prefix = "fs.s3d." + self.name
+        prefix = "fs.s3d.service"
         hconf = sparkcontext._jsc.hadoopConfiguration()
         hconf.set(prefix + ".impl", driver)
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
@@ -194,5 +194,5 @@ class CloudObjectStorage(object):
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
         hconf.setBoolean(prefix + ".public", public)
 
-    def url(self, bucket_name, object_name):
-        return "s3d://{}.{}/{}".format(bucket_name, self.name, object_name)
+    def url(self, object_name):
+        return "s3d://{}.service/{}".format(self.bucket_name, object_name)
