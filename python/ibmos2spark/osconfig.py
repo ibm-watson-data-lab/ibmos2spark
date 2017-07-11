@@ -175,6 +175,26 @@ class bluemix(object):
 class CloudObjectStorage(object):
 
     def __init__(self, sparkcontext, bucket_name, credentials, public=False, driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
+
+        '''
+        sparkcontext:  a SparkContext object.
+
+        bucket_name (projectId in DSX):  string that identifies the bucket you want
+            to access files from in the COS service instance.
+            In DSX, bucket_name is the same as projectId. One bucket is
+            associated with one project.
+
+        credentials:  a dictionary with the following required keys:
+          * endpoint
+          * access_key
+          * secret_key
+
+        When using this on DSX credentials and bucket_name can be obtained
+        in DSX - Notebooks by clicking on the datasources palette then
+        choose the datasource you want to access then hit insert credentials.
+
+        '''
+
         self.bucket_name = bucket_name
 
         # check if all required values are availble
