@@ -45,7 +45,7 @@ cos = ibmos2spark.CloudObjectStorage(sc, credentials)  #sc is the SparkContext i
 bucket_name = 'some_bucket_name'
 object_name = 'file1'
 data = sc.textFile(cos.url(object_name, bucket_name))
-``
+```
 
 ### Bluemix / Data Science Experience
 
