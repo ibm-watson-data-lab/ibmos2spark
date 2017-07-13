@@ -174,7 +174,7 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, bucket_name, credentials, driver='com.ibm.stocator.fs.ObjectStoreFileSystem'):
+    def __init__(self, sparkcontext, bucket_name, credentials):
 
         '''
         sparkcontext:  a SparkContext object.
@@ -208,7 +208,6 @@ class CloudObjectStorage(object):
         # setup config
         prefix = "fs.s3d.service"
         hconf = sparkcontext._jsc.hadoopConfiguration()
-        hconf.set(prefix + ".impl", driver)
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
         hconf.set(prefix + ".access.key", credentials['access_key'])
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
