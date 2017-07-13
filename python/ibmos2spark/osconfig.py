@@ -174,15 +174,17 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, bucket_name, credentials):
+    def __init__(self, sparkcontext, credentials, bucket_name=''):
 
         '''
         sparkcontext:  a SparkContext object.
 
-        bucket_name (projectId in DSX):  string that identifies the bucket you want
+        bucket_name (projectId in DSX) [optional]:  string that identifies the bucket you want
             to access files from in the COS service instance.
             In DSX, bucket_name is the same as projectId. One bucket is
             associated with one project.
+            If this value is not specified, you need to pass it when
+            you use the url function.
 
         credentials:  a dictionary with the following required keys:
           * endpoint
@@ -194,7 +196,6 @@ class CloudObjectStorage(object):
         choose the datasource you want to access then hit insert credentials.
 
         '''
-
         self.bucket_name = bucket_name
 
         # check if all required values are availble
@@ -212,5 +213,13 @@ class CloudObjectStorage(object):
         hconf.set(prefix + ".access.key", credentials['access_key'])
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
 
-    def url(self, object_name):
-        return "s3d://{}.service/{}".format(self.bucket_name, object_name)
+    def url(self, object_name, bucket_name=''):
+        bucket_name_var = ''
+        if (bucket_name):
+            bucket_name_var = bucket_name
+        elif (self.bucket_name):
+            bucket_name_var = self.bucket_name
+        else:
+            raise ValueError("Invalid input: bucket_name is required!")
+
+        return "s3d://{}.service/{}".format(bucket_name_var, object_name)
