@@ -156,7 +156,7 @@ import com.ibm.ibmos2spark.CloudObjectStorage
 // "insert to code" link in your DSX notebook.
 
 var credentials = scala.collection.mutable.HashMap[String, String](
-  "endpoint"->"https://identity.open.softlayer.com",
+  "endPoint"->"https://identity.open.softlayer.com",
   "accessKey"->"xx",
   "secretKey"->"xx"
 )

@@ -166,8 +166,8 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
     }
 
     // set config
-    val hadoopConf = sc.hadoopConfiguration;
-    val prefix = "fs.s3d.service";
+    val hadoopConf = sc.hadoopConfiguration
+    val prefix = "fs.s3d.service"
     hadoopConf.set(prefix + ".endpoint", credentials("endPoint"))
     hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
     hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
