@@ -156,11 +156,9 @@ import com.ibm.ibmos2spark.CloudObjectStorage
 // "insert to code" link in your DSX notebook.
 
 var credentials = scala.collection.mutable.HashMap[String, String](
-  "auth_url"->"https://identity.open.softlayer.com",
-  "project_id"->"xx",
-  "region"->"xx",
-  "user_id"->"xx",
-  "password"->"xx",
+  "endpoint"->"https://identity.open.softlayer.com",
+  "accessKey"->"xx",
+  "secretKey"->"xx"
 )
 var bucketName = "myBucket"
 var objectname = "mydata"
