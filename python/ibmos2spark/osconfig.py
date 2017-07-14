@@ -174,17 +174,10 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, bucket_name=''):
+    def __init__(self, sparkcontext, credentials, cos_id='', bucket_name=''):
 
         '''
         sparkcontext:  a SparkContext object.
-
-        bucket_name (projectId in DSX) [optional]:  string that identifies the bucket you want
-            to access files from in the COS service instance.
-            In DSX, bucket_name is the same as projectId. One bucket is
-            associated with one project.
-            If this value is not specified, you need to pass it when
-            you use the url function.
 
         credentials:  a dictionary with the following required keys:
           * endpoint
@@ -195,8 +188,24 @@ class CloudObjectStorage(object):
         in DSX - Notebooks by clicking on the datasources palette then
         choose the datasource you want to access then hit insert credentials.
 
+        cos_id [optional]: this parameter is the cloud object storage unique id. It is useful
+            to keep in the class instance for further checks after the initialization. However,
+            it is not mandatory for the class instance to work. This value can be retrieved by
+            calling the get_os_id function.
+
+        bucket_name (projectId in DSX) [optional]:  string that identifies the defult
+            bucket nameyou want to access files from in the COS service instance.
+            In DSX, bucket_name is the same as projectId. One bucket is
+            associated with one project.
+            If this value is not specified, you need to pass it when
+            you use the url function.
+
+        Warning: creating a new instance of this class would overwrite the existing
+            spark hadoop configs if set before if used with the same spark context instance.
+
         '''
         self.bucket_name = bucket_name
+        self.cos_id = cos_id
 
         # check if all required values are availble
         credential_key_list = ["endpoint", "access_key", "secret_key"]
@@ -212,6 +221,9 @@ class CloudObjectStorage(object):
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
         hconf.set(prefix + ".access.key", credentials['access_key'])
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
+
+    def get_os_id():
+        return self.cos_id
 
     def url(self, object_name, bucket_name=''):
         bucket_name_var = ''
