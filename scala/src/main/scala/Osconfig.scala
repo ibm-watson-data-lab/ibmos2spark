@@ -136,9 +136,9 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
 *
 *     endpoint
 
-*     access_key
+*     accessKey
 
-*     secret_key
+*     secretKey
 
 *    cosId [optional]: this parameter is the cloud object storage unique id. It is useful
             to keep in the class instance for further checks after the initialization. However,
