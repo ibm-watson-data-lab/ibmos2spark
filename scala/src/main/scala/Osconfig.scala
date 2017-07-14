@@ -152,11 +152,8 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
              If this value is not specified, you need to pass it when
              you use the url function.
 *
-* When using this from a IBM Spark service instance that
-* is configured to connect to particular Bluemix object store
-* instances, the values for these credentials can be obtained
-* by clicking on the 'insert to code' link just below a data
-* source.
+    Warning: creating a new instance of this class would overwrite the existing
+              spark hadoop configs if set before if used with the same spark context instance.
 */
 class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], cosId: String = "") {
 
