@@ -165,8 +165,8 @@ var credentials = scala.collection.mutable.HashMap[String, String](
 var bucketName = "myBucket"
 var objectname = "mydata"
 
-var bmos = new CloudObjectStorage(sc, credentials)
-var rdd = sc.textFile(bmos.url(bucketName , objectname))
+var cos = new CloudObjectStorage(sc, credentials)
+var rdd = sc.textFile(cos.url(bucketName , objectname))
 ```
 
 
