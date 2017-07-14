@@ -165,6 +165,7 @@ var objectname = "mydata"
 
 var cos = new CloudObjectStorage(sc, credentials)
 var rdd = sc.textFile(cos.url(bucketName , objectname))
+rdd.take(5)
 ```
 
 
