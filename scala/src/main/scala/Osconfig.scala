@@ -161,7 +161,7 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
     val requiredValues = Array("endPoint", "accessKey", "secretKey")
     for ( key <- requiredValues ) {
         if (!credentials.contains(key)) {
-            throw new IllegalArgumentException("Invalid input: missing required input!")
+            throw new IllegalArgumentException("Invalid input: missing required input [" + key + "]")
         }
     }
 
