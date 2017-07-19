@@ -1,3 +1,9 @@
+1.0.0 (2017-07-19)
+====================
+
+ - [NEW] Support for Cloud Object Storage (COS)
+
+
 0.0.8.1 (2017-06-14)
 ====================
 
@@ -8,24 +14,24 @@
 ====================
 
  - [NEW] Support for Python 3
- - [DEPRECATED] The bluemix2 and softlayer2 classes were removed.  
+ - [DEPRECATED] The bluemix2 and softlayer2 classes were removed.
 
 0.0.6 (2017-01-25)
 ====================
 
  - [FIXED] Connection to Softlayer Object Storage with 'swift' protocol removed in favor of all 'swift2d'
- - [WARNING] The original 'swift' protocol is no longer used. Attempts have been made not to break any code. 
+ - [WARNING] The original 'swift' protocol is no longer used. Attempts have been made not to break any code.
 
 
 0.0.6 (2016-10-19)
 ====================
 
-- [FIXED] By default, the ".public" Hadoop Configuration property is set to False. 
+- [FIXED] By default, the ".public" Hadoop Configuration property is set to False.
 
 0.0.5 (2016-10-18)
 ====================
 
-- [NEW] Raises exception when swift (version 1) URL contains an underscore. 
+- [NEW] Raises exception when swift (version 1) URL contains an underscore.
 
 0.0.4 (2016-10-17)
 ====================
@@ -42,7 +48,7 @@
 0.0.2 (2016-07-18)
 ====================
 
-- [NEW] Adds option to set 'public' configuration during instantiation. 
+- [NEW] Adds option to set 'public' configuration during instantiation.
 
 0.0.1 (2016-05-17)
 ====================
@@ -59,4 +65,3 @@
 ====================
 
 - [NEW] Added Initial code generate Swift URLs
-
