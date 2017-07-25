@@ -161,11 +161,18 @@ var credentials = scala.collection.mutable.HashMap[String, String](
   "secretKey"->"xx"
 )
 var bucketName = "myBucket"
-var objectname = "mydata"
+var objectname = "mydata.csv"
 
 var cos = new CloudObjectStorage(sc, credentials)
-var rdd = sc.textFile(cos.url(bucketName , objectname))
-rdd.take(5)
+val spark = SparkSession.
+    builder().
+    getOrCreate()
+
+val dfData1 = spark.
+    read.format("org.apache.spark.sql.execution.datasources.csv.CSVFileFormat").
+    option("header", "true").
+    option("inferSchema", "true").
+    load(cos.url(bucketName, objectname))
 ```
 
 
