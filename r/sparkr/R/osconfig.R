@@ -113,3 +113,8 @@ bluemix <- setRefClass("bluemix",
         return(swifturl(name, container_name, object_name))}
     )
 )
+
+CloudObjectStorage <- setRefClass("CloudObjectStorage",
+  fields=list(sparkcontext='jobj', credentials = "list", cos_id="character"),
+  methods=list(initialize = function(..., sparkcontext, credentials, cos_id=NULL){})
+)
