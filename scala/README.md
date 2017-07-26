@@ -164,11 +164,11 @@ var bucketName = "myBucket"
 var objectname = "mydata.csv"
 
 var cos = new CloudObjectStorage(sc, credentials)
-val spark = SparkSession.
+var spark = SparkSession.
     builder().
     getOrCreate()
 
-val dfData1 = spark.
+var dfData1 = spark.
     read.format("org.apache.spark.sql.execution.datasources.csv.CSVFileFormat").
     option("header", "true").
     option("inferSchema", "true").
