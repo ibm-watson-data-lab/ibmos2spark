@@ -10,14 +10,14 @@ object urlbuilder{
   }
 }
 
-/** 
+/**
 * softlayer class sets up a swift connection between an IBM Spark service
-* instance and Softlayer Object Storgae instance. 
-*  
+* instance and Softlayer Object Storgae instance.
+*
 * Constructor arguments
 
 *    sparkcontext: a SparkContext object.
-* 
+*
 *    name: string that identifies this configuration. You can
 *      use any string you like. This allows you to create
 *      multiple configurations to different Object Storage accounts.
@@ -26,14 +26,14 @@ object urlbuilder{
 *      Softlayer Object Store
 */
 
-class softlayer(sc: SparkContext, name: String, auth_url: String, 
-                  tenant: String, username: String, password: String, 
+class softlayer(sc: SparkContext, name: String, auth_url: String,
+                  tenant: String, username: String, password: String,
                   swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem",
                   public: Boolean=false){
-    
-    
+
+
     val hadoopConf = sc.hadoopConfiguration;
-    val prefix = "fs.swift2d.service." + name 
+    val prefix = "fs.swift2d.service." + name
 
     hadoopConf.set("fs.swift2d.impl",swift2d_driver)
     hadoopConf.set(prefix + ".auth.url",auth_url)
@@ -48,13 +48,13 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
     hadoopConf.setBoolean(prefix + ".location-aware",false)
     hadoopConf.set(prefix + ".password",password)
 
-    
+
     def url(container_name: String, object_name:String) : String= {
         return(urlbuilder.swifturl2d(name= name, container_name,object_name))
     }
 }
 
-/** 
+/**
 * bluemix class sets up a swift connection between an IBM Spark service
 * instance and an Object Storage instance provisioned through IBM Bluemix.
 
@@ -63,7 +63,7 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
 *   sparkcontext:  a SparkContext object.
 
 *   credentials:  a dictionary with the following required keys:
-*   
+*
 *     auth_url
 
 *     project_id (or projectId)
@@ -73,13 +73,13 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
 *     password
 
 *     region
-* 
+*
 *   name:  string that identifies this configuration. You can
 *     use any string you like. This allows you to create
 *     multiple configurations to different Object Storage accounts.
 *     This is not required at the moment, since credentials['name']
 *     is still supported.
-* 
+*
 * When using this from a IBM Spark service instance that
 * is configured to connect to particular Bluemix object store
 * instances, the values for these credentials can be obtained
@@ -88,9 +88,9 @@ class softlayer(sc: SparkContext, name: String, auth_url: String,
 */
 
 class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
-                swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem", 
+                swift2d_driver: String = "com.ibm.stocator.fs.ObjectStoreFileSystem",
                 public: Boolean =false){
-    
+
 
     def ifexist(credsin: HashMap[String, String], var1: String, var2: String): String = {
         if (credsin.keySet.exists(_ == var1)){
@@ -103,7 +103,7 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
     val username = ifexist(creds, "user_id","userId")
     val tenant = ifexist(creds, "project_id","projectId")
 
-    
+
     val hadoopConf = sc.hadoopConfiguration;
     val prefix = "fs.swift2d.service." + name;
 
@@ -118,10 +118,65 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
     hadoopConf.setBoolean(prefix + ".public",public)
     hadoopConf.set(prefix + ".region",creds("region"))
     hadoopConf.setInt(prefix + ".http.port",8080)
-    
+
     def url(container_name: String, object_name:String) : String= {
         return(urlbuilder.swifturl2d(name= name, container_name,object_name))
     }
 }
 
+/**
+* CloudObjectStorage class sets up a s3d connection between an IBM Spark service
+* instance and an IBM Cloud Object Storage instance.
 
+* Constructor arguments:
+
+*   sparkcontext:  a SparkContext object.
+
+*   credentials:  a dictionary with the following required keys:
+*
+*     endpoint
+
+*     accessKey
+
+*     secretKey
+
+*    cosId [optional]: this parameter is the cloud object storage unique id. It is useful
+            to keep in the class instance for further checks after the initialization. However,
+            it is not mandatory for the class instance to work. This value can be retrieved by
+            calling the getCosId function.
+
+    bucket_name (projectId in DSX) [optional]:  string that identifies the defult
+             bucket nameyou want to access files from in the COS service instance.
+             In DSX, bucket_name is the same as projectId. One bucket is
+             associated with one project.
+             If this value is not specified, you need to pass it when
+             you use the url function.
+*
+    Warning: creating a new instance of this class would overwrite the existing
+              spark hadoop configs if set before if used with the same spark context instance.
+*/
+class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], cosId: String = "") {
+
+    // check if all credentials are available
+    val requiredValues = Array("endPoint", "accessKey", "secretKey")
+    for ( key <- requiredValues ) {
+        if (!credentials.contains(key)) {
+            throw new IllegalArgumentException("Invalid input: missing required input [" + key + "]")
+        }
+    }
+
+    // set config
+    val hadoopConf = sc.hadoopConfiguration
+    val prefix = "fs.s3d.service"
+    hadoopConf.set(prefix + ".endpoint", credentials("endPoint"))
+    hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
+    hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
+
+    def getCosId() : String = {
+        return cosId
+    }
+
+    def url(bucketName: String, objectName: String) : String = {
+        return "s3d://" + bucketName + ".service/" + objectName
+    }
+}
