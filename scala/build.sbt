@@ -22,7 +22,7 @@ sonatypeProfileName := "com.ibm.ibmos2spark"
 
 // To sync with Maven central, you need to supply the following information:
 pomExtra in Global := {
-  <url>https://github.com/ibm-cds-labs/ibmos2spark/</url>
+  <url>https://github.com/ibm-watson-data-labs/ibmos2spark/</url>
   <licenses>
     <license>
       <name>Apache 2</name>
@@ -30,9 +30,9 @@ pomExtra in Global := {
     </license>
   </licenses>
   <scm>
-    <connection>scm:git:github.com/ibm-cds-labs/ibmos2spark</connection>
-    <developerConnection>scm:git:git@github.com:ibm-cds-labs/ibmos2spark</developerConnection>
-    <url>github.com/ibm-cds-labs/ibmos2spark</url>
+    <connection>scm:git:github.com/ibm-watson-data-labs/ibmos2spark</connection>
+    <developerConnection>scm:git:git@github.com:ibm-watson-data-labs/ibmos2spark</developerConnection>
+    <url>github.com/ibm-watson-data-labs/ibmos2spark</url>
   </scm>
   <developers>
     <developer>
