@@ -14,6 +14,8 @@ and adding it to your local Apache Spark kernel's classpath.
 
 ## Installation
 
+This library is now installed by default on IBM Apache Spark. 
+
 ```
 pip install --user --upgrade ibmos2spark
 ```
