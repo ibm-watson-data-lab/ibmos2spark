@@ -42,5 +42,5 @@ SNAPSHOT repository instead of the main release repository. After pushing to the
 need to perform the remaining steps to publish the code to the public
 
 ```
-sbt +sonatypeRelease
+sbt sonatypeReleaseAll
 ```
