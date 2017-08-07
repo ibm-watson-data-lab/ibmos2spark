@@ -49,23 +49,8 @@ This library is cross-built on both Scala 2.10 (for Spark 1.6.0) and Scala 2.11 
 
 #### IBM Spark Service  
 
-The `%AddDeps` magic funtion within a Scala notebook, available on IBM Spark Service in the [IBM
-Data Science Experience](http://datascience.ibm.com), will install the package.
-
-
-##### Spark 1.6.0 (Scala 2.10)
-
-```scala
-%AddDeps com.ibm.ibmos2spark ibmos2spark_2.10 0.0.8
-```
-
-##### Spark 2.0.2 (Scala 2.11)
-
-```scala
-%AddDeps com.ibm.ibmos2spark ibmos2spark_2.11 0.0.8
-```
-
-
+The `ibmos2spark` Scala library package is now pre-installed on IBM Apache Spark as a service. This includes 
+service instances created in Bluemix or in Data Science Experience. 
 
 ### Snapshots
 
