@@ -7,25 +7,9 @@
 \title{sparkcontext is a SparkContext object.}
 \description{
 name is a string that identifies this configuration. You can
-       use any string you like. This allows you to create
-       multiple configurations to different Object Storage accounts.
-}
-\details{
+    use any string you like. This allows you to create
+    multiple configurations to different Object Storage accounts.
 auth_url, username and password are string credentials for your
-   Softlayer Object Store
-}
-\examples{
-library(ibmos2spark)
-slsc = softlayer2d(sparkcontext=sc, 
-                 name="XXXXX", 
-                 auth_url="https://identity.open.softlayer.com",
-                 region="XXXXX", 
-                 tenant = "XXXXX", 
-                 username="XXXXX", 
-                 password="XXXXX"
-           )
-           
-data <- read.df(sqlContext, slsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-head(data)
+Softlayer Object Store
 }
 
