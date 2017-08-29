@@ -131,8 +131,8 @@ bluemix <- setRefClass("bluemix",
 #' instances, the values for these credentials can be obtained
 #' by clicking on the 'insert to code' link just below a data
 #' source.
-#' @export bluemix
-#' @exportClass bluemix
+#' @export CloudObjectStorage
+#' @exportClass CloudObjectStorage
 CloudObjectStorage <- setRefClass("CloudObjectStorage",
   fields=list(configName="character"),
   methods=list(

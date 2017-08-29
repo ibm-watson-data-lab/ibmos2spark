@@ -7,8 +7,9 @@
 \title{sparkcontext:  a SparkContext object.}
 \description{
 credentials:  a dictionary with the following required keys:
-  
-  auth_url
+}
+\details{
+auth_url
   project_id (or projectId)
   user_id (or userId)
   password
@@ -25,20 +26,5 @@ is configured to connect to particular Bluemix object store
 instances, the values for these credentials can be obtained
 by clicking on the 'insert to code' link just below a data
 source.
-}
-\examples{
-library(ibmos2spark)
-creds = list(name="XXXXX", 
-             auth_url="https://identity.open.softlayer.com",
-            region="dallas", 
-            project_id = "XXXXX", 
-            user_id="XXXXX", 
-            password="XXXXX",
-            public = FALSE)
-            
-bmsc = bluemix(sparkcontext=sc, name=name, credentials = creds)
-
-data <- read.df(sqlContext, bmsc$url(name, space,object), source = "com.databricks.spark.csv", header = "true")
-head(data)
 }
 
