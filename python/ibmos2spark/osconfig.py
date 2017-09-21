@@ -19,6 +19,8 @@ and generate the swifturl.
 
 import warnings
 
+DEFAULT_SERVICE_NAME = "service"
+
 def swifturl2d(name, container_name, object_name):
   return 'swift2d://{}.{}/{}'.format(container_name, name, object_name)
 
@@ -216,7 +218,13 @@ class CloudObjectStorage(object):
                 raise ValueError("Invalid input: credentials.{} is required!".format(key))
 
         # setup config
-        prefix = "fs.s3d.service"
+        prefix = "fs.cos"
+
+        if (cos_id):
+            prefix = "{}.{}".format(prefix, cos_id)
+        else:
+            prefix = prefix + "." + DEFAULT_SERVICE_NAME
+
         hconf = sparkcontext._jsc.hadoopConfiguration()
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
         hconf.set(prefix + ".access.key", credentials['access_key'])
@@ -227,6 +235,9 @@ class CloudObjectStorage(object):
 
     def url(self, object_name, bucket_name=''):
         bucket_name_var = ''
+        service_name = DEFAULT_SERVICE_NAME
+
+        # determine the bucket to use
         if (bucket_name):
             bucket_name_var = bucket_name
         elif (self.bucket_name):
@@ -234,4 +245,8 @@ class CloudObjectStorage(object):
         else:
             raise ValueError("Invalid input: bucket_name is required!")
 
-        return "s3d://{}.service/{}".format(bucket_name_var, object_name)
+        # use service name that we set up hadoop config for
+        if (self.cos_id):
+            service_name = self.cos_id
+
+        return "cos://{}.{}/{}".format(bucket_name_var, service_name, object_name)
