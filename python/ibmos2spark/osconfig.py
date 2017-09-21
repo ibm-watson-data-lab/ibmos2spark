@@ -230,7 +230,7 @@ class CloudObjectStorage(object):
         hconf.set(prefix + ".access.key", credentials['access_key'])
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
 
-    def get_os_id():
+    def get_os_id(self):
         return self.cos_id
 
     def url(self, object_name, bucket_name=''):
