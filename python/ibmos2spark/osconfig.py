@@ -202,8 +202,9 @@ class CloudObjectStorage(object):
             If this value is not specified, you need to pass it when
             you use the url function.
 
-        Warning: creating a new instance of this class would overwrite the existing
-            spark hadoop configs if set before if used with the same spark context instance.
+        NOTE: Hadoop configuration will be set with a service name equals to
+        the value of cos_id. If cos_id is not set, the default service name "service"
+        will be used.
 
         '''
         self.bucket_name = bucket_name
