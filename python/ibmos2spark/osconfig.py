@@ -190,10 +190,10 @@ class CloudObjectStorage(object):
         in DSX - Notebooks by clicking on the datasources palette then
         choose the datasource you want to access then hit insert credentials.
 
-        cos_id [optional]: this parameter is the cloud object storage unique id. It is useful
-            to keep in the class instance for further checks after the initialization. However,
-            it is not mandatory for the class instance to work. This value can be retrieved by
-            calling the get_os_id function.
+        configuration_name [optional]: string that identifies this configuration. You can
+            use any string you like. This allows you to create
+            multiple configurations to different Object Storage accounts.
+            if a configuration name is not passed the default one will be used "service".
 
         bucket_name (projectId in DSX) [optional]:  string that identifies the defult
             bucket nameyou want to access files from in the COS service instance.
@@ -201,10 +201,6 @@ class CloudObjectStorage(object):
             associated with one project.
             If this value is not specified, you need to pass it when
             you use the url function.
-
-        NOTE: Hadoop configuration will be set with a service name equals to
-        the value of cos_id. If cos_id is not set, the default service name "service"
-        will be used.
 
         '''
         self.bucket_name = bucket_name
