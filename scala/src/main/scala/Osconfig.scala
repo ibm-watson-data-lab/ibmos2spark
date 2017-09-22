@@ -3,6 +3,7 @@ package com.ibm.ibmos2spark
 import scala.collection.mutable.HashMap
 import org.apache.spark.SparkContext
 
+val DEFAULT_SERVICE_NAME = "service"
 
 object urlbuilder{
   def swifturl2d(name: String, container_name: String, object_name: String): String = {
@@ -155,7 +156,7 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
     Warning: creating a new instance of this class would overwrite the existing
               spark hadoop configs if set before if used with the same spark context instance.
 */
-class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], cosId: String = "") {
+class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], configurationName: String = "") {
 
     // check if all credentials are available
     val requiredValues = Array("endPoint", "accessKey", "secretKey")
@@ -167,16 +168,22 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
 
     // set config
     val hadoopConf = sc.hadoopConfiguration
-    val prefix = "fs.s3d.service"
+    val prefix = "fs.cos." + getConfigurationName()
+
     hadoopConf.set(prefix + ".endpoint", credentials("endPoint"))
     hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
     hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
 
-    def getCosId() : String = {
-        return cosId
+    private def getConfigurationName() : String = {
+      if (configurationName != "") {
+        return configurationName
+      } else {
+        return DEFAULT_SERVICE_NAME
+      }
     }
 
     def url(bucketName: String, objectName: String) : String = {
-        return "s3d://" + bucketName + ".service/" + objectName
+      var serviceName = getConfigurationName()
+      return "cos://" + bucketName + "." + serviceName + "/" + objectName
     }
 }
