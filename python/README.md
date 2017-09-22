@@ -43,7 +43,7 @@ credentials = {
 }
 
 configuration_name = 'cos_config_string'  #you can give any string you like
-cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name)  #sc is the SparkContext instance. configuration_name is optional param
+cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name)  #sc is the SparkContext instance.
 
 bucket_name = 'some_bucket_name'
 object_name = 'file1'
