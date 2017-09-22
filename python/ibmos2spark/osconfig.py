@@ -176,7 +176,7 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, cos_id='', bucket_name=''):
+    def __init__(self, sparkcontext, credentials, configuration_name='', bucket_name=''):
 
         '''
         sparkcontext:  a SparkContext object.
@@ -208,7 +208,7 @@ class CloudObjectStorage(object):
 
         '''
         self.bucket_name = bucket_name
-        self.cos_id = cos_id
+        self.conf_name = configuration_name
 
         # check if all required values are availble
         credential_key_list = ["endpoint", "access_key", "secret_key"]
@@ -221,8 +221,8 @@ class CloudObjectStorage(object):
         # setup config
         prefix = "fs.cos"
 
-        if (cos_id):
-            prefix = "{}.{}".format(prefix, cos_id)
+        if (configuration_name):
+            prefix = "{}.{}".format(prefix, configuration_name)
         else:
             prefix = prefix + "." + DEFAULT_SERVICE_NAME
 
@@ -230,9 +230,6 @@ class CloudObjectStorage(object):
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
         hconf.set(prefix + ".access.key", credentials['access_key'])
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
-
-    def get_os_id(self):
-        return self.cos_id
 
     def url(self, object_name, bucket_name=''):
         bucket_name_var = ''
@@ -247,7 +244,7 @@ class CloudObjectStorage(object):
             raise ValueError("Invalid input: bucket_name is required!")
 
         # use service name that we set up hadoop config for
-        if (self.cos_id):
-            service_name = self.cos_id
+        if (self.conf_name):
+            service_name = self.conf_name
 
         return "cos://{}.{}/{}".format(bucket_name_var, service_name, object_name)
