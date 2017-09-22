@@ -141,10 +141,10 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
 
 *     secretKey
 
-*    cosId [optional]: this parameter is the cloud object storage unique id. It is useful
-            to keep in the class instance for further checks after the initialization. However,
-            it is not mandatory for the class instance to work. This value can be retrieved by
-            calling the getCosId function.
+*  configurationName [optional]: string that identifies this configuration. You can
+            use any string you like. This allows you to create
+            multiple configurations to different Object Storage accounts.
+            if a configuration name is not passed the default one will be used "service".
 
     bucket_name (projectId in DSX) [optional]:  string that identifies the defult
              bucket nameyou want to access files from in the COS service instance.
@@ -152,9 +152,6 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
              associated with one project.
              If this value is not specified, you need to pass it when
              you use the url function.
-*
-    Warning: creating a new instance of this class would overwrite the existing
-              spark hadoop configs if set before if used with the same spark context instance.
 */
 class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], configurationName: String = "") {
 
