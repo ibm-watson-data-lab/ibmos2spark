@@ -144,17 +144,10 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
 
 *     secretKey
 
-*  configurationName [optional]: string that identifies this configuration. You can
+*   configurationName [optional]: string that identifies this configuration. You can
             use any string you like. This allows you to create
             multiple configurations to different Object Storage accounts.
             if a configuration name is not passed the default one will be used "service".
-
-    bucket_name (projectId in DSX) [optional]:  string that identifies the defult
-             bucket nameyou want to access files from in the COS service instance.
-             In DSX, bucket_name is the same as projectId. One bucket is
-             associated with one project.
-             If this value is not specified, you need to pass it when
-             you use the url function.
 */
 class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], configurationName: String = "") {
 
