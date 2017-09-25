@@ -126,11 +126,6 @@ bluemix <- setRefClass("bluemix",
 #'
 #' configurationName: string identifies the configurations that has been
 #' set.
-#' When using this from a IBM Spark service instance that
-#' is configured to connect to particular Bluemix object store
-#' instances, the values for these credentials can be obtained
-#' by clicking on the 'insert to code' link just below a data
-#' source.
 #' @export CloudObjectStorage
 #' @exportClass CloudObjectStorage
 CloudObjectStorage <- setRefClass("CloudObjectStorage",
