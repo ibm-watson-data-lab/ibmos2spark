@@ -3,7 +3,10 @@ package com.ibm.ibmos2spark
 import scala.collection.mutable.HashMap
 import org.apache.spark.SparkContext
 
-val DEFAULT_SERVICE_NAME = "service"
+object globalVariables {
+  val DEFAULT_SERVICE_NAME = "service"
+}
+
 
 object urlbuilder{
   def swifturl2d(name: String, container_name: String, object_name: String): String = {
@@ -175,7 +178,7 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       if (configurationName != "") {
         return configurationName
       } else {
-        return DEFAULT_SERVICE_NAME
+        return globalVariables.DEFAULT_SERVICE_NAME
       }
     }
 
