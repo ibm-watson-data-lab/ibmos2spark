@@ -195,10 +195,8 @@ class CloudObjectStorage(object):
             multiple configurations to different Object Storage accounts.
             if a configuration name is not passed the default one will be used "service".
 
-        bucket_name (projectId in DSX) [optional]:  string that identifies the defult
+        bucket_name [optional]:  string that identifies the defult
             bucket nameyou want to access files from in the COS service instance.
-            In DSX, bucket_name is the same as projectId. One bucket is
-            associated with one project.
             If this value is not specified, you need to pass it when
             you use the url function.
 
