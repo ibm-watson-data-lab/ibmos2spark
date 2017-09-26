@@ -49,8 +49,8 @@ This library is cross-built on both Scala 2.10 (for Spark 1.6.0) and Scala 2.11 
 
 #### IBM Spark Service  
 
-The `ibmos2spark` Scala library package is now pre-installed on IBM Apache Spark as a service. This includes 
-service instances created in Bluemix or in Data Science Experience. 
+The `ibmos2spark` Scala library package is now pre-installed on IBM Apache Spark as a service. This includes
+service instances created in Bluemix or in Data Science Experience.
 
 ### Snapshots
 
@@ -148,7 +148,8 @@ var credentials = scala.collection.mutable.HashMap[String, String](
 var bucketName = "myBucket"
 var objectname = "mydata.csv"
 
-var cos = new CloudObjectStorage(sc, credentials)
+var configurationName = "cos_config_name" // you can choose any string you want
+var cos = new CloudObjectStorage(sc, credentials, configurationName)
 var spark = SparkSession.
     builder().
     getOrCreate()

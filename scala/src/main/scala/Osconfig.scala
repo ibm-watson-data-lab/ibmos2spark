@@ -3,6 +3,10 @@ package com.ibm.ibmos2spark
 import scala.collection.mutable.HashMap
 import org.apache.spark.SparkContext
 
+object globalVariables {
+  val DEFAULT_SERVICE_NAME = "service"
+}
+
 
 object urlbuilder{
   def swifturl2d(name: String, container_name: String, object_name: String): String = {
@@ -140,22 +144,12 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
 
 *     secretKey
 
-*    cosId [optional]: this parameter is the cloud object storage unique id. It is useful
-            to keep in the class instance for further checks after the initialization. However,
-            it is not mandatory for the class instance to work. This value can be retrieved by
-            calling the getCosId function.
-
-    bucket_name (projectId in DSX) [optional]:  string that identifies the defult
-             bucket nameyou want to access files from in the COS service instance.
-             In DSX, bucket_name is the same as projectId. One bucket is
-             associated with one project.
-             If this value is not specified, you need to pass it when
-             you use the url function.
-*
-    Warning: creating a new instance of this class would overwrite the existing
-              spark hadoop configs if set before if used with the same spark context instance.
+*   configurationName [optional]: string that identifies this configuration. You can
+            use any string you like. This allows you to create
+            multiple configurations to different Object Storage accounts.
+            if a configuration name is not passed the default one will be used "service".
 */
-class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], cosId: String = "") {
+class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], configurationName: String = "") {
 
     // check if all credentials are available
     val requiredValues = Array("endPoint", "accessKey", "secretKey")
@@ -167,16 +161,22 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
 
     // set config
     val hadoopConf = sc.hadoopConfiguration
-    val prefix = "fs.s3d.service"
+    val prefix = "fs.cos." + getConfigurationName()
+
     hadoopConf.set(prefix + ".endpoint", credentials("endPoint"))
     hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
     hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
 
-    def getCosId() : String = {
-        return cosId
+    private def getConfigurationName() : String = {
+      if (configurationName != "") {
+        return configurationName
+      } else {
+        return globalVariables.DEFAULT_SERVICE_NAME
+      }
     }
 
     def url(bucketName: String, objectName: String) : String = {
-        return "s3d://" + bucketName + ".service/" + objectName
+      var serviceName = getConfigurationName()
+      return "cos://" + bucketName + "." + serviceName + "/" + objectName
     }
 }
