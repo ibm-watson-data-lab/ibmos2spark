@@ -126,17 +126,12 @@ bluemix <- setRefClass("bluemix",
 #'
 #' configurationName: string identifies the configurations that has been
 #' set.
-#' When using this from a IBM Spark service instance that
-#' is configured to connect to particular Bluemix object store
-#' instances, the values for these credentials can be obtained
-#' by clicking on the 'insert to code' link just below a data
-#' source.
 #' @export CloudObjectStorage
 #' @exportClass CloudObjectStorage
 CloudObjectStorage <- setRefClass("CloudObjectStorage",
   fields=list(configName="character"),
   methods=list(
-      initialize = function(..., sparkContext, credentials, configurationName){
+      initialize = function(..., sparkContext, credentials, configurationName="") {
 
 
           if (is.null(credentials["endpoint"][[1]])) {
@@ -151,8 +146,11 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
               stop("Attribute secretKey in credentials is missing!")
           }
 
+          # bind config name
           .self$configName = configurationName
-          prefix = "fs.s3d.service"
+
+          # set prefix for hadoop config
+          prefix = paste("fs.cos", getConfigName(), sep='.')
           hConf = SparkR:::callJMethod(sparkContext, "hadoopConfiguration")
           SparkR:::callJMethod(hConf, "set", paste(prefix, "endpoint", sep='.'), credentials['endpoint'][[1]])
           SparkR:::callJMethod(hConf, "set", paste(prefix, "access.key", sep='.'), credentials['accessKey'][[1]])
@@ -160,11 +158,15 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
       },
 
       getConfigName = function() {
-        return (.self$configName)
+        if (.self$configName != "") {
+          return (.self$configName)
+        }
+        return ("service")
       },
 
-      url = function(bucketName, objectName){
-          return(paste("s3d://", bucketName, ".service/", objectName, sep = ""))
+      url = function(bucketName, objectName) {
+        serviceName = getConfigName()
+        return (paste("cos://", bucketName, ".", serviceName, "/", objectName, sep = ""))
       }
   )
 )
