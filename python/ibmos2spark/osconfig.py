@@ -19,6 +19,8 @@ and generate the swifturl.
 
 import warnings
 
+DEFAULT_SERVICE_NAME = "service"
+
 def swifturl2d(name, container_name, object_name):
   return 'swift2d://{}.{}/{}'.format(container_name, name, object_name)
 
@@ -130,12 +132,6 @@ class bluemix(object):
         This is not required at the moment, since credentials['name']
         is still supported.
 
-    When using this from a IBM Spark service instance that
-    is configured to connect to particular Bluemix object store
-    instances, the values for these credentials can be obtained
-    by clicking on the 'insert to code' link just below a data
-    source.
-
     '''
 
     if name:
@@ -174,7 +170,7 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, cos_id='', bucket_name=''):
+    def __init__(self, sparkcontext, credentials, configuration_name='', bucket_name=''):
 
         '''
         sparkcontext:  a SparkContext object.
@@ -184,28 +180,19 @@ class CloudObjectStorage(object):
           * access_key
           * secret_key
 
-        When using this on DSX credentials and bucket_name can be obtained
-        in DSX - Notebooks by clicking on the datasources palette then
-        choose the datasource you want to access then hit insert credentials.
+        configuration_name [optional]: string that identifies this configuration. You can
+            use any string you like. This allows you to create
+            multiple configurations to different Object Storage accounts.
+            if a configuration name is not passed the default one will be used "service".
 
-        cos_id [optional]: this parameter is the cloud object storage unique id. It is useful
-            to keep in the class instance for further checks after the initialization. However,
-            it is not mandatory for the class instance to work. This value can be retrieved by
-            calling the get_os_id function.
-
-        bucket_name (projectId in DSX) [optional]:  string that identifies the defult
+        bucket_name [optional]:  string that identifies the defult
             bucket nameyou want to access files from in the COS service instance.
-            In DSX, bucket_name is the same as projectId. One bucket is
-            associated with one project.
             If this value is not specified, you need to pass it when
             you use the url function.
 
-        Warning: creating a new instance of this class would overwrite the existing
-            spark hadoop configs if set before if used with the same spark context instance.
-
         '''
         self.bucket_name = bucket_name
-        self.cos_id = cos_id
+        self.conf_name = configuration_name
 
         # check if all required values are availble
         credential_key_list = ["endpoint", "access_key", "secret_key"]
@@ -216,17 +203,23 @@ class CloudObjectStorage(object):
                 raise ValueError("Invalid input: credentials.{} is required!".format(key))
 
         # setup config
-        prefix = "fs.s3d.service"
+        prefix = "fs.cos"
+
+        if (configuration_name):
+            prefix = "{}.{}".format(prefix, configuration_name)
+        else:
+            prefix = prefix + "." + DEFAULT_SERVICE_NAME
+
         hconf = sparkcontext._jsc.hadoopConfiguration()
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
         hconf.set(prefix + ".access.key", credentials['access_key'])
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
 
-    def get_os_id():
-        return self.cos_id
-
     def url(self, object_name, bucket_name=''):
         bucket_name_var = ''
+        service_name = DEFAULT_SERVICE_NAME
+
+        # determine the bucket to use
         if (bucket_name):
             bucket_name_var = bucket_name
         elif (self.bucket_name):
@@ -234,4 +227,8 @@ class CloudObjectStorage(object):
         else:
             raise ValueError("Invalid input: bucket_name is required!")
 
-        return "s3d://{}.service/{}".format(bucket_name_var, object_name)
+        # use service name that we set up hadoop config for
+        if (self.conf_name):
+            service_name = self.conf_name
+
+        return "cos://{}.{}/{}".format(bucket_name_var, service_name, object_name)

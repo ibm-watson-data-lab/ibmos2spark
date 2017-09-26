@@ -14,7 +14,7 @@ and adding it to your local Apache Spark kernel's classpath.
 
 ## Installation
 
-This library is now installed by default on IBM Apache Spark. 
+This library is now installed by default on IBM Apache Spark.
 
 ```
 pip install --user --upgrade ibmos2spark
@@ -42,7 +42,8 @@ credentials = {
   'secret_key': ''
 }
 
-cos = ibmos2spark.CloudObjectStorage(sc, credentials)  #sc is the SparkContext instance
+configuration_name = 'cos_config_string'  #you can give any string you like
+cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name)  #sc is the SparkContext instance.
 
 bucket_name = 'some_bucket_name'
 object_name = 'file1'
