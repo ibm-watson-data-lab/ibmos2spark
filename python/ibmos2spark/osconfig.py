@@ -186,10 +186,6 @@ class CloudObjectStorage(object):
           * access_key
           * secret_key
 
-        When using this on DSX credentials and bucket_name can be obtained
-        in DSX - Notebooks by clicking on the datasources palette then
-        choose the datasource you want to access then hit insert credentials.
-
         configuration_name [optional]: string that identifies this configuration. You can
             use any string you like. This allows you to create
             multiple configurations to different Object Storage accounts.
