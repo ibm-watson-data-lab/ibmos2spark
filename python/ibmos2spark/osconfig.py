@@ -192,17 +192,10 @@ class CloudObjectStorage(object):
 
         '''
         # check if all required values are availble
-        _validate_input(credentials, cos_type, auth_method)
+        self._validate_input(credentials, cos_type, auth_method)
 
         self.bucket_name = bucket_name
         self.conf_name = configuration_name
-
-        credential_key_list = ["endpoint", "access_key", "secret_key"]
-
-        for i in range(len(credential_key_list)):
-            key = credential_key_list[i]
-            if (not key in credentials):
-                raise ValueError("Invalid input: credentials.{} is required!".format(key))
 
         # setup config
         prefix = "fs.cos"
@@ -214,8 +207,20 @@ class CloudObjectStorage(object):
 
         hconf = sparkcontext._jsc.hadoopConfiguration()
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
-        hconf.set(prefix + ".access.key", credentials['access_key'])
-        hconf.set(prefix + ".secret.key", credentials['secret_key'])
+
+        if (cos_type == "classic_cos"):
+            hconf.set(prefix + ".access.key", credentials['access_key'])
+            hconf.set(prefix + ".secret.key", credentials['secret_key'])
+
+        elif (cos_type == "bluemix_cos"):
+            hconf.set(prefix + ".iam.service.id", credentials['service_id'])
+            if (auth_method == "api_key"):
+                hconf.set(prefix + ".iam.api.key", credentials['api_key'])
+            elif (auth_method == "iam_token"):
+                hconf.set(prefix + ".iam.token", credentials['iam_token'])
+
+            if (credentials.get('v2_signer_type')):
+                hconf.set(prefix + ".v2.signer.type", credentials['v2_signer_type'])
 
     def _validate_input(self, credentials, cos_type, auth_method):
         required_key_classic_cos = ["endpoint", "access_key", "secret_key"]
