@@ -170,7 +170,7 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, configuration_name='', bucket_name=''):
+    def __init__(self, sparkcontext, credentials, configuration_name='', cos_type='classic_cos', auth_method='api_key', bucket_name=''):
 
         '''
         sparkcontext:  a SparkContext object.
@@ -191,10 +191,12 @@ class CloudObjectStorage(object):
             you use the url function.
 
         '''
+        # check if all required values are availble
+        _validate_input(credentials, cos_type, auth_method)
+
         self.bucket_name = bucket_name
         self.conf_name = configuration_name
 
-        # check if all required values are availble
         credential_key_list = ["endpoint", "access_key", "secret_key"]
 
         for i in range(len(credential_key_list)):
@@ -214,6 +216,34 @@ class CloudObjectStorage(object):
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
         hconf.set(prefix + ".access.key", credentials['access_key'])
         hconf.set(prefix + ".secret.key", credentials['secret_key'])
+
+    def _validate_input(self, credentials, cos_type, auth_method):
+        required_key_classic_cos = ["endpoint", "access_key", "secret_key"]
+        required_key_list_iam_api_key = ["endpoint", "api_key", "service_id"]
+        required_key_list_iam_token = ["endpoint", "token", "service_id"]
+
+        def _get_required_keys(cos_type, auth_method):
+            if (cos_type == "bluemix_cos"):
+                if (auth_method == "api_key"):
+                    return required_key_list_iam_api_key
+                elif (auth_method == "iam_token")
+                    return required_key_list_iam_token
+                else:
+                    raise ValueError("Invalid input: auth_method. auth_method is optional but if set, it should have one of the following values: api_key, iam_token")
+            elif (cos_type == "classic_cos"):
+                return required_key_classic_cos
+            else:
+                raise ValueError("Invalid input: cos_type. cos_type is optional but if set, it should have one of the following values: classic_cos, bluemix_cos")
+
+        # check keys
+        required_key_list = _get_required_keys()
+
+        for i in range(len(required_key_list)):
+            key = required_key_list[i]
+            if (key not in credentials):
+                raise ValueError("Invalid input: credentials. {} is required!".format(key))
+
+        return True
 
     def url(self, object_name, bucket_name=''):
         bucket_name_var = ''
