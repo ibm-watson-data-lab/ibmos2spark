@@ -173,17 +173,35 @@ class CloudObjectStorage(object):
     def __init__(self, sparkcontext, credentials, configuration_name='', cos_type='classic_cos', auth_method='api_key', bucket_name=''):
 
         '''
+        This class allows you to connect to a cloud object storage (COS) instance. It also support connecting to a cos instance
+        that is being hosted on bluemix.
+
         sparkcontext:  a SparkContext object.
 
-        credentials:  a dictionary with the following required keys:
-          * endpoint
-          * access_key
-          * secret_key
+        credentials:  a dictionary with the required keys to connect to cos. The required keys differ according
+            to the type of cos.
+            - for cos type "classic_cos" the following key are required:
+              * endpoint
+              * access_key
+              * secret_key
+            - for cos type "bluemix_cos", here are the required/optional key:
+              * endpoint [required]
+              * service_id [required]
+              * api_key OR iam_token depends on the selected authorization method (auth_method) [required]
+              * iam_service_endpoint [optional]
+              * v2_signer_type [optional]
 
         configuration_name [optional]: string that identifies this configuration. You can
             use any string you like. This allows you to create
             multiple configurations to different Object Storage accounts.
             if a configuration name is not passed the default one will be used "service".
+
+        cos_type [optional]: string that identifies the type of cos to connect to. The supported types of cos
+            are "classic_cos" and "bluemix_cos". "classic_cos" will be chosen as default if no cos_type is passed.
+
+        auth_method [optional]: string that identifies the type of authorization to use when connecting to cos. This param
+            is not reqired for classic_cos but only needed for bluemix_cos. Two options can be chosen for this params
+            "api_key" or "iam_token". "api_key" will be chosen as default if the value is not set.
 
         bucket_name [optional]:  string that identifies the defult
             bucket nameyou want to access files from in the COS service instance.
@@ -247,8 +265,6 @@ class CloudObjectStorage(object):
             key = required_key_list[i]
             if (key not in credentials):
                 raise ValueError("Invalid input: credentials. {} is required!".format(key))
-
-        return True
 
     def url(self, object_name, bucket_name=''):
         bucket_name_var = ''
