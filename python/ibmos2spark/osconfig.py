@@ -259,7 +259,7 @@ class CloudObjectStorage(object):
                 raise ValueError("Invalid input: cos_type. cos_type is optional but if set, it should have one of the following values: classic_cos, bluemix_cos")
 
         # check keys
-        required_key_list = _get_required_keys()
+        required_key_list = _get_required_keys(cos_type, auth_method)
 
         for i in range(len(required_key_list)):
             key = required_key_list[i]
