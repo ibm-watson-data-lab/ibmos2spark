@@ -249,7 +249,7 @@ class CloudObjectStorage(object):
             if (cos_type == "bluemix_cos"):
                 if (auth_method == "api_key"):
                     return required_key_list_iam_api_key
-                elif (auth_method == "iam_token")
+                elif (auth_method == "iam_token"):
                     return required_key_list_iam_token
                 else:
                     raise ValueError("Invalid input: auth_method. auth_method is optional but if set, it should have one of the following values: api_key, iam_token")
