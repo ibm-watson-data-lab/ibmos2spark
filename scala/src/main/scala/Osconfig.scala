@@ -156,13 +156,6 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
     // check for valid credentials
     _validate_credentials(credentials, cosType, authMethod)
 
-    val requiredValues = Array("endPoint", "accessKey", "secretKey")
-    for ( key <- requiredValues ) {
-        if (!credentials.contains(key)) {
-            throw new IllegalArgumentException("Invalid input: missing required input [" + key + "]")
-        }
-    }
-
     // set config
     val hadoopConf = sc.hadoopConfiguration
     val prefix = "fs.cos." + _getConfigurationName()
@@ -179,11 +172,18 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       }
     }
 
-    private def _validate_credentials(credentials, cosType, authMethod) : Array {
-      val requiredKeys = _get_required_key_array()
+    private def _validate_credentials(credentials, cosType, authMethod) {
+      val requiredKeys = _get_required_key_array(cosType, authMethod)
+
+      // check the existence of all required values in credentials
+      for ( key <- requiredKeys ) {
+          if (!credentials.contains(key)) {
+              throw new IllegalArgumentException("Invalid input: missing required input [" + key + "]")
+          }
+      }
     }
 
-    private def _get_required_key_array(credentials, cosType, authMethod) {
+    private def _get_required_key_array(cosType, authMethod) : Array {
       val required_key_softlayer_cos = Array("endPoint", "accessKey", "secretKey")
       val required_key_list_iam_api_key = Array("endPoint", "apiKey", "serviceId")
       val required_key_list_iam_token = Array("endPoint", "iamToken", "serviceId")
