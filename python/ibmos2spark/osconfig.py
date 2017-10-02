@@ -170,7 +170,7 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, configuration_name='', cos_type='classic_cos', auth_method='api_key', bucket_name=''):
+    def __init__(self, sparkcontext, credentials, configuration_name='', cos_type='softlayer_cos', auth_method='api_key', bucket_name=''):
 
         '''
         This class allows you to connect to a cloud object storage (COS) instance. It also support connecting to a cos instance
@@ -180,7 +180,7 @@ class CloudObjectStorage(object):
 
         credentials:  a dictionary with the required keys to connect to cos. The required keys differ according
             to the type of cos.
-            - for cos type "classic_cos" the following key are required:
+            - for cos type "softlayer_cos" the following key are required:
               * endpoint
               * access_key
               * secret_key
@@ -197,10 +197,10 @@ class CloudObjectStorage(object):
             if a configuration name is not passed the default one will be used "service".
 
         cos_type [optional]: string that identifies the type of cos to connect to. The supported types of cos
-            are "classic_cos" and "bluemix_cos". "classic_cos" will be chosen as default if no cos_type is passed.
+            are "softlayer_cos" and "bluemix_cos". "softlayer_cos" will be chosen as default if no cos_type is passed.
 
-        auth_method [optional]: string that identifies the type of authorization to use when connecting to cos. This param
-            is not reqired for classic_cos but only needed for bluemix_cos. Two options can be chosen for this params
+        auth_method [optional]: string that identifies the type of authorization to use when connecting to cos. This parameter
+            is not reqired for softlayer_cos but only needed for bluemix_cos. Two options can be chosen for this params
             "api_key" or "iam_token". "api_key" will be chosen as default if the value is not set.
 
         bucket_name [optional]:  string that identifies the defult
@@ -227,7 +227,7 @@ class CloudObjectStorage(object):
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
 
         # softlayer cos case
-        if (cos_type == "classic_cos"):
+        if (cos_type == "softlayer_cos"):
             hconf.set(prefix + ".access.key", credentials['access_key'])
             hconf.set(prefix + ".secret.key", credentials['secret_key'])
 
@@ -246,7 +246,7 @@ class CloudObjectStorage(object):
                 hconf.set(prefix + ".v2.signer.type", credentials['v2_signer_type'])
 
     def _validate_input(self, credentials, cos_type, auth_method):
-        required_key_classic_cos = ["endpoint", "access_key", "secret_key"]
+        required_key_softlayer_cos = ["endpoint", "access_key", "secret_key"]
         required_key_list_iam_api_key = ["endpoint", "api_key", "service_id"]
         required_key_list_iam_token = ["endpoint", "iam_token", "service_id"]
 
@@ -258,10 +258,10 @@ class CloudObjectStorage(object):
                     return required_key_list_iam_token
                 else:
                     raise ValueError("Invalid input: auth_method. auth_method is optional but if set, it should have one of the following values: api_key, iam_token")
-            elif (cos_type == "classic_cos"):
-                return required_key_classic_cos
+            elif (cos_type == "softlayer_cos"):
+                return required_key_softlayer_cos
             else:
-                raise ValueError("Invalid input: cos_type. cos_type is optional but if set, it should have one of the following values: classic_cos, bluemix_cos")
+                raise ValueError("Invalid input: cos_type. cos_type is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
 
         # check keys
         required_key_list = _get_required_keys(cos_type, auth_method)
