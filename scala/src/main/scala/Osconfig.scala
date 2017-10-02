@@ -161,8 +161,28 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
     val prefix = "fs.cos." + _getConfigurationName()
 
     hadoopConf.set(prefix + ".endpoint", credentials("endPoint"))
-    hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
-    hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
+
+    if (cos_type == "softlayer_cos") {
+      // softlayer cos case
+      hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
+      hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
+    } else if (cos_type == "bluemix_cos") {
+      // bluemix cos case
+      hadoopConf.set(prefix + ".iam.service.id", credentials("serviceId"))
+      if (authMethod == "api_key") {
+        hadoopConf.set(prefix + ".iam.api.key", credentials("apiKey"))
+      } else if (authMethod == "iam_token") {
+        hadoopConf.set(prefix + ".iam.token", credentials("iamToken"))
+      }
+
+      if (credentials.contains("iamServiceEndpoint")) {
+        hadoopConf.set(prefix + ".iam.endpoint", credentials("iamServiceEndpoint"))
+      }
+
+      if (credentials.contains("v2SignerType")) {
+        hadoopConf.set(prefix + ".v2.signer.type", credentials("v2SignerType"))
+      }
+    }
 
     private def _getConfigurationName() : String = {
       if (configurationName != "") {
