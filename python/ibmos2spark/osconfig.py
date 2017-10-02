@@ -226,10 +226,12 @@ class CloudObjectStorage(object):
         hconf = sparkcontext._jsc.hadoopConfiguration()
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
 
+        # softlayer cos case
         if (cos_type == "classic_cos"):
             hconf.set(prefix + ".access.key", credentials['access_key'])
             hconf.set(prefix + ".secret.key", credentials['secret_key'])
 
+        # bluemix cos case
         elif (cos_type == "bluemix_cos"):
             hconf.set(prefix + ".iam.service.id", credentials['service_id'])
             if (auth_method == "api_key"):
@@ -237,13 +239,16 @@ class CloudObjectStorage(object):
             elif (auth_method == "iam_token"):
                 hconf.set(prefix + ".iam.token", credentials['iam_token'])
 
+            if (credentials.get('iam_service_endpoint')):
+                hconf.set(prefix + ".iam.endpoint", credentials['iam_service_endpoint'])
+
             if (credentials.get('v2_signer_type')):
                 hconf.set(prefix + ".v2.signer.type", credentials['v2_signer_type'])
 
     def _validate_input(self, credentials, cos_type, auth_method):
         required_key_classic_cos = ["endpoint", "access_key", "secret_key"]
         required_key_list_iam_api_key = ["endpoint", "api_key", "service_id"]
-        required_key_list_iam_token = ["endpoint", "token", "service_id"]
+        required_key_list_iam_token = ["endpoint", "iam_token", "service_id"]
 
         def _get_required_keys(cos_type, auth_method):
             if (cos_type == "bluemix_cos"):
