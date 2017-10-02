@@ -162,8 +162,8 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
             "api_key" or "iam_token". "api_key" will be chosen as default if the value is not set.
 */
 class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
-                         configurationName: String = "", cosType="softlayer_cos",
-                         authMethod="api_key") {
+                         configurationName: String = "", cosType: String = "softlayer_cos",
+                         authMethod: String = "api_key") {
 
     // check for valid credentials
     _validate_credentials(credentials, cosType, authMethod)
@@ -204,7 +204,7 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       }
     }
 
-    private def _validate_credentials(credentials, cosType, authMethod) {
+    private def _validate_credentials(credentials : HashMap[String, String], cosType : String, authMethod : String) {
       val requiredKeys = _get_required_key_array(cosType, authMethod)
 
       // check the existence of all required values in credentials
@@ -215,7 +215,7 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       }
     }
 
-    private def _get_required_key_array(cosType, authMethod) : Array {
+    private def _get_required_key_array(cosType : String, authMethod : String) : Array {
       val required_key_softlayer_cos = Array("endPoint", "accessKey", "secretKey")
       val required_key_list_iam_api_key = Array("endPoint", "apiKey", "serviceId")
       val required_key_list_iam_token = Array("endPoint", "iamToken", "serviceId")
