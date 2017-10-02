@@ -149,9 +149,13 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
             multiple configurations to different Object Storage accounts.
             if a configuration name is not passed the default one will be used "service".
 */
-class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String], configurationName: String = "") {
+class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
+                         configurationName: String = "", cos_type="softlayer_cos",
+                         auth_method="api_key") {
 
-    // check if all credentials are available
+    // check for valid credentials
+    _validate_credentials(credentials, cos_type, auth_method)
+
     val requiredValues = Array("endPoint", "accessKey", "secretKey")
     for ( key <- requiredValues ) {
         if (!credentials.contains(key)) {
@@ -161,13 +165,13 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
 
     // set config
     val hadoopConf = sc.hadoopConfiguration
-    val prefix = "fs.cos." + getConfigurationName()
+    val prefix = "fs.cos." + _getConfigurationName()
 
     hadoopConf.set(prefix + ".endpoint", credentials("endPoint"))
     hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
     hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
 
-    private def getConfigurationName() : String = {
+    private def _getConfigurationName() : String = {
       if (configurationName != "") {
         return configurationName
       } else {
@@ -175,8 +179,12 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       }
     }
 
+    private def _validate_credentials() {
+
+    }
+
     def url(bucketName: String, objectName: String) : String = {
-      var serviceName = getConfigurationName()
+      var serviceName = _getConfigurationName()
       return "cos://" + bucketName + "." + serviceName + "/" + objectName
     }
 }
