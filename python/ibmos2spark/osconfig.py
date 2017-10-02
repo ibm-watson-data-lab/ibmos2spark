@@ -188,7 +188,7 @@ class CloudObjectStorage(object):
               * endpoint [required]
               * service_id [required]
               * api_key OR iam_token depends on the selected authorization method (auth_method) [required]
-              * iam_service_endpoint [optional]
+              * iam_service_endpoint [optional] (default: https://iam.ng.bluemix.net/oidc/token)
               * v2_signer_type [optional]
 
         configuration_name [optional]: string that identifies this configuration. You can
