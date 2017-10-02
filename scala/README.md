@@ -218,7 +218,7 @@ var dfData1 = spark.
     load(cos.url(bucketName, objectname))
 ```
 
-### Bluemix / Data Science Experience
+### Bluemix Swift Object Storage/ Data Science Experience
 
 
 ```scala
@@ -245,7 +245,7 @@ var rdd = sc.textFile(bmos.url(container , objectname))
 ```
 
 
-### Softlayer
+### Softlayer Swift Object Storage
 
 
 
