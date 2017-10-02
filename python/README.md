@@ -72,6 +72,25 @@ object_name = 'file_name'
 data = sc.textFile(cos.url(object_name, bucket_name))
 ```
 
+Alternatively, you can connect to bluemix cos using IAM token. Example:
+```pythonw
+import ibmos2spark
+
+# @hidden_cell
+credentials = {
+    'endpoint': 'XXX',
+    'iam_token': 'eyJraWQXXXX .... X',
+    'service_id': 'XXX'
+}
+
+configuration_name = 'os_bluemix_cos_config'
+cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name, 'bluemix_cos', 'iam_token')
+
+bucket_name = 'bucket_name'
+object_name = 'file_name'
+data = sc.textFile(cos.url(object_name, bucket_name))
+```
+
 
 ### Bluemix / Data Science Experience
 
