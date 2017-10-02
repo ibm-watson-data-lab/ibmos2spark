@@ -129,10 +129,15 @@ bluemix <- setRefClass("bluemix",
 #' @export CloudObjectStorage
 #' @exportClass CloudObjectStorage
 CloudObjectStorage <- setRefClass("CloudObjectStorage",
-  fields=list(configName="character"),
+  fields=list(configName="character", cosType="character", authMethod="character"),
   methods=list(
-      initialize = function(..., sparkContext, credentials, configurationName="") {
+      initialize = function(..., sparkContext, credentials, configurationName="",
+                            cosType="softlayer_cos", authMethod="api_key") {
 
+          # validate input
+          validateInput(credentials, cosType, authMethod)
+
+          # set up hadoop config
 
           if (is.null(credentials["endpoint"][[1]])) {
               stop("Attribute endpoint in credentials is missing!")
@@ -162,6 +167,10 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
           return (.self$configName)
         }
         return ("service")
+      },
+
+      validateInput = function (credentials, cosType, authMethod) {
+
       },
 
       url = function(bucketName, objectName) {
