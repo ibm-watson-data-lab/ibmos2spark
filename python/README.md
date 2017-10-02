@@ -92,7 +92,7 @@ data = sc.textFile(cos.url(object_name, bucket_name))
 ```
 
 
-### Bluemix / Data Science Experience
+### Bluemix Swift Object Storage / Data Science Experience
 
 ```python
 import ibmos2spark
@@ -117,7 +117,7 @@ data = sc.textFile(bmos.url(container_name, object_name))
 ```
 
 
-### Softlayer
+### Softlayer Swift Object Storage
 
 
 ```python
