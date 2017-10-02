@@ -150,11 +150,11 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
             if a configuration name is not passed the default one will be used "service".
 */
 class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
-                         configurationName: String = "", cos_type="softlayer_cos",
-                         auth_method="api_key") {
+                         configurationName: String = "", cosType="softlayer_cos",
+                         authMethod="api_key") {
 
     // check for valid credentials
-    _validate_credentials(credentials, cos_type, auth_method)
+    _validate_credentials(credentials, cosType, authMethod)
 
     val requiredValues = Array("endPoint", "accessKey", "secretKey")
     for ( key <- requiredValues ) {
@@ -179,8 +179,28 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       }
     }
 
-    private def _validate_credentials() {
+    private def _validate_credentials(credentials, cosType, authMethod) : Array {
+      val requiredKeys = _get_required_key_array()
+    }
 
+    private def _get_required_key_array(credentials, cosType, authMethod) {
+      val required_key_softlayer_cos = Array("endPoint", "accessKey", "secretKey")
+      val required_key_list_iam_api_key = Array("endPoint", "apiKey", "serviceId")
+      val required_key_list_iam_token = Array("endPoint", "iamToken", "serviceId")
+
+      if (cosType == "bluemix_cos") {
+        if (authMethod == "api_key") {
+          return required_key_list_iam_api_key
+        } else if (authMethod == "iam_token") {
+          return required_key_list_iam_token
+        } else {
+          throw new IllegalArgumentException("Invalid input: authMethod. authMethod is optional but if set, it should have one of the following values: api_key, iam_token")
+        }
+      } else if (cosType == "softlayer_cos") {
+        return required_key_softlayer_cos
+      } else {
+        throw new IllegalArgumentException("Invalid input: cosType. cosType is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
+      }
     }
 
     def url(bucketName: String, objectName: String) : String = {
