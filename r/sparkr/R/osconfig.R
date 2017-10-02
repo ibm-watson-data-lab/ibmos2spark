@@ -173,6 +173,26 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
 
       },
 
+      get_required_key_array = function (cosType, authMethod) {
+        required_key_softlayer_cos = ["endpoint", "accessKey", "secretKey"]
+        required_key_list_iam_api_key = ["endpoint", "apiKey", "serviceId"]
+        required_key_list_iam_token = ["endpoint", "iamToken", "serviceId"]
+
+        if (cosType == "bluemix_cos") {
+          if (authMethod == "api_key") {
+            return required_key_list_iam_api_key
+          } else if (authMethod == "iam_token") {
+            return required_key_list_iam_token
+          } else {
+            stop("Invalid input: authMethod. authMethod is optional but if set, it should have one of the following values: api_key, iam_token")
+          }
+        } else if (cosType == "softlayer_cos") {
+          return required_key_softlayer_cos
+        } else {
+          stop("Invalid input: cosType. cosType is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
+        }
+      },
+
       url = function(bucketName, objectName) {
         serviceName = getConfigName()
         return (paste("cos://", bucketName, ".", serviceName, "/", objectName, sep = ""))
