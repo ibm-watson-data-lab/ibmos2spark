@@ -129,21 +129,21 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
 }
 
 /**
-*  This class allows you to connect to a cloud object storage (COS) instance. It also support
-    connecting to a cos instance that is being hosted on bluemix.
+*  This class allows you to connect to an IBM cloud object storage (COS) instance. It also support
+    connecting to a COS instance that is being hosted on bluemix.
 
 * Constructor arguments:
 
 *   sparkcontext:  a SparkContext object.
 
-*   credentials:  a dictionary with the following required keys to connect to cos.
-      The required keys differ according to the type of cos.
-*      - for cos type "softlayer_cos" the following key are required:
-          * endpoint [required]
+*   credentials:  a dictionary with the following required keys to connect to COS.
+      The required keys differ according to the type of COS.
+*      - for COS type "softlayer_cos" the following key are required:
+          * endPoint [required]
           * accessKey [required]
           * secretKey [required]
-*      - for cos type "bluemix_cos", here are the required/optional key:
-          * endpoint [required]
+*      - for COS type "bluemix_cos", here are the required/optional key:
+          * endPoint [required]
           * serviceId [required]
           * apiKey OR iamToken depends on the selected authorization method (authMethod) [required]
           * iamServiceEndpoint [optional] (default: https://iam.ng.bluemix.net/oidc/token)
@@ -154,10 +154,10 @@ class bluemix(sc: SparkContext, name: String, creds: HashMap[String, String],
             multiple configurations to different Object Storage accounts.
             if a configuration name is not passed the default one will be used "service".
 
-*   cosType [optional]: string that identifies the type of cos to connect to. The supported types of cos
+*   cosType [optional]: string that identifies the type of COS to connect to. The supported types of COS
             are "softlayer_cos" and "bluemix_cos". "softlayer_cos" will be chosen as default if no cosType is passed.
 
-*   authMethod [optional]: string that identifies the type of authorization method to use when connecting to cos. This parameter
+*   authMethod [optional]: string that identifies the type of authorization method to use when connecting to COS. This parameter
             is not reqired for softlayer_cos but only needed for bluemix_cos. Two options can be chosen for this params
             "api_key" or "iam_token". "api_key" will be chosen as default if the value is not set.
 */
@@ -179,7 +179,7 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
       hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
     } else if (cosType == "bluemix_cos") {
-      // bluemix cos case
+      // bluemix COS case
       hadoopConf.set(prefix + ".iam.service.id", credentials("serviceId"))
       if (authMethod == "api_key") {
         hadoopConf.set(prefix + ".iam.api.key", credentials("apiKey"))
