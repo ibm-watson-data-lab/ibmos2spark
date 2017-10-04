@@ -159,11 +159,12 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
               SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.token", sep='.'), credentials['iamToken'][[1]])
             }
 
-            if ("iamServiceEndpoint" %in% credentials) {
+            if ("iamServiceEndpoint" %in% names(credentials)) {
+                print('true')
               SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.endpoint", sep='.'), credentials['iamServiceEndpoint'][[1]])
             }
 
-            if ("v2SignerType" %in% credentials) {
+            if ("v2SignerType" %in% names(credentials)) {
               SparkR:::callJMethod(hConf, "set", paste(prefix, "v2.signer.type", sep='.'), credentials['v2SignerType'][[1]])
             }
           }
@@ -181,7 +182,7 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
 
         # check the existence of all required values in credentials
         for (key in requiredKeys) {
-          if (!key %in% credentials) {
+          if (!key %in% names(credentials)) {
               stop(paste("Invalid input: missing required input [", key, "]!", sep=''))
           }
         }
