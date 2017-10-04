@@ -170,24 +170,30 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
       },
 
       validateInput = function (credentials, cosType, authMethod) {
+        requiredKeys = get_required_key_array(cosType, authMethod)
+
+        # check the existence of all required values in credentials
+        for (name in names(requiredKeys)) {
+          
+        }
 
       },
 
       get_required_key_array = function (cosType, authMethod) {
-        required_key_softlayer_cos = ["endpoint", "accessKey", "secretKey"]
-        required_key_list_iam_api_key = ["endpoint", "apiKey", "serviceId"]
-        required_key_list_iam_token = ["endpoint", "iamToken", "serviceId"]
+        requiredKeySoftlayerCos = list("endpoint", "accessKey", "secretKey")
+        requiredKeyListIamApiKey = list("endpoint", "apiKey", "serviceId")
+        requiredKeyListIamToken = list("endpoint", "iamToken", "serviceId")
 
         if (cosType == "bluemix_cos") {
           if (authMethod == "api_key") {
-            return required_key_list_iam_api_key
+            return requiredKeyListIamApiKey
           } else if (authMethod == "iam_token") {
-            return required_key_list_iam_token
+            return requiredKeyListIamToken
           } else {
             stop("Invalid input: authMethod. authMethod is optional but if set, it should have one of the following values: api_key, iam_token")
           }
         } else if (cosType == "softlayer_cos") {
-          return required_key_softlayer_cos
+          return requiredKeySoftlayerCos
         } else {
           stop("Invalid input: cosType. cosType is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
         }
