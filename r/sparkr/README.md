@@ -37,7 +37,7 @@ within a DSX Jupyter notebook, you can obtain your account credentials in the fo
 If your Object Storage was created with a Softlayer account, each part of the credentials will
 be found as text that you can copy and paste into the example code below.
 
-### Softlayer - IBM Cloud Object Storage
+### Softlayer - IBM Cloud Object Storage (COS)
     library(ibmos2sparkR)
     configurationName = "bluemixO123"
 
@@ -60,9 +60,8 @@ be found as text that you can copy and paste into the example code below.
         header = "true")
     head(df.data.1)
 
-### Bluemix - IBM Cloud Object Storage
-The class CloudObjectStorage allows you to connect to an IBM Cloud Object Storage (COS) hosted on Bluemix. You can connect to
-a Bluemix COS using api keys as follows:
+### Bluemix - IBM Cloud Object Storage (COS)
+The class CloudObjectStorage allows you to connect to an IBM Cloud Object Storage (COS) hosted on Bluemix. You can connect to a Bluemix COS using api keys as follows:
 
     library(ibmos2sparkR)
     configurationName = "bluemixO123"
