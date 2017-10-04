@@ -159,7 +159,7 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
               SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.token", sep='.'), credentials['iamToken'][[1]])
             }
 
-            if ("iamServiceEndpoint" %in% credentials {
+            if ("iamServiceEndpoint" %in% credentials) {
               SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.endpoint", sep='.'), credentials['iamServiceEndpoint'][[1]])
             }
 
@@ -182,7 +182,7 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
         # check the existence of all required values in credentials
         for (key in requiredKeys) {
           if (!key %in% credentials) {
-              stop("Invalid input: missing required input [" + key + "]!")
+              stop(paste("Invalid input: missing required input [", key, "]!", sep=''))
           }
         }
       },
