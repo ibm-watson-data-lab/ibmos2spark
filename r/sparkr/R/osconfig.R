@@ -176,7 +176,6 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
             }
 
             if ("iamServiceEndpoint" %in% names(credentials)) {
-                print('true')
               SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.endpoint", sep='.'), credentials['iamServiceEndpoint'][[1]])
             }
 
