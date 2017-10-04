@@ -173,18 +173,18 @@ class CloudObjectStorage(object):
     def __init__(self, sparkcontext, credentials, configuration_name='', cos_type='softlayer_cos', auth_method='api_key', bucket_name=''):
 
         '''
-        This class allows you to connect to a cloud object storage (COS) instance. It also support connecting to a cos instance
+        This class allows you to connect to an IBM cloud object storage (COS) instance. It also support connecting to an IBM COS instance
         that is being hosted on bluemix.
 
         sparkcontext:  a SparkContext object.
 
         credentials:  a dictionary with the required keys to connect to cos. The required keys differ according
-            to the type of cos.
-            - for cos type "softlayer_cos" the following key are required:
+            to the type of COS.
+            - for COS type "softlayer_cos" the following key are required:
               * endpoint
               * access_key
               * secret_key
-            - for cos type "bluemix_cos", here are the required/optional key:
+            - for COS type "bluemix_cos", here are the required/optional key:
               * endpoint [required]
               * service_id [required]
               * api_key OR iam_token depends on the selected authorization method (auth_method) [required]
@@ -196,10 +196,10 @@ class CloudObjectStorage(object):
             multiple configurations to different Object Storage accounts.
             if a configuration name is not passed the default one will be used "service".
 
-        cos_type [optional]: string that identifies the type of cos to connect to. The supported types of cos
+        cos_type [optional]: string that identifies the type of COS to connect to. The supported types of COS
             are "softlayer_cos" and "bluemix_cos". "softlayer_cos" will be chosen as default if no cos_type is passed.
 
-        auth_method [optional]: string that identifies the type of authorization to use when connecting to cos. This parameter
+        auth_method [optional]: string that identifies the type of authorization to use when connecting to an IBM COS. This parameter
             is not reqired for softlayer_cos but only needed for bluemix_cos. Two options can be chosen for this params
             "api_key" or "iam_token". "api_key" will be chosen as default if the value is not set.
 
