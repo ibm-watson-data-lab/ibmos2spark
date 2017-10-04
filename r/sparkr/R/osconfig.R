@@ -138,7 +138,6 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
           validateInput(credentials, cosType, authMethod)
 
           # set up hadoop config
-
           if (is.null(credentials["endpoint"][[1]])) {
               stop("Attribute endpoint in credentials is missing!")
           }
@@ -173,8 +172,10 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
         requiredKeys = get_required_key_array(cosType, authMethod)
 
         # check the existence of all required values in credentials
-        for (name in names(requiredKeys)) {
-          
+        for (key in requiredKeys) {
+          if (!key %in% credentials) {
+              stop("Invalid input: missing required input [" + key + "]!")
+          }
         }
 
       },
@@ -186,14 +187,14 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
 
         if (cosType == "bluemix_cos") {
           if (authMethod == "api_key") {
-            return requiredKeyListIamApiKey
+            return (requiredKeyListIamApiKey)
           } else if (authMethod == "iam_token") {
-            return requiredKeyListIamToken
+            return (requiredKeyListIamToken)
           } else {
             stop("Invalid input: authMethod. authMethod is optional but if set, it should have one of the following values: api_key, iam_token")
           }
         } else if (cosType == "softlayer_cos") {
-          return requiredKeySoftlayerCos
+          return (requiredKeySoftlayerCos)
         } else {
           stop("Invalid input: cosType. cosType is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
         }
