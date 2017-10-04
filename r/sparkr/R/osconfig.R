@@ -140,12 +140,33 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
           # bind config name
           .self$configName = configurationName
 
-          # set prefix for hadoop config
+          # set up hadoop config
           prefix = paste("fs.cos", getConfigName(), sep='.')
           hConf = SparkR:::callJMethod(sparkContext, "hadoopConfiguration")
+
           SparkR:::callJMethod(hConf, "set", paste(prefix, "endpoint", sep='.'), credentials['endpoint'][[1]])
-          SparkR:::callJMethod(hConf, "set", paste(prefix, "access.key", sep='.'), credentials['accessKey'][[1]])
-          SparkR:::callJMethod(hConf, "set", paste(prefix, "secret.key", sep='.'), credentials['secretKey'][[1]])
+
+          if (cosType == "softlayer_cos") {
+            # softlayer COS case
+            SparkR:::callJMethod(hConf, "set", paste(prefix, "access.key", sep='.'), credentials['accessKey'][[1]])
+            SparkR:::callJMethod(hConf, "set", paste(prefix, "secret.key", sep='.'), credentials['secretKey'][[1]])
+          } else if (cosType == "bluemix_cos") {
+            # bluemix COS case
+            SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.service.id", sep='.'), credentials['serviceId'][[1]])
+            if (authMethod == "api_key") {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.api.key", sep='.'), credentials['apiKey'][[1]])
+            } else if (authMethod == "iam_token") {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.token", sep='.'), credentials['iamToken'][[1]])
+            }
+
+            if ("iamServiceEndpoint" %in% credentials {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.endpoint", sep='.'), credentials['iamServiceEndpoint'][[1]])
+            }
+
+            if ("v2SignerType" %in% credentials) {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "v2.signer.type", sep='.'), credentials['v2SignerType'][[1]])
+            }
+          }
       },
 
       getConfigName = function() {
@@ -164,7 +185,6 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
               stop("Invalid input: missing required input [" + key + "]!")
           }
         }
-
       },
 
       get_required_key_array = function (cosType, authMethod) {
