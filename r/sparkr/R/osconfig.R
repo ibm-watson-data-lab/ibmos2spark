@@ -137,19 +137,6 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
           # validate input
           validateInput(credentials, cosType, authMethod)
 
-          # set up hadoop config
-          if (is.null(credentials["endpoint"][[1]])) {
-              stop("Attribute endpoint in credentials is missing!")
-          }
-
-          if (is.null(credentials["accessKey"][[1]])) {
-              stop("Attribute accessKey in credentials is missing!")
-          }
-
-          if (is.null(credentials["secretKey"][[1]])) {
-              stop("Attribute secretKey in credentials is missing!")
-          }
-
           # bind config name
           .self$configName = configurationName
 
