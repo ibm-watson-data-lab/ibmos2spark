@@ -174,11 +174,11 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
 
     hadoopConf.set(prefix + ".endpoint", credentials("endPoint"))
 
-    if (cos_type == "softlayer_cos") {
+    if (cosType == "softlayer_cos") {
       // softlayer cos case
       hadoopConf.set(prefix + ".access.key", credentials("accessKey"))
       hadoopConf.set(prefix + ".secret.key", credentials("secretKey"))
-    } else if (cos_type == "bluemix_cos") {
+    } else if (cosType == "bluemix_cos") {
       // bluemix cos case
       hadoopConf.set(prefix + ".iam.service.id", credentials("serviceId"))
       if (authMethod == "api_key") {
@@ -204,7 +204,7 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       }
     }
 
-    private def _validate_credentials(credentials : HashMap[String, String], cosType : String, authMethod : String) {
+    private def _validate_credentials(credentials : HashMap[String, String], cosType : String, authMethod : String) = {
       val requiredKeys = _get_required_key_array(cosType, authMethod)
 
       // check the existence of all required values in credentials
@@ -215,7 +215,7 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
       }
     }
 
-    private def _get_required_key_array(cosType : String, authMethod : String) : Array {
+    private def _get_required_key_array(cosType : String, authMethod : String) : Array[String] = {
       val required_key_softlayer_cos = Array("endPoint", "accessKey", "secretKey")
       val required_key_list_iam_api_key = Array("endPoint", "apiKey", "serviceId")
       val required_key_list_iam_token = Array("endPoint", "iamToken", "serviceId")
