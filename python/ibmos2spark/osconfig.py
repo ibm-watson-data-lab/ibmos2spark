@@ -178,7 +178,7 @@ class CloudObjectStorage(object):
 
         sparkcontext:  a SparkContext object.
 
-        credentials:  a dictionary with the required keys to connect to cos. The required keys differ according
+        credentials:  a dictionary with the required keys to connect to an IBM COS. The required keys differ according
             to the type of COS.
             - for COS type "softlayer_cos" the following key are required:
               * endpoint
