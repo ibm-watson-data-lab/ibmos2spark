@@ -216,20 +216,20 @@ class CloudObjectStorage(sc: SparkContext, credentials: HashMap[String, String],
     }
 
     private def _get_required_key_array(cosType : String, authMethod : String) : Array[String] = {
-      val required_key_softlayer_cos = Array("endPoint", "accessKey", "secretKey")
-      val required_key_list_iam_api_key = Array("endPoint", "apiKey", "serviceId")
-      val required_key_list_iam_token = Array("endPoint", "iamToken", "serviceId")
+      val requiredKeySoftlayerCos = Array("endPoint", "accessKey", "secretKey")
+      val requiredKeyListIamApiKey = Array("endPoint", "apiKey", "serviceId")
+      val requiredKeyListIamToken = Array("endPoint", "iamToken", "serviceId")
 
       if (cosType == "bluemix_cos") {
         if (authMethod == "api_key") {
-          return required_key_list_iam_api_key
+          return requiredKeyListIamApiKey
         } else if (authMethod == "iam_token") {
-          return required_key_list_iam_token
+          return requiredKeyListIamToken
         } else {
           throw new IllegalArgumentException("Invalid input: authMethod. authMethod is optional but if set, it should have one of the following values: api_key, iam_token")
         }
       } else if (cosType == "softlayer_cos") {
-        return required_key_softlayer_cos
+        return requiredKeySoftlayerCos
       } else {
         throw new IllegalArgumentException("Invalid input: cosType. cosType is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
       }
