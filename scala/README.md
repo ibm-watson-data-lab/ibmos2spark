@@ -146,7 +146,7 @@ var bucketName = "myBucket"
 var objectname = "mydata.csv"
 
 var configurationName = "cos_config_name" // you can choose any string you want
-var cos = new CloudObjectStorage(sc=sc, credentials=credentials, configurationName=configurationName)
+var cos = new CloudObjectStorage(sc, credentials, configurationName=configurationName)
 var spark = SparkSession.
     builder().
     getOrCreate()
@@ -173,7 +173,7 @@ var bucketName = "myBucket"
 var objectname = "mydata.csv"
 
 var configurationName = "cos_config_name" // you can choose any string you want
-var cos = new CloudObjectStorage(sc=sc, credentials=credentials,
+var cos = new CloudObjectStorage(sc, credentials,
                                 configurationName=configurationName,
                                 cosType="bluemix_cos")
 var spark = SparkSession.
@@ -202,7 +202,7 @@ var bucketName = "myBucket"
 var objectname = "mydata.csv"
 
 var configurationName = "cos_config_name" // you can choose any string you want
-var cos = new CloudObjectStorage(sc=sc, credentials=credentials,
+var cos = new CloudObjectStorage(sc, credentials,
                                 configurationName=configurationName,
                                 cosType="bluemix_cos",
                                 authMethod="iam_token")
