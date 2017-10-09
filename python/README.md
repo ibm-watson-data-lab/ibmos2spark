@@ -64,7 +64,9 @@ credentials = {
 }
 
 configuration_name = 'os_bluemix_cos_config'
-cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name, 'bluemix_cos')
+cos = ibmos2spark.CloudObjectStorage(sparkcontext=sc, credentials=credentials,
+                                    configuration_name=configuration_name,
+                                    cos_type='bluemix_cos')
 
 bucket_name = 'bucket_name'
 object_name = 'file_name'
@@ -82,7 +84,10 @@ credentials = {
 }
 
 configuration_name = 'os_bluemix_cos_config'
-cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name, 'bluemix_cos', 'iam_token')
+cos = ibmos2spark.CloudObjectStorage(sparkcontext=sc, credentials=credentials,
+                                      configuration_name=configuration_name,
+                                      cos_type='bluemix_cos',
+                                      auth_method='iam_token')
 
 bucket_name = 'bucket_name'
 object_name = 'file_name'
