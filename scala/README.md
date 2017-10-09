@@ -133,12 +133,9 @@ within a DSX Jupyter notebook, you can obtain your account credentials in the fo
 If your Object Storage was created with a Softlayer account, each part of the credentials will
 be found as text that you can copy and paste into the example code below.
 
-### IBM Cloud Object Storage / Data Science Experience
+### Softlayer IBM Cloud Object Storage (COS)
 ```scala
 import com.ibm.ibmos2spark.CloudObjectStorage
-
-// The credentials HashMap may be created for you with the
-// "insert to code" link in your DSX notebook.
 
 var credentials = scala.collection.mutable.HashMap[String, String](
   "endPoint"->"https://identity.open.softlayer.com",
@@ -161,8 +158,61 @@ var dfData1 = spark.
     load(cos.url(bucketName, objectname))
 ```
 
+### Bluemix IBM Cloud Object Storage (COS)
+The class CloudObjectStorage allows you to connect to an IBM bluemix COS. You can connect to
+a bluemix COS using api keys as follows:
+```scala
+import com.ibm.ibmos2spark.CloudObjectStorage
 
-### Bluemix / Data Science Experience
+var credentials = scala.collection.mutable.HashMap[String, String](
+  "endPoint"->"xxx",
+  "apiKey"->"xxx",
+  "serviceId"->"xxx"
+)
+var bucketName = "myBucket"
+var objectname = "mydata.csv"
+
+var configurationName = "cos_config_name" // you can choose any string you want
+var cos = new CloudObjectStorage(sc, credentials, configurationName, "bluemix_cos")
+var spark = SparkSession.
+    builder().
+    getOrCreate()
+
+var dfData1 = spark.
+    read.format("org.apache.spark.sql.execution.datasources.csv.CSVFileFormat").
+    option("header", "true").
+    option("inferSchema", "true").
+    load(cos.url(bucketName, objectname))
+```
+Alternatively, you can connect to a bluemix COS using IAM token. Example:
+```scala
+import com.ibm.ibmos2spark.CloudObjectStorage
+
+// The credentials HashMap may be created for you with the
+// "insert to code" link in your DSX notebook.
+
+var credentials = scala.collection.mutable.HashMap[String, String](
+  "endPoint"->"xxx",
+  "iamToken"->"xxx",
+  "serviceId"->"xxx"
+)
+var bucketName = "myBucket"
+var objectname = "mydata.csv"
+
+var configurationName = "cos_config_name" // you can choose any string you want
+var cos = new CloudObjectStorage(sc, credentials, configurationName, "bluemix_cos", "iam_token")
+var spark = SparkSession.
+    builder().
+    getOrCreate()
+
+var dfData1 = spark.
+    read.format("org.apache.spark.sql.execution.datasources.csv.CSVFileFormat").
+    option("header", "true").
+    option("inferSchema", "true").
+    load(cos.url(bucketName, objectname))
+```
+
+### Bluemix Swift Object Storage/ Data Science Experience
 
 
 ```scala
@@ -189,7 +239,7 @@ var rdd = sc.textFile(bmos.url(container , objectname))
 ```
 
 
-### Softlayer
+### Softlayer Swift Object Storage
 
 
 
