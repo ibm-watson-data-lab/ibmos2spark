@@ -37,7 +37,7 @@ within a DSX Jupyter notebook, you can obtain your account credentials in the fo
 If your Object Storage was created with a Softlayer account, each part of the credentials will
 be found as text that you can copy and paste into the example code below.
 
-### Cloud Object Storage
+### Softlayer - IBM Cloud Object Storage (COS)
     library(ibmos2sparkR)
     configurationName = "bluemixO123"
 
@@ -60,8 +60,58 @@ be found as text that you can copy and paste into the example code below.
         header = "true")
     head(df.data.1)
 
+### Bluemix - IBM Cloud Object Storage (COS)
+The class CloudObjectStorage allows you to connect to an IBM Cloud Object Storage (COS) hosted on Bluemix. You can connect to a Bluemix COS using api keys as follows:
 
-### Bluemix / Data Science Experience
+    library(ibmos2sparkR)
+    configurationName = "bluemixO123"
+
+    # In DSX notebooks, the "insert to code" will insert this credentials list for you
+    credentials <- list(
+      apiKey = "XXX",
+      serviceId = "XXX",
+      endpoint = "https://s3-api.objectstorage.....net/"
+    )
+
+    cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName, cosType="bluemix_cos")
+
+    bucketName <- "bucketName"
+    fileName <- "test.csv"
+    url <- cos$url(bucketName, fileName)
+
+    invisible(sparkR.session(appName = "SparkSession R"))
+
+    df.data.1 <- read.df(url,
+        source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
+        header = "true")
+    head(df.data.1)
+
+Alternatively, you can connect to an IBM Bluemix COS using IAM token. Example:
+
+    library(ibmos2sparkR)
+    configurationName = "bluemixO123"
+
+    # In DSX notebooks, the "insert to code" will insert this credentials list for you
+    credentials <- list(
+      iamToken = "XXXXXXXXX",
+      serviceId = "XXX",
+      endpoint = "https://s3-api.objectstorage.....net/"
+    )
+
+    cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName, cosType="bluemix_cos", authMethod="iam_token")
+
+    bucketName <- "bucketName"
+    fileName <- "test.csv"
+    url <- cos$url(bucketName, fileName)
+
+    invisible(sparkR.session(appName = "SparkSession R"))
+
+    df.data.1 <- read.df(url,
+        source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
+        header = "true")
+    head(df.data.1)
+
+### Bluemix Swift Object Storage / Data Science Experience
 
     library(ibmos2sparkR)
     configurationname = "bluemixOScon" #can be any any name you like (allows for multiple configurations)
@@ -86,7 +136,7 @@ be found as text that you can copy and paste into the example code below.
     data = read.df(bmconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
 
 
-### Softlayer
+### Softlayer Swift Object Storage
 
     library(ibmos2sparkR)
     configurationname = "softlayerOScon" #can be any any name you like (allows for multiple configurations)

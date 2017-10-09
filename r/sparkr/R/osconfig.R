@@ -115,46 +115,74 @@ bluemix <- setRefClass("bluemix",
 )
 
 #' CloudObjectStorage is a class that is designed for IBM cloud object storage (COS)
-#' It sets up the hadoop config for COS and provide the final file url.
+#' It sets up the hadoop config for COS and provide the final file url. It also supports
+#  connecting to an IBM COS instance that is being hosted on bluemix.
 #'
 #' sparkContext:  a SparkContext object.
 #''
-#' credentials:  a dictionary with the following required keys:
-#'   endpoint
-#'   accessKey
-#'   secretKey
+#' credentials:  a dictionary with the required keys to connect to an IBM cloud object storage.
+#'   The required keys differ according to the type of COS.
+#'     - for COS type "softlayer_cos" the following keys are required:
+#'         endpoint [required]
+#'         accessKey [required]
+#'         secretKey [required]
+#'     - for COS type "bluemix_cos", here are the required/optional key:
+#'         endPoint [required]
+#'         serviceId [required]
+#'         apiKey OR iamToken depends on the selected authorization method (authMethod) [required]
+#'         iamServiceEndpoint [optional] (default: https://iam.ng.bluemix.net/oidc/token)
+#'         v2SignerType [optional]
 #'
-#' configurationName: string identifies the configurations that has been
-#' set.
+#' configurationName: string identifies the configurations to be set.
+#'
+#'
+#' cosType [optional]: string that identifies the type of COS to connect to. The supported types of COS
+#'    are "softlayer_cos" and "bluemix_cos". "softlayer_cos" will be chosen as default if no cosType is passed.
+#'
+#' authMethod [optional]: string that identifies the type of authorization method to use when connecting to COS. This parameter
+#'    is not reqired for softlayer_cos but only needed for bluemix_cos. Two options can be chosen for this params
+#'    "api_key" or "iam_token". "api_key" will be chosen as default if the value is not set.
 #' @export CloudObjectStorage
 #' @exportClass CloudObjectStorage
 CloudObjectStorage <- setRefClass("CloudObjectStorage",
-  fields=list(configName="character"),
+  fields=list(configName="character", cosType="character", authMethod="character"),
   methods=list(
-      initialize = function(..., sparkContext, credentials, configurationName="") {
+      initialize = function(..., sparkContext, credentials, configurationName="",
+                            cosType="softlayer_cos", authMethod="api_key") {
 
-
-          if (is.null(credentials["endpoint"][[1]])) {
-              stop("Attribute endpoint in credentials is missing!")
-          }
-
-          if (is.null(credentials["accessKey"][[1]])) {
-              stop("Attribute accessKey in credentials is missing!")
-          }
-
-          if (is.null(credentials["secretKey"][[1]])) {
-              stop("Attribute secretKey in credentials is missing!")
-          }
+          # validate input
+          validateInput(credentials, cosType, authMethod)
 
           # bind config name
           .self$configName = configurationName
 
-          # set prefix for hadoop config
+          # set up hadoop config
           prefix = paste("fs.cos", getConfigName(), sep='.')
           hConf = SparkR:::callJMethod(sparkContext, "hadoopConfiguration")
+
           SparkR:::callJMethod(hConf, "set", paste(prefix, "endpoint", sep='.'), credentials['endpoint'][[1]])
-          SparkR:::callJMethod(hConf, "set", paste(prefix, "access.key", sep='.'), credentials['accessKey'][[1]])
-          SparkR:::callJMethod(hConf, "set", paste(prefix, "secret.key", sep='.'), credentials['secretKey'][[1]])
+
+          if (cosType == "softlayer_cos") {
+            # softlayer COS case
+            SparkR:::callJMethod(hConf, "set", paste(prefix, "access.key", sep='.'), credentials['accessKey'][[1]])
+            SparkR:::callJMethod(hConf, "set", paste(prefix, "secret.key", sep='.'), credentials['secretKey'][[1]])
+          } else if (cosType == "bluemix_cos") {
+            # bluemix COS case
+            SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.service.id", sep='.'), credentials['serviceId'][[1]])
+            if (authMethod == "api_key") {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.api.key", sep='.'), credentials['apiKey'][[1]])
+            } else if (authMethod == "iam_token") {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.token", sep='.'), credentials['iamToken'][[1]])
+            }
+
+            if ("iamServiceEndpoint" %in% names(credentials)) {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "iam.endpoint", sep='.'), credentials['iamServiceEndpoint'][[1]])
+            }
+
+            if ("v2SignerType" %in% names(credentials)) {
+              SparkR:::callJMethod(hConf, "set", paste(prefix, "v2.signer.type", sep='.'), credentials['v2SignerType'][[1]])
+            }
+          }
       },
 
       getConfigName = function() {
@@ -162,6 +190,37 @@ CloudObjectStorage <- setRefClass("CloudObjectStorage",
           return (.self$configName)
         }
         return ("service")
+      },
+
+      validateInput = function (credentials, cosType, authMethod) {
+        requiredKeys = get_required_key_array(cosType, authMethod)
+
+        # check the existence of all required values in credentials
+        for (key in requiredKeys) {
+          if (!key %in% names(credentials)) {
+              stop(paste("Invalid input: missing required input [", key, "]!", sep=''))
+          }
+        }
+      },
+
+      get_required_key_array = function (cosType, authMethod) {
+        requiredKeySoftlayerCos = list("endpoint", "accessKey", "secretKey")
+        requiredKeyListIamApiKey = list("endpoint", "apiKey", "serviceId")
+        requiredKeyListIamToken = list("endpoint", "iamToken", "serviceId")
+
+        if (cosType == "bluemix_cos") {
+          if (authMethod == "api_key") {
+            return (requiredKeyListIamApiKey)
+          } else if (authMethod == "iam_token") {
+            return (requiredKeyListIamToken)
+          } else {
+            stop("Invalid input: authMethod. authMethod is optional but if set, it should have one of the following values: api_key, iam_token")
+          }
+        } else if (cosType == "softlayer_cos") {
+          return (requiredKeySoftlayerCos)
+        } else {
+          stop("Invalid input: cosType. cosType is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
+        }
       },
 
       url = function(bucketName, objectName) {
