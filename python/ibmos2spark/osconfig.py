@@ -170,20 +170,38 @@ class bluemix(object):
 
 class CloudObjectStorage(object):
 
-    def __init__(self, sparkcontext, credentials, configuration_name='', bucket_name=''):
+    def __init__(self, sparkcontext, credentials, configuration_name='', cos_type='softlayer_cos', auth_method='api_key', bucket_name=''):
 
         '''
+        This class allows you to connect to an IBM cloud object storage (COS) instance. It also support connecting to an IBM COS instance
+        that is being hosted on bluemix.
+
         sparkcontext:  a SparkContext object.
 
-        credentials:  a dictionary with the following required keys:
-          * endpoint
-          * access_key
-          * secret_key
+        credentials:  a dictionary with the required keys to connect to an IBM COS. The required keys differ according
+            to the type of COS.
+            - for COS type "softlayer_cos" the following key are required:
+              * endpoint
+              * access_key
+              * secret_key
+            - for COS type "bluemix_cos", here are the required/optional key:
+              * endpoint [required]
+              * service_id [required]
+              * api_key OR iam_token depends on the selected authorization method (auth_method) [required]
+              * iam_service_endpoint [optional] (default: https://iam.ng.bluemix.net/oidc/token)
+              * v2_signer_type [optional]
 
         configuration_name [optional]: string that identifies this configuration. You can
             use any string you like. This allows you to create
             multiple configurations to different Object Storage accounts.
             if a configuration name is not passed the default one will be used "service".
+
+        cos_type [optional]: string that identifies the type of COS to connect to. The supported types of COS
+            are "softlayer_cos" and "bluemix_cos". "softlayer_cos" will be chosen as default if no cos_type is passed.
+
+        auth_method [optional]: string that identifies the type of authorization to use when connecting to an IBM COS. This parameter
+            is not reqired for softlayer_cos but only needed for bluemix_cos. Two options can be chosen for this params
+            "api_key" or "iam_token". "api_key" will be chosen as default if the value is not set.
 
         bucket_name [optional]:  string that identifies the defult
             bucket nameyou want to access files from in the COS service instance.
@@ -191,16 +209,11 @@ class CloudObjectStorage(object):
             you use the url function.
 
         '''
+        # check if all required values are availble
+        self._validate_input(credentials, cos_type, auth_method)
+
         self.bucket_name = bucket_name
         self.conf_name = configuration_name
-
-        # check if all required values are availble
-        credential_key_list = ["endpoint", "access_key", "secret_key"]
-
-        for i in range(len(credential_key_list)):
-            key = credential_key_list[i]
-            if (not key in credentials):
-                raise ValueError("Invalid input: credentials.{} is required!".format(key))
 
         # setup config
         prefix = "fs.cos"
@@ -212,8 +225,51 @@ class CloudObjectStorage(object):
 
         hconf = sparkcontext._jsc.hadoopConfiguration()
         hconf.set(prefix + ".endpoint", credentials['endpoint'])
-        hconf.set(prefix + ".access.key", credentials['access_key'])
-        hconf.set(prefix + ".secret.key", credentials['secret_key'])
+
+        # softlayer cos case
+        if (cos_type == "softlayer_cos"):
+            hconf.set(prefix + ".access.key", credentials['access_key'])
+            hconf.set(prefix + ".secret.key", credentials['secret_key'])
+
+        # bluemix cos case
+        elif (cos_type == "bluemix_cos"):
+            hconf.set(prefix + ".iam.service.id", credentials['service_id'])
+            if (auth_method == "api_key"):
+                hconf.set(prefix + ".iam.api.key", credentials['api_key'])
+            elif (auth_method == "iam_token"):
+                hconf.set(prefix + ".iam.token", credentials['iam_token'])
+
+            if (credentials.get('iam_service_endpoint')):
+                hconf.set(prefix + ".iam.endpoint", credentials['iam_service_endpoint'])
+
+            if (credentials.get('v2_signer_type')):
+                hconf.set(prefix + ".v2.signer.type", credentials['v2_signer_type'])
+
+    def _validate_input(self, credentials, cos_type, auth_method):
+        required_key_softlayer_cos = ["endpoint", "access_key", "secret_key"]
+        required_key_list_iam_api_key = ["endpoint", "api_key", "service_id"]
+        required_key_list_iam_token = ["endpoint", "iam_token", "service_id"]
+
+        def _get_required_keys(cos_type, auth_method):
+            if (cos_type == "bluemix_cos"):
+                if (auth_method == "api_key"):
+                    return required_key_list_iam_api_key
+                elif (auth_method == "iam_token"):
+                    return required_key_list_iam_token
+                else:
+                    raise ValueError("Invalid input: auth_method. auth_method is optional but if set, it should have one of the following values: api_key, iam_token")
+            elif (cos_type == "softlayer_cos"):
+                return required_key_softlayer_cos
+            else:
+                raise ValueError("Invalid input: cos_type. cos_type is optional but if set, it should have one of the following values: softlayer_cos, bluemix_cos")
+
+        # check keys
+        required_key_list = _get_required_keys(cos_type, auth_method)
+
+        for i in range(len(required_key_list)):
+            key = required_key_list[i]
+            if (key not in credentials):
+                raise ValueError("Invalid input: credentials. {} is required!".format(key))
 
     def url(self, object_name, bucket_name=''):
         bucket_name_var = ''

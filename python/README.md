@@ -32,7 +32,7 @@ within a DSX Jupyter notebook, you can obtain your account credentials in the fo
 If your Object Storage was created with a Softlayer account, each part of the credentials will
 be found as text that you can copy and paste into the example code below.
 
-### CloudObjectStorage / Data Science Experience
+### Softlayer IBM Cloud Object Storage (COS)
 ```python
 import ibmos2spark
 
@@ -50,7 +50,47 @@ object_name = 'file1'
 data = sc.textFile(cos.url(object_name, bucket_name))
 ```
 
-### Bluemix / Data Science Experience
+### Bluemix IBM Cloud Object Storage (COS)
+The class CloudObjectStorage allows you to connect to an IBM bluemix COS. You can connect to a bluemix COS using api keys
+as follows:
+
+```python
+import ibmos2spark
+
+credentials = {
+    'endpoint': 'XXX',
+    'api_key': 'XXX',
+    'service_id': 'XXX'
+}
+
+configuration_name = 'os_bluemix_cos_config'
+cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name, 'bluemix_cos')
+
+bucket_name = 'bucket_name'
+object_name = 'file_name'
+data = sc.textFile(cos.url(object_name, bucket_name))
+```
+
+Alternatively, you can connect to an IBM bluemix COS using IAM token. Example:
+```python
+import ibmos2spark
+
+credentials = {
+    'endpoint': 'XXX',
+    'iam_token': 'eyJraWQXXXX .... X',
+    'service_id': 'XXX'
+}
+
+configuration_name = 'os_bluemix_cos_config'
+cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name, 'bluemix_cos', 'iam_token')
+
+bucket_name = 'bucket_name'
+object_name = 'file_name'
+data = sc.textFile(cos.url(object_name, bucket_name))
+```
+
+
+### Bluemix Swift Object Storage / Data Science Experience
 
 ```python
 import ibmos2spark
@@ -75,7 +115,7 @@ data = sc.textFile(bmos.url(container_name, object_name))
 ```
 
 
-### Softlayer
+### Softlayer Swift Object Storage
 
 
 ```python
