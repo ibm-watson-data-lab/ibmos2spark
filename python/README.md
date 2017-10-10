@@ -43,7 +43,7 @@ credentials = {
 }
 
 configuration_name = 'cos_config_string'  #you can give any string you like
-cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name)  #sc is the SparkContext instance.
+cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name=configuration_name)  #sc is the SparkContext instance.
 
 bucket_name = 'some_bucket_name'
 object_name = 'file1'
@@ -64,7 +64,9 @@ credentials = {
 }
 
 configuration_name = 'os_bluemix_cos_config'
-cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name, 'bluemix_cos')
+cos = ibmos2spark.CloudObjectStorage(sc, credentials,
+                                    configuration_name=configuration_name,
+                                    cos_type='bluemix_cos')
 
 bucket_name = 'bucket_name'
 object_name = 'file_name'
@@ -82,7 +84,10 @@ credentials = {
 }
 
 configuration_name = 'os_bluemix_cos_config'
-cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name, 'bluemix_cos', 'iam_token')
+cos = ibmos2spark.CloudObjectStorage(sc, credentials,
+                                      configuration_name=configuration_name,
+                                      cos_type='bluemix_cos',
+                                      auth_method='iam_token')
 
 bucket_name = 'bucket_name'
 object_name = 'file_name'
