@@ -116,7 +116,7 @@ bluemix <- setRefClass("bluemix",
 
 #' CloudObjectStorage is a class that is designed for IBM cloud object storage (COS)
 #' It sets up the hadoop config for COS and provide the final file url. It also supports
-#  connecting to an IBM COS instance that is being hosted on bluemix.
+#'  connecting to an IBM COS instance that is being hosted on bluemix.
 #'
 #' sparkContext:  a SparkContext object.
 #''
