@@ -22,7 +22,7 @@ that utilize the [swift2d/stocator](https://github.com/SparkTC/stocator) protoco
     library(devtools)
     devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/<version).zip", subdir= "r/sparkr/")
 
-where `version` should be a tagged release, such as `0.0.7`. (If you're daring, you can use `master`.)
+where `version` should be a tagged release, such as `0.0.9`. (If you're daring, you can use `master`.)
 
 ## Usage
 
