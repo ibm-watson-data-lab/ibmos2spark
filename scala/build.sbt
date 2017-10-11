@@ -2,7 +2,7 @@ name := "ibmos2spark"
 
 organization := "com.ibm.ibmos2spark"
 
-version := "0.0.9-SNAPSHOT"
+version := "0.0.9"
 
 scalaVersion := "2.11.8"
 
