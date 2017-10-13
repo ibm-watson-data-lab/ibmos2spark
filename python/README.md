@@ -1,58 +1,65 @@
 # ibmos2spark
 
-The package sets Spark Hadoop configurations for connecting to
-IBM Bluemix Object Storage and Softlayer Account Object Storage instances. This packages uses the new [stocator](https://github.com/SparkTC/stocator) driver, which implements the `swift2d` protocol, and is availble
-on the latest IBM Apache Spark Service instances (and through IBM Data Science Experience).
+The `ibmos2park` library facilitates data read/write connections between Apache Spark clusters and the various 
+[IBM Object Storage services](https://console.bluemix.net/catalog/infrastructure/object-storage-group). 
+
+![IBM Object Storage Services](fig/ibm_objectstores.png "IBM Object Storage Services")
+
+### Object Storage Documentation
+
+* [Cloud Object Storage](https://www.bluemix.net/docs/services/cloud-object-storage/getting-started.html)
+* [Cloud Object Storage (IaaS)](https://ibm-public-cos.github.io/crs-docs/)
+* [Object Storage OpenStack Swift (IaaS)](https://ibm-public-cos.github.io/crs-docs/)
+* [Object Storage OpenStack Swift for Bluemix](https://www.ng.bluemix.net/docs/services/ObjectStorage/index.html)
 
 
-Using the `stocator` driver connects your Spark executor nodes directly
-to your data in object storage.
-This is an optimized, high-performance method to connect Spark to your data. All IBM Apache Spark kernels
-are instantiated with the `stocator` driver in the Spark kernel's classpath.
-You can also run this locally by installing the [stocator driver](https://github.com/SparkTC/stocator)
-and adding it to your local Apache Spark kernel's classpath.
+
+## Requirements
+
+* Apache Spark with `stocator` library
+
+The easiest way to install the `stocator` library with Apache Spark is to 
+[pass the Maven coordinates at launch](https://spark-packages.org/package/SparkTC/stocator).
+Other installation options are described in the [`stocator` documentation](https://github.com/SparkTC/stocator).
+
 
 ## Installation
 
-This library is now installed by default on IBM Apache Spark.
+This library is published on PyPI and may be installed with `pip`.
 
 ```
-pip install --user --upgrade ibmos2spark
+pip install ibmos2spark
 ```
+
+## Apache Spark at IBM
+
+The `stocator` and `ibmos2spark` libraries are pre-installled and available on 
+
+* [Apache Spark through IBM Bluemix](https://console.bluemix.net/catalog/services/apache-spark)
+* [IBM Analytics Engine (Beta)](https://console.bluemix.net/catalog/services/ibm-analytics-engine)  
+* [IBM Data Science Experience](https://datascience.ibm.com)
+
+
 
 ## Usage
 
-The usage of this package depends on *from where* your Object Storage instance was created. This package
-is intended to connect to IBM's Object Storage instances (Swift OS). This OS can be obtained from Bluemix or Data Science Experience (DSX) or from a separate account on IBM Softlayer. The package also supports IBM Cloud Object Storage as well (COS).
-The instructions below show how to connect to either type of instance.
+The instructions below demonstrate how to use this package to retrieve data from the various 
+IBM Object Storage services.
 
-The connection setup is essentially the same. But the difference for you is how you deliver the
-credentials. If your Object Storage was created with Bluemix/DSX, with a few clicks on the side-tab
-within a DSX Jupyter notebook, you can obtain your account credentials in the form of a Python dictionary.
-If your Object Storage was created with a Softlayer account, each part of the credentials will
-be found as text that you can copy and paste into the example code below.
+These instructions will refer to the image at the top of this README.
 
-### Softlayer IBM Cloud Object Storage (COS)
-```python
-import ibmos2spark
 
-credentials = {
-  'endpoint': 'https://s3-api.objectstorage.softlayer.net/',  #just an example. Your url might be different
-  'access_key': '',
-  'secret_key': ''
-}
+### Cloud Object Storage 
 
-configuration_name = 'cos_config_string'  #you can give any string you like
-cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name=configuration_name)  #sc is the SparkContext instance.
+This is the service described on the **far left** in the image above. This service is also called IBM Bluemix Cloud Object Storage (COS) in various locations. [Documentation is here](https://www.bluemix.net/docs/services/cloud-object-storage/getting-started.html).
 
-bucket_name = 'some_bucket_name'
-object_name = 'file1'
-data = sc.textFile(cos.url(object_name, bucket_name))
-```
+To connect to this particular object storage offering, the `cos_type` keyword argument **must be set to `bluemix_cos`**.
 
-### Bluemix IBM Cloud Object Storage (COS)
-The class CloudObjectStorage allows you to connect to an IBM bluemix COS. You can connect to a bluemix COS using api keys
-as follows:
+If you do not provide a `configuration_name`, 
+a default value will be used (`service`). However, if you are reading or 
+writing to multiple Object Storage instances, you will need to define separate `configuration_name`
+values for each Object Storage instance. Otherwise, only one connection will be 
+configured at a time, potentially causing errors and confusion.  
 
 ```python
 import ibmos2spark
@@ -64,16 +71,34 @@ credentials = {
 }
 
 configuration_name = 'os_bluemix_cos_config'
+
 cos = ibmos2spark.CloudObjectStorage(sc, credentials,
                                     configuration_name=configuration_name,
                                     cos_type='bluemix_cos')
 
+# The `sc` object is your SparkContext object
+# The `cos` object will provide the URL for SparkContext to retrieve your data
+# NOTE the counter-intuitive order of 'object_name' followed by 'bucket_name' here
+
 bucket_name = 'bucket_name'
 object_name = 'file_name'
-data = sc.textFile(cos.url(object_name, bucket_name))
+data_url = cos.url(object_name, bucket_name)
+
+data = sc.textFile(data_url)
 ```
 
-Alternatively, you can connect to an IBM bluemix COS using IAM token. Example:
+##### IAM Token Authentication
+
+Alternatively, you can connect to an IBM Bluemix COS using IAM token. Set the `auth_method` to `iam_token` and
+provide the appropriate values in the credentials.
+
+If you do not provide a `configuration_name`, 
+a default value will be used (`service`). However, if you are reading or 
+writing to multiple Object Storage instances you will need to define separate `configuration_name`
+values for each Object Storage instance. Otherwise, only one connection will be 
+configured at a time, potentially causing errors and confusion.  
+
+
 ```python
 import ibmos2spark
 
@@ -89,19 +114,103 @@ cos = ibmos2spark.CloudObjectStorage(sc, credentials,
                                       cos_type='bluemix_cos',
                                       auth_method='iam_token')
 
+# The `sc` object is your SparkContext object
+# The `cos` object will provide the URL for SparkContext to retrieve your data
+# NOTE the counter-intuitive order of 'object_name' followed by 'bucket_name' here
+
 bucket_name = 'bucket_name'
 object_name = 'file_name'
-data = sc.textFile(cos.url(object_name, bucket_name))
+data_url = cos.url(object_name, bucket_name)
+
+data = sc.textFile(data_url)
 ```
 
 
-### Bluemix Swift Object Storage / Data Science Experience
+### Cloud Object Storage (IaaS)
+
+This is the service described **middle left** pane in the image above. This service is sometimes refered to 
+as the Softlayer IBM Cloud Object Storage service. 
+[Documentation is here](https://ibm-public-cos.github.io/crs-docs/).
+
+If you do not provide a `configuration_name`, 
+a default value will be used (`service`). However, if you are reading or 
+writing to multiple Object Storage instances you will need to define separate `configuration_name`
+values for each Object Storage instance. Otherwise, only one connection will be 
+configured at a time, potentially causing errors and confusion. 
 
 ```python
 import ibmos2spark
 
-#To obtain these credentials in IBM Spark, click the "insert to code"
-#button below your data source found on the panel to the right of your notebook.
+credentials = {
+  'endpoint': 'https://s3-api.objectstorage.softlayer.net/',  #just an example. Your url might be different
+  'access_key': '',
+  'secret_key': ''
+}
+
+configuration_name = 'cos_config_string'  #you can give any string you like
+cos = ibmos2spark.CloudObjectStorage(sc, credentials, configuration_name=configuration_name)  #sc is the SparkContext instance.
+
+# The `sc` object is your SparkContext object
+# The `cos` object will provide the URL for SparkContext to retrieve your data
+# NOTE the counter-intuitive order of 'object_name' followed by 'bucket_name' here
+
+bucket_name = 'bucket_name'
+object_name = 'file_name'
+data_url = cos.url(object_name, bucket_name)
+
+data = sc.textFile(data_url)
+
+```
+
+
+
+### Object Storage OpenStack Swift (Iaas)
+
+This is the service described in **middle right** pane in the image above (and was previously referred to 
+as Softlayer Swift Object Storage).  [Documentation is here](https://ibm-public-cos.github.io/crs-docs/)
+
+Note below that credentials are not passed in as a dictionary, like in the other implementations. 
+Rather, each piece of information is supplied as a separate, required arguement when instantiating
+a new `softlayer` object. 
+
+
+```python
+import ibmos2spark
+
+#you need to know the credentials to your Softlayer ObjectStore.
+auth_url = ''
+tenant = ''
+username = ''
+password = ''
+
+#you can give any name you like. This is required. 
+configuration_name = "my_softlayer_os"
+
+#sc is the SparkContext instance
+slos = ibmos2spark.softlayer(sc, configuration_name, auth_url, tenant, username, password)
+
+data = sc.textFile(slos.url(container_name, object_name))
+```
+
+### Object Storage OpenStack Swift for Bluemix
+
+This is the service described in **far right** pane in the image above. 
+This was previously referred to as Bluemix Swift Object Storage in this documentation. It is 
+referred to as ["IBM Object Storage for Bluemix" in Bluemix documenation](https://console.bluemix.net/docs/services/ObjectStorage/os_works_public.html). It has also been referred to as 
+"OpenStack Swift (Cloud Foundry)". 
+
+Credentials are passed as 
+a dictionary and the `bluemix` object is used to configure the connection to 
+this Object Storage service.
+
+If you do not provide a `configuration_name`, 
+a default value will be used (`service`). However, if you are reading or 
+writing to multiple Object Storage instances you will need to define separate `configuration_name`
+values for each Object Storage instance. Otherwise, only one connection will be 
+configured at a time, potentially causing errors and confusion. 
+
+```python
+import ibmos2spark
 
 credentials = {
   'auth_url': 'https://identity.open.softlayer.com',  #your URL might be different
@@ -120,31 +229,19 @@ data = sc.textFile(bmos.url(container_name, object_name))
 ```
 
 
-### Softlayer Swift Object Storage
+## Details
 
+This library only does two things.
 
-```python
-import ibmos2spark
+1. [Uses the `SparkContext.hadoopConfiguration` object to set the appropriate keys](https://github.com/SparkTC/stocator#configuration-keys) to define a connection to an object storage service.
+2. Provides the caller with a URL to objects in their object store, which are typically passed to a SparkContext
+object to retrieve data. 
 
-#you need to know the credentials to your Softlayer ObjectStore.
-auth_url = ''
-tenant = ''
-username = ''
-password = ''
-
-#you can give any name you like
-configuration_name = "my_softlayer_os"
-
-#sc is the SparkContext instance
-slos = ibmos2spark.softlayer(sc, configuration_name, auth_url, tenant, username, password)
-
-data = sc.textFile(slos.url(container_name, object_name))
-```
 
 
 ## License
 
-Copyright 2016 IBM Cloud Data Services
+Copyright 2017 IBM Cloud Data Services
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
