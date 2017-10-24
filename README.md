@@ -65,7 +65,7 @@ bmos = ibmos2spark.bluemix(sc, credentials, configuration_name)  #sc is the Spar
 container_name = 'some_name'
 object_name = 'file_name'
 
-data_url = bmos.url(container_name, bucket_name)
+data_url = bmos.url(container_name, object_name)
 
 data = sc.textFile(data_url)
 ```
