@@ -1,166 +1,241 @@
-# ibmos2sparkR
+# ibmos2sparkr
 
-The package sets Spark Hadoop configurations for connecting to
-IBM Bluemix Object Storage and Softlayer Account Object Storage instances. This packages uses the new [stocator](https://github.com/SparkTC/stocator) driver, which implements the `swift2d` protocol, and is availble
-on the latest IBM Apache Spark Service instances (and through IBM Data Science Experience).
+The `ibmos2park` library facilitates data read/write connections between Apache Spark clusters and the various 
+[IBM Object Storage services](https://console.bluemix.net/catalog/infrastructure/object-storage-group). 
 
-Using the `stocator` driver connects your Spark executor nodes directly
-to your data in object storage.
-This is an optimized, high-performance method to connect Spark to your data. All IBM Apache Spark kernels
-are instantiated with the `stocator` driver in the Spark kernel's classpath.
-You can also run this locally by installing the [stocator driver](https://github.com/SparkTC/stocator)
-and adding it to your local Apache Spark kernel's classpath.
+![IBM Object Storage Services](fig/ibm_objectstores.png "IBM Object Storage Services")
+
+### Object Storage Documentation
+
+* [Cloud Object Storage](https://www.bluemix.net/docs/services/cloud-object-storage/getting-started.html)
+* [Cloud Object Storage (IaaS)](https://ibm-public-cos.github.io/crs-docs/)
+* [Object Storage OpenStack Swift (IaaS)](https://ibm-public-cos.github.io/crs-docs/)
+* [Object Storage OpenStack Swift for Bluemix](https://www.ng.bluemix.net/docs/services/ObjectStorage/index.html)
 
 
-This package expects a SparkContext instantiated by SparkR. It has been tested to work with
-IBM Spark service in R notebooks on IBM DSX, though it should work with other Spark installations
-that utilize the [swift2d/stocator](https://github.com/SparkTC/stocator) protocol.
+
+## Requirements
+
+* Apache Spark with `stocator` library
+
+The easiest way to install the `stocator` library with Apache Spark is to 
+[pass the Maven coordinates at launch](https://spark-packages.org/package/SparkTC/stocator).
+Other installation options are described in the [`stocator` documentation](https://github.com/SparkTC/stocator).
+
+
+## Apache Spark at IBM
+
+The `stocator` library is pre-installled and available on 
+
+* [Apache Spark through IBM Bluemix](https://console.bluemix.net/catalog/services/apache-spark)
+* [IBM Analytics Engine (Beta)](https://console.bluemix.net/catalog/services/ibm-analytics-engine)  
+* [IBM Data Science Experience](https://datascience.ibm.com)
 
 
 ## Installation
 
     library(devtools)
-    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/<version).zip", subdir= "r/sparkr/")
+    devtools::install_url("https://github.com/ibm-cds-labs/ibmos2spark/archive/<version>).zip", subdir= "r/sparkr/")
 
-where `version` should be a tagged release, such as `0.0.9`. (If you're daring, you can use `master`.)
+where `version` should be a tagged release, such as `1.0.2`.  
+
 
 ## Usage
 
-The usage of this package depends on *from where* your Object Storage instance was created. This package
-is intended to connect to IBM's Object Storage instances obtained from Bluemix or Data Science Experience
-(DSX) or from a separate account on IBM Softlayer. It also supports IBM cloud object storage (COS). The
-instructions below show how to connect to either type of instance.
+The instructions below demonstrate how to use this package to retrieve data from the various 
+IBM Object Storage services.
 
-The connection setup is essentially the same. But the difference for you is how you deliver the
-credentials. If your Object Storage was created with Bluemix/DSX, with a few clicks on the side-tab
-within a DSX Jupyter notebook, you can obtain your account credentials in the form of a list.
-If your Object Storage was created with a Softlayer account, each part of the credentials will
-be found as text that you can copy and paste into the example code below.
+These instructions will refer to the image at the top of this README.
 
-### Softlayer - IBM Cloud Object Storage (COS)
-    library(ibmos2sparkR)
-    configurationName = "bluemixO123"
+### Cloud Object Storage 
 
-    # In DSX notebooks, the "insert to code" will insert this credentials list for you
-    credentials <- list(
-      accessKey = "123",
-      secretKey = "123",
-      endpoint = "https://s3-api.objectstorage.....net/"
-    )
+This is the service described on the **far left** in the image above. This service is also called IBM Bluemix Cloud Object Storage (COS) in various locations. [Documentation is here](https://www.bluemix.net/docs/services/cloud-object-storage/getting-started.html).
 
-    cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName)
-    bucketName <- "bucketName"
-    fileName <- "test.csv"
-    url <- cos$url(bucketName, fileName)
+To connect to this particular object storage offering, the `cosType` keyword argument **must be set to `bluemix_cos`**.
 
-    invisible(sparkR.session(appName = "SparkSession R"))
+If you do not provide a `configurationName`, 
+a default value will be used (`service`). However, if you are reading or 
+writing to multiple Object Storage instances, you will need to define separate `configurationName`
+values for each Object Storage instance. Otherwise, only one connection will be 
+configured at a time, potentially causing errors and confusion.  
 
-    df.data.1 <- read.df(url,
-        source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
-        header = "true")
-    head(df.data.1)
+```
+library(ibmos2sparkR)
+configurationName = "bluemixO123"
 
-### Bluemix - IBM Cloud Object Storage (COS)
-The class CloudObjectStorage allows you to connect to an IBM Cloud Object Storage (COS) hosted on Bluemix. You can connect to a Bluemix COS using api keys as follows:
+# In DSX notebooks, the "insert to code" will insert this credentials list for you
+credentials <- list(
+  apiKey = "XXX",
+  serviceId = "XXX",
+  endpoint = "https://s3-api.objectstorage.....net/"
+)
 
-    library(ibmos2sparkR)
-    configurationName = "bluemixO123"
+cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName, cosType="bluemix_cos")
 
-    # In DSX notebooks, the "insert to code" will insert this credentials list for you
-    credentials <- list(
-      apiKey = "XXX",
-      serviceId = "XXX",
-      endpoint = "https://s3-api.objectstorage.....net/"
-    )
+bucketName <- "bucketName"
+fileName <- "test.csv"
+url <- cos$url(bucketName, fileName)
 
-    cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName, cosType="bluemix_cos")
+invisible(sparkR.session(appName = "SparkSession R"))
 
-    bucketName <- "bucketName"
-    fileName <- "test.csv"
-    url <- cos$url(bucketName, fileName)
+df.data.1 <- read.df(url,
+    source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
+    header = "true")
+head(df.data.1)
+```
 
-    invisible(sparkR.session(appName = "SparkSession R"))
+##### IAM Token Authentication
 
-    df.data.1 <- read.df(url,
-        source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
-        header = "true")
-    head(df.data.1)
+Alternatively, you can connect to an IBM Bluemix COS using IAM token. Set the `authMethod` to `iam_token` and
+provide the appropriate values in the credentials.
 
-Alternatively, you can connect to an IBM Bluemix COS using IAM token. Example:
+```
+library(ibmos2sparkR)
+configurationName = "bluemixO123"
 
-    library(ibmos2sparkR)
-    configurationName = "bluemixO123"
+# In DSX notebooks, the "insert to code" will insert this credentials list for you
+credentials <- list(
+  iamToken = "XXXXXXXXX",
+  serviceId = "XXX",
+  endpoint = "https://s3-api.objectstorage.....net/"
+)
 
-    # In DSX notebooks, the "insert to code" will insert this credentials list for you
-    credentials <- list(
-      iamToken = "XXXXXXXXX",
-      serviceId = "XXX",
-      endpoint = "https://s3-api.objectstorage.....net/"
-    )
+cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName, cosType="bluemix_cos", authMethod="iam_token")
 
-    cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName, cosType="bluemix_cos", authMethod="iam_token")
+bucketName <- "bucketName"
+fileName <- "test.csv"
+url <- cos$url(bucketName, fileName)
 
-    bucketName <- "bucketName"
-    fileName <- "test.csv"
-    url <- cos$url(bucketName, fileName)
+invisible(sparkR.session(appName = "SparkSession R"))
 
-    invisible(sparkR.session(appName = "SparkSession R"))
+df.data.1 <- read.df(url,
+    source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
+    header = "true")
+head(df.data.1)
+```
 
-    df.data.1 <- read.df(url,
-        source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
-        header = "true")
-    head(df.data.1)
+### Cloud Object Storage (IaaS)
 
-### Bluemix Swift Object Storage / Data Science Experience
+This is the service described **middle left** pane in the image above. This service is sometimes refered to 
+as the Softlayer IBM Cloud Object Storage service. 
+[Documentation is here](https://ibm-public-cos.github.io/crs-docs/).
 
-    library(ibmos2sparkR)
-    configurationname = "bluemixOScon" #can be any any name you like (allows for multiple configurations)
+If you do not provide a `configurationName`, 
+a default value will be used (`service`). However, if you are reading or 
+writing to multiple Object Storage instances you will need to define separate `configurationName`
+values for each Object Storage instance. Otherwise, only one connection will be 
+configured at a time, potentially causing errors and confusion. 
 
-    # In DSX notebooks, the "insert to code" will insert this credentials list for you
-    creds = list(
-            auth_url="https://identity.open.softlayer.com",
-            region="dallas",
-            project_id = "XXXXX",
-            user_id="XXXXX",
-            password="XXXXX")
+```
+library(ibmos2sparkR)
+configurationName = "softlayerO123"
 
-    bmconfig = bluemix(sparkcontext=sc, name=configurationname, credentials = creds)
+# In DSX notebooks, the "insert to code" will insert this credentials list for you
+credentials <- list(
+  accessKey = "123",
+  secretKey = "123",
+  endpoint = "https://s3-api.objectstorage.....net/"
+)
 
-    container = "my_container"
-    object = "my_data.csv"
+cos <- CloudObjectStorage(sparkContext=sc, credentials=credentials, configurationName=configurationName)
+bucketName <- "bucketName"
+fileName <- "test.csv"
+url <- cos$url(bucketName, fileName)
 
-    data <- read.df(sqlContext, bmconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
+invisible(sparkR.session(appName = "SparkSession R"))
 
-    # OR, for Spark >= 2.0.0
+df.data.1 <- read.df(url,
+    source = "org.apache.spark.sql.execution.datasources.csv.CSVFileFormat",
+    header = "true")
+head(df.data.1)
+```
 
-    data = read.df(bmconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
+### Object Storage OpenStack Swift (Iaas)
+
+This is the service described in **middle right** pane in the image above (and was previously referred to 
+as Softlayer Swift Object Storage).  [Documentation is here](https://ibm-public-cos.github.io/crs-docs/)
+
+Note below that credentials are not passed in as a list of key-value pairs, like in the other implementations. 
+Rather, each piece of information is supplied as a separate, required argument when instantiating
+a new `softlayer` object. 
 
 
-### Softlayer Swift Object Storage
+```
+library(ibmos2sparkR)
+configurationname = "softlayerOScon" #can be any any name you like (allows for multiple configurations)
 
-    library(ibmos2sparkR)
-    configurationname = "softlayerOScon" #can be any any name you like (allows for multiple configurations)
+slconfig = softlayer(sparkcontext=sc,
+             name=configurationname,
+             auth_url="https://identity.open.softlayer.com",
+             tenant = "XXXXX",
+             username="XXXXX",
+             password="XXXXX"
+       )
 
-    slconfig = softlayer(sparkcontext=sc,
-                 name=configurationname,
-                 auth_url="https://identity.open.softlayer.com",
-                 tenant = "XXXXX",
-                 username="XXXXX",
-                 password="XXXXX"
-           )
+container = "my_container"
+object = "my_data.csv"
 
-    container = "my_container"
-    object = "my_data.csv"
+data <- read.df(sqlContext, slconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
 
-    data <- read.df(sqlContext, slconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
+# OR, for Spark >= 2.0.0
 
-    # OR, for Spark >= 2.0.0
+data = read.df(slconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
+```
 
-    data = read.df(slconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
+### Object Storage OpenStack Swift for Bluemix
+
+This is the service described in **far right** pane in the image above. 
+This was previously referred to as Bluemix Swift Object Storage in this documentation. It is 
+referred to as ["IBM Object Storage for Bluemix" in Bluemix documenation](https://console.bluemix.net/docs/services/ObjectStorage/os_works_public.html). It has also been referred to as 
+"OpenStack Swift (Cloud Foundry)". 
+
+Credentials are passed as 
+a list of key-value pairs and the `bluemix` object is used to configure the connection to 
+this Object Storage service.
+
+If you do not provide a `configurationName`, 
+a default value will be used (`service`). However, if you are reading or 
+writing to multiple Object Storage instances you will need to define separate `configurationName`
+values for each Object Storage instance. Otherwise, only one connection will be 
+configured at a time, potentially causing errors and confusion. 
+
+```
+library(ibmos2sparkR)
+configurationName = "bluemixOScon" #can be any any name you like (allows for multiple configurations)
+
+# In DSX notebooks, the "insert to code" will insert this credentials list for you
+creds = list(
+        auth_url="https://identity.open.softlayer.com",
+        region="dallas",
+        project_id = "XXXXX",
+        user_id="XXXXX",
+        password="XXXXX")
+
+bmconfig = bluemix(sparkcontext=sc, name=configurationName, credentials = creds)
+
+container = "my_container"
+object = "my_data.csv"
+
+data <- read.df(sqlContext, bmconfig$url(container,object), source = "com.databricks.spark.csv", header = "true")
+
+# OR, for Spark >= 2.0.0
+
+data = read.df(bmconfig$url(container, objectname), source="com.databricks.spark.csv", header="true")
+```
+
+
+## Details
+
+This library only does two things.
+
+1. [Uses the `SparkContext.hadoopConfiguration` object to set the appropriate keys](https://github.com/SparkTC/stocator#configuration-keys) to define a connection to an object storage service.
+2. Provides the caller with a URL to objects in their object store, which are typically passed to a SparkContext
+object to retrieve data. 
+
 
 ## License
 
-Copyright 2016 IBM Cloud Data Services
+Copyright 2017 IBM Cloud Data Services
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

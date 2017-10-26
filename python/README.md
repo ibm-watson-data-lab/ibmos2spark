@@ -92,12 +92,6 @@ data = sc.textFile(data_url)
 Alternatively, you can connect to an IBM Bluemix COS using IAM token. Set the `auth_method` to `iam_token` and
 provide the appropriate values in the credentials.
 
-If you do not provide a `configuration_name`, 
-a default value will be used (`service`). However, if you are reading or 
-writing to multiple Object Storage instances you will need to define separate `configuration_name`
-values for each Object Storage instance. Otherwise, only one connection will be 
-configured at a time, potentially causing errors and confusion.  
-
 
 ```python
 import ibmos2spark
@@ -170,7 +164,7 @@ This is the service described in **middle right** pane in the image above (and w
 as Softlayer Swift Object Storage).  [Documentation is here](https://ibm-public-cos.github.io/crs-docs/)
 
 Note below that credentials are not passed in as a dictionary, like in the other implementations. 
-Rather, each piece of information is supplied as a separate, required arguement when instantiating
+Rather, each piece of information is supplied as a separate, required argument when instantiating
 a new `softlayer` object. 
 
 
