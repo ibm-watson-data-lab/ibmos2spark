@@ -1,6 +1,6 @@
 # ibmos2spark
 
-The `ibmos2park` library facilitates data read/write connections between Apache Spark clusters and the various 
+The `ibmos2spark` library facilitates data read/write connections between Apache Spark clusters and the various 
 [IBM Object Storage services](https://console.bluemix.net/catalog/infrastructure/object-storage-group). 
 
 ![IBM Object Storage Services](fig/ibm_objectstores.png "IBM Object Storage Services")
