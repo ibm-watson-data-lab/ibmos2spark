@@ -70,6 +70,7 @@ credentials = {
     'service_id': 'XXX'
 }
 
+# This name could be arbitrary
 configuration_name = 'os_bluemix_cos_config'
 
 cos = ibmos2spark.CloudObjectStorage(sc, credentials,
@@ -89,7 +90,7 @@ data = sc.textFile(data_url)
 
 ##### IAM Token Authentication
 
-Alternatively, you can connect to an IBM Bluemix COS using IAM token. Set the `auth_method` to `iam_token` and
+Alternatively, you can connect to an IBM Bluemix COS using IAM token. Set the `auth_method` to `api_key` and
 provide the appropriate values in the credentials.
 
 
@@ -98,15 +99,16 @@ import ibmos2spark
 
 credentials = {
     'endpoint': 'XXX',
-    'iam_token': 'eyJraWQXXXX .... X',
-    'service_id': 'XXX'
+    'api_key': 'eyJraWQXXXX .... X',
+    'service_id': 'crn:v1:bluemix:public:cloud-object-storage:global:a/XXX'
 }
 
+# This name could be arbitrary
 configuration_name = 'os_bluemix_cos_config'
 cos = ibmos2spark.CloudObjectStorage(sc, credentials,
                                       configuration_name=configuration_name,
                                       cos_type='bluemix_cos',
-                                      auth_method='iam_token')
+                                      auth_method='api_key')
 
 # The `sc` object is your SparkContext object
 # The `cos` object will provide the URL for SparkContext to retrieve your data
